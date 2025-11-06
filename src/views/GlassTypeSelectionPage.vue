@@ -11,6 +11,16 @@ const glassTypes = [
     title: "Progressiva glas",
     description: "Glas med flera styrkor. Korrigerar synfel för avstånd och nära.",
     imageSrc: "/images/Progressiva.png"
+  },
+  {
+    title: "Glas utan styrka",
+    description: "Helt utan styrka. I nästa steg väljer du till exempel blåljusglas eller solglas.",
+    imageSrc: "/images/Enkelslipad.png"
+  },
+  {
+    title: "Terminalglas",
+    description: "Enkelslipade glas avsedda för jobb framför datorn. Ger extra läs-styrka.",
+    imageSrc: "/images/Terminal.png"
   }
 ]
 </script>
@@ -27,7 +37,7 @@ const glassTypes = [
        <h1 class="text-center text-2xl font-medium mb-12">Välj glastyp</h1>
 
        <!-- Cards container -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols 4 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols 4 gap-4">
           <!-- Card components-->
            <GlassTypeCard
           v-for="(glass, index) in glassTypes"
@@ -39,5 +49,8 @@ const glassTypes = [
       
         </div>
     </div>
+    <footer class="bg-amber-200">
+      test
+    </footer>
   </div>
 </template>
