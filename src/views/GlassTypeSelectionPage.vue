@@ -1,5 +1,6 @@
 <script setup>
 import GlassTypeCard from '@/components/GlassTypeCard.vue';
+import ProgressBar from '@/components/ProgressBar.vue';
 
 const glassTypes = [
   {
@@ -29,9 +30,7 @@ const glassTypes = [
   <div class="min-h-screen bg-orange-100 p-8">
     <div class="max-w-4xl mx-auto">
       <!-- progress bar at the top-->
-       <div class="progress-bar mb-16">
-
-       </div>
+       <ProgressBar :currentStep="1" :totalSteps="5"/>
 
       <!-- Page title -->
        <h1 class="text-center text-2xl font-medium mb-12">Välj glastyp</h1>
@@ -49,8 +48,5 @@ const glassTypes = [
       
         </div>
     </div>
-    <footer class="bg-amber-200">
-      test
-    </footer>
   </div>
 </template>

@@ -2,7 +2,7 @@
 
 
 
-const props = defineProps({
+  defineProps({
    title: String,
    description: String,
    imageSrc: String
