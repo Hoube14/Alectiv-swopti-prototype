@@ -1,6 +1,7 @@
 <script setup>
 import GlassTypeCard from '@/components/GlassTypeCard.vue';
 import ProgressBar from '@/components/ProgressBar.vue';
+import CartBar from '@/components/CartBar.vue';
 
 const glassTypes = [
   {
@@ -24,6 +25,9 @@ const glassTypes = [
     imageSrc: "/images/Terminal.png"
   }
 ]
+
+const totalPrice = 0
+
 </script>
 
 <template>
@@ -48,5 +52,7 @@ const glassTypes = [
       
         </div>
     </div>
+    <CartBar :totalPrice="totalPrice" title="Dina glas" currency="kr" />
+
   </div>
 </template>
