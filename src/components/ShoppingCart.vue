@@ -60,16 +60,13 @@ const toggleExpand = () => {
         </button>
       </div>
       
-      <!-- Divider line -->
       <div class="border-t border-gray-200"></div>
       
-      <!-- Content -->
       <div class="p-4">
         <div class="flex justify-between items-center py-2">
           <span class="text-gray-700">Totalt</span>
           <span class="text-gray-900">{{ totalPrice }} {{ currency }}</span>
         </div>
-        <!-- More content can be added here later -->
       </div>
     </div>
   </div>

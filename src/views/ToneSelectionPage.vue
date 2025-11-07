@@ -37,7 +37,6 @@ const toneTypes = [
   }
 ];
 
-// Handle selection of tone type
 function selectToneType(index) {
   // Save selection
   updateOrder('toneType', toneTypes[index]);

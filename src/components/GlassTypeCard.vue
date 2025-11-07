@@ -8,6 +8,7 @@ defineProps({
 });
 
 defineEmits(['click']);
+
 </script>
 
 <template>

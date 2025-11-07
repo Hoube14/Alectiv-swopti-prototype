@@ -33,8 +33,6 @@ const glassTypes = [
   }
 ]
 
-
-// Handle selection of glass type
 function selectGlassType(index) {
   // Save the selection
   updateOrder('glassType', glassTypes[index]);
