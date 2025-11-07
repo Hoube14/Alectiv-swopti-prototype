@@ -36,7 +36,9 @@ defineProps({
           <div 
             v-if="step === currentStep" 
             class="w-1 h-1 bg-stone-800 rounded-full"
-          ></div>
+          >
+
+          </div>
          </div>
         </div>
       </div>
