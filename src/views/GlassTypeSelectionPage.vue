@@ -1,5 +1,5 @@
 <script setup>
-import GlassTypeCard from '@/components/GlassTypeCard.vue';
+import GlassTypeCard from '@/components/Card.vue';
 import ProgressBar from '@/components/ProgressBar.vue';
 import ShoppingCart from '@/components/ShoppingCart.vue';
 import { inject } from 'vue';

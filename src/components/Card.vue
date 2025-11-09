@@ -4,7 +4,8 @@ defineProps({
   title: String,
   description: String,
   imageSrc: String,
-  price: Number
+  price: Number,
+  currency: String
 });
 
 defineEmits(['click']);
@@ -18,5 +19,7 @@ defineEmits(['click']);
     </div>
     <h3 class="font-medium text-lg mb-2">{{ title }}</h3>
     <p class="text-sm text-center text-gray-600">{{ description }}</p>
+    <span>{{ price }}</span>
+    <p>{{ currency }}</p>
   </div>
 </template>
