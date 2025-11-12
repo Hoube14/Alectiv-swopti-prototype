@@ -12,20 +12,11 @@ const navigateTo = inject('navigateTo');
 const storeData = inject('storeData', {}); 
 const priceModifiers = inject('priceModifiers');
 
-const totalPrice = computed(() => {
-  if (!order?.value?.totalPrice) return 0;
-  return order.value.totalPrice;
-});
+const totalPrice = computed(() => order.value?.totalPrice || 0)
 
 const selections = computed(() => {
   return order?.value?.selections || [];
 });
-
-function getPriceForSelection(selection) {
-  if (!selection || !selection.priceKey) return 0;
-  return priceModifiers?.value?.[selection.priceKey] || 0;
-  
-}
 
 function calculateTax() {
   let subtotal = 0;
