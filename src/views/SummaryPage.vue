@@ -18,21 +18,20 @@ const selections = computed(() => {
   return order?.value?.selections || [];
 });
 
-function calculateTax() {
-  let subtotal = 0;
-  
-  if (!order?.value?.selections) return "0.00";
-  
-  Object.values(selections.value).forEach(selection => {
-    if (selection && selection.priceKey) {
-      subtotal += priceModifiers?.value?.[selection.priceKey] || 0;
+
+// Get product details for each selection for better display
+const productDetails = computed(() => {
+  const details = {};
+  Object.entries(selections.value).forEach(([stepId, selection]) => {
+    if (selection.title) {
+      details[stepId] = {
+        title: selection.title,
+        price: selection.priceKey ? (priceModifiers.value?.[selection.priceKey] || 0) : 0
+      };
     }
   });
-  
-  subtotal += storeData?.defaults?.shipping || 0;
-
-  return ((subtotal * (storeData?.defaults?.taxPercent || 0) / 100)).toFixed(2);
-}
+  return details;
+});
 
 function proceedToCheckout() {
   console.log('Gå vidare till Stripe Checkout:', totalPrice.value);
@@ -41,9 +40,6 @@ function proceedToCheckout() {
 </script>
 
 <template>
-
-  <div class="py-4 border-b">
-</div>
   <div class="min-h-screen bg-orange-100 p-8">
     <div class="max-w-4xl mx-auto">
       <ProgressBar :current-step="currentStepIndex" :total-steps="totalSteps" />
@@ -59,31 +55,46 @@ function proceedToCheckout() {
         <h2 class="text-xl font-bold mb-4">Sammanfattning</h2>
         
         <div class="mb-6">
+          <!-- Header row -->
           <div class="flex justify-between py-2 border-b">
             <span class="font-medium">Produkt</span>
             <span class="font-medium">Pris</span>
           </div>
           
-       <div class="py-4 border-b">
-          <div class="mb-2">
-            <span class="font-medium">Dina val:</span>
+          <!-- Product selection section -->
+          <div class="py-4 border-b">
+            <div class="mb-2">
+              <span class="font-medium">Dina val:</span>
+            </div>
+            
+            <!-- Product details section -->
+            <div class="mt-4 space-y-4">
+              <!-- Main product title -->
+              <div v-if="selections.glassType">
+                <div class="font-medium">{{ selections.glassType.title }} - {{ selections.tintSelection?.title || 'ofärgade' }}</div>
+                <div>{{ totalPrice - storeData?.defaults?.shipping || 0 }} kr</div>
+              </div>
+              
+              <!-- Product attributes -->
+              <div class="space-y-2 text-gray-600 text-sm">
+                <div v-if="selections.glassType">
+                  <div>Typ av glas: {{ selections.glassType.title }}</div>
+                </div>
+                
+                <div v-if="selections.frame">
+                  <div>Vilken typ av båge har du?: {{ selections.frame.title }}</div>
+                </div>
+                
+                <div v-if="selections.usage">
+                  <div>Hur ska du använda dina glasögon?: {{ selections.usage.title }}</div>
+                </div>
+              </div>
+            </div>
           </div>
-          
-          <ul class="list-disc pl-5">
-            <li v-for="value in selections"> {{ value.priceKey }} 
-
-            </li>
-          </ul> 
-        </div>
           
           <div class="flex justify-between py-2">
             <span>Frakt</span>
             <span>{{ storeData?.defaults?.shipping || 0 }} kr</span>
-          </div>
-          
-          <div class="flex justify-between py-2">
-            <span>Moms ({{ storeData?.defaults?.taxPercent || 0 }}%)</span>
-            <span>{{ calculateTax() }} kr</span>
           </div>
           
           <div class="flex justify-between py-2 mt-4 border-t-2 font-bold">
@@ -98,6 +109,10 @@ function proceedToCheckout() {
         >
           Gå till betalning
         </button>
+      </div>
+      
+      <div class="mt-4 text-center text-sm text-gray-500">
+        Skatt ingår. Leverans och rabatter beräknas i kassan.
       </div>
     </div>
   </div>
