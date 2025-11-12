@@ -54,8 +54,6 @@ function goBack() {
           :title="option.title"
           :description="option.description"
           :imageSrc="option.imageSrc"
-          :price="option.price"
-          :currency="option.currency"
           @click="handleSelection(option, index)"
           />
        </div>
