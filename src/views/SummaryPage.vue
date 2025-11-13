@@ -38,8 +38,6 @@ const productDetails = computed(() => {
 async function proceedToCheckout() {
   try {
     
-    const currency = stores.value[currentStore.value]?.currency?.toLowerCase() || 'sek';
-
     const response = await fetch('http://localhost:3001/create-checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
