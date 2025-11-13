@@ -11,6 +11,8 @@ const order = inject('order');
 const navigateTo = inject('navigateTo');
 const storeData = inject('storeData', {}); 
 const priceModifiers = inject('priceModifiers');
+const currentStore = inject('currentStore');
+const stores = inject('stores');
 
 const totalPrice = computed(() => order.value?.totalPrice || 0)
 
@@ -33,9 +35,32 @@ const productDetails = computed(() => {
   return details;
 });
 
-function proceedToCheckout() {
-  console.log('Gå vidare till Stripe Checkout:', totalPrice.value);
-  alert('Redirecting to Stripe Checkout (test mode)');
+async function proceedToCheckout() {
+  try {
+    
+    const currency = stores.value[currentStore.value]?.currency?.toLowerCase() || 'sek';
+
+    const response = await fetch('http://localhost:3001/create-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount: totalPrice.value })
+    });
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Server error (${response.status}): ${errorText}`);
+    }
+    
+    const data = await response.json();
+    
+    if (data && data.url) {
+      window.location.href = data.url;
+    } else {
+      throw new Error("No URL in server response");
+    }
+  } catch (error) {
+    alert('Det uppstod ett fel vid betalning: ' + error.message);
+  }
 }
 </script>
 
