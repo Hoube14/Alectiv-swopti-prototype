@@ -1,5 +1,5 @@
 <script setup>
-import { inject } from 'vue';
+import { inject, computed } from 'vue';
 import Card from '@/components/Card.vue';
 import ProgressBar from '@/components/ProgressBar.vue';
 import ShoppingCart from '@/components/ShoppingCart.vue';
@@ -18,6 +18,20 @@ const props = defineProps({
 const order = inject('order')
 const updateOrder = inject('updateOrder')
 const navigateTo = inject('navigateTo')
+const priceModifiers = inject('priceModifiers')
+const currentStore = inject('currentStore')
+const stores = inject('stores')
+
+// Get the current store's currency
+const currency = computed(() => {
+  return stores.value[currentStore.value]?.currency || 'SEK';
+});
+
+// Calculate the price for an option based on its priceKey
+function getOptionPrice(option) {
+  if (!option.priceKey) return undefined;
+  return priceModifiers.value?.[option.priceKey] || 0;
+}
 
 function handleSelection(option, index) {
   updateOrder(props.step.id, option);
@@ -60,6 +74,8 @@ function goBack() {
           :title="option.title"
           :description="option.description"
           :imageSrc="option.imageSrc"
+          :price="getOptionPrice(option)"
+          :currency="currency" 
           @click="handleSelection(option, index)"
           />
        </div>

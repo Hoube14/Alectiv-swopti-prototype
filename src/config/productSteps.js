@@ -1,5 +1,3 @@
-import { nextTick } from "vue";
-
 export default [
   {
     id: 'glassType',
@@ -56,6 +54,7 @@ export default [
         title: "Solglas",
         description: "Välj färg och om du vill ha polariserade glas i nästa steg.",
         imageSrc: "/images/Solglas.png",
+        nextStep: 'sunglassType'
       },
       {
         title: "Heltonade glas",
@@ -72,6 +71,64 @@ export default [
         title: "Färgskiftande glas",
         description: "Klara inomhus - mörknar i solen.",
         imageSrc: "/images/Fargskiftande.gif",
+      }
+    ]
+  },
+  {
+    id: 'sunglassType',
+    title: 'Välj solglas typ',
+    showBackButton: true,
+    backStep: 'tintSelection',
+    options: [
+      {
+        title: "Enkelslipade solglas - ej polariserade",
+        description: "Standard solglas utan polarisering.",
+        imageSrc: "/images/Solglas.png",
+        nextStep: 'sunglassColor',
+        priceKey: 'sunglass_basic'
+      },
+      {
+        title: "Enkelslipade solglas - polariserade",
+        description: "Polariserade glas som reducerar reflexer och bländning.",
+        imageSrc: "/images/Solglas.png",
+        nextStep: 'sunglassColor',
+        priceKey: 'sunglass_polarized'
+      }
+    ]
+  },
+  {
+    id: 'sunglassColor',
+    title: 'Välj färg',
+    showBackButton: true,
+    backStep: 'sunglassType',
+    options: [
+      {
+        title: "Svart",
+        description: "85% mörketsgrad",
+        imageSrc: "/images/Solglas.png",
+        nextStep: 'frame',
+        priceKey: 'color_black'
+      },
+      {
+        title: "Grön",
+        description: "85% mörketsgrad",
+        imageSrc: "/images/Gron.png",
+        nextStep: 'frame',
+        priceKey: 'color_green'
+      },
+      {
+        title: "Brun",
+        description: "85% mörketsgrad",
+        imageSrc: "/images/Brun.png",
+        nextStep: 'frame',
+        priceKey: 'color_brown'
+      },
+      {
+        title: "Blå",
+        description: "85% mörketsgrad",
+        imageSrc: "/images/Bla.png",
+        nextStep: 'frame',
+        priceKey: 'color_blue'
       }
     ]
   },

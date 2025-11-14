@@ -101,6 +101,10 @@ async function proceedToCheckout() {
               <!-- Product attributes -->
               <div class="space-y-2 text-gray-600 text-sm">
 
+                <div v-if="selections.sunglassColor">
+                  <div>Färg: {{ selections.sunglassColor.title }}</div>
+                </div>
+
                 <div v-if="selections.frame">
                   <div>Vilken typ av båge har du?: {{ selections.frame.title }}</div>
                 </div>

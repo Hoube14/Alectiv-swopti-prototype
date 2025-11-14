@@ -9,7 +9,13 @@
         "tint_none": 0,
         "tint_gradient": 150,
         "frame_basic": 300,
-        "frame_premium": 900
+        "frame_premium": 900,
+        "sunglass_basic": 450,
+        "sunglass_polarized": 750,
+        "color_black": 50,
+        "color_green": 50,
+        "color_brown": 50,
+        "color_blue": 75
       }
     },
     "store_2": {
@@ -21,7 +27,13 @@
         "tint_none": 0,
         "tint_gradient": 20,
         "frame_basic": 35,
-        "frame_premium": 110
+        "frame_premium": 110,
+        "sunglass_basic": 55,
+        "sunglass_polarized": 90,
+        "color_black": 5,
+        "color_green": 5,
+        "color_brown": 5,
+        "color_blue": 8
       }
     }
   },

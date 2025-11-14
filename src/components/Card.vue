@@ -19,7 +19,10 @@ defineEmits(['click']);
     </div>
     <h3 class="font-medium text-lg mb-2">{{ title }}</h3>
     <p class="text-sm text-center text-gray-600">{{ description }}</p>
-    <span>{{ price }}</span>
-    <p>{{ currency }}</p>
+
+    <!-- Display price if available -->
+    <div v-if="price !== undefined" class="mt-2 font-medium text-gray-800">
+      {{ price }} {{ currency }}
+    </div>
   </div>
 </template>
