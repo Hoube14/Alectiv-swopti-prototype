@@ -6,6 +6,7 @@
       "priceModifiers": {
         "glass_single": 500,
         "glass_progressive": 1200,
+        "glass_terminal": 1500,
         "tint_none": 0,
         "tint_gradient": 150,
         "frame_basic": 300,
@@ -30,6 +31,7 @@
       "priceModifiers": {
         "glass_single": 60,
         "glass_progressive": 140,
+        "glass_terminal": 160,
         "tint_none": 0,
         "tint_gradient": 20,
         "frame_basic": 35,

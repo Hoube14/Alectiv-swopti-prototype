@@ -11,7 +11,6 @@ export default [
         imageSrc: "/images/Enkelslipad.png",
         priceKey: 'glass_single',
         nextStep: 'tintSelection'
-
       },
       {
         title: "Progressiva glas",
@@ -21,19 +20,11 @@ export default [
         nextStep: 'tintSelection'
       },
       {
-        title: "Glas utan styrka",
-        description: "Helt utan styrka. I nästa steg väljer du till exempel blåljusglas eller solglas.",
-        imageSrc: "/images/Enkelslipad.png",
-        priceKey: 'glass_single',
-        nextStep: 'tinteSelection'
-
-      },
-      {
         title: "Terminalglas",
         description: "Enkelslipade glas avsedda för jobb framför datorn. Ger extra läs-styrka.",
         imageSrc: "/images/Terminal.png",
+        priceKey: 'glass_terminal',
         nextStep: 'glass'
-
       }
     ]
   },

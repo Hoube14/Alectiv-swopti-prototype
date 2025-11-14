@@ -23,6 +23,29 @@ const currentStore = inject('currentStore')
 const stores = inject('stores')
 const navigationHistory = inject('navigationHistory')
 
+// Get the initial glass type selection
+const initialGlassType = computed(() => order.value.selections?.glassType?.title || null);
+
+// Function to get the proper title based on glass type
+function getProperTitle(option) {
+  // Don't modify titles on the first step
+  if (props.step.id === 'glassType') {
+    return option.title;
+  }
+  
+  // For subsequent steps, modify titles based on glass type (progressive)
+  if (initialGlassType.value === "Progressiva glas" && option.title.includes("Enkelslipade")) {
+    return option.title.replace("Enkelslipade", "Progressiva");
+  }
+  
+  // For Terminalglas
+  if (initialGlassType.value === "Terminalglas" && option.title.includes("Enkelslipade")) {
+    return option.title.replace("Enkelslipade", "Terminal");
+  }
+  
+  return option.title;
+}
+
 // Get the current store's currency
 const currency = computed(() => {
   return stores.value[currentStore.value]?.currency || 'SEK';
@@ -38,21 +61,22 @@ function handleSelection(option, index) {
   updateOrder(props.step.id, option);
 
   // Check if this is terminal glasses from the first step
-  const isTerminalPath = order.value.selections.glassType?.title === "Terminalglas";
+  const isTerminalPath = initialGlassType.value === "Terminalglas";
   
-  // Special handling for frame selection in terminal path
-  if (props.step.id === 'frame' && isTerminalPath) {
-    navigateTo('prescription'); // Skip usage for terminal glasses
+  // Special handling for terminal path
+  if (isTerminalPath && props.step.id === 'frame') {
+    // Skip usage for terminal glasses, go directly to prescription
+    navigateTo('prescription');
   } else if (option.nextStep) {
-    navigateTo(option.nextStep); // Normal flow
+    navigateTo(option.nextStep);
   }
 }
 
 function goBack() {
   if (props.step.backStep) {
-    navigateTo(props.step.backStep, true); // true indicates back navigation
+    navigateTo(props.step.backStep, true);
   } 
-  else if (navigationHistory.value.length > 0) {
+  else if (navigationHistory.value && navigationHistory.value.length > 0) {
     const previousStep = navigationHistory.value.pop();
     navigateTo(previousStep, true);
   }
@@ -65,29 +89,28 @@ function goBack() {
       <ProgressBar :current-step="currentStepIndex" :total-steps="totalSteps" />
 
       <div class="flex items-center mb-8">
-        <button v-if="step.showBackButton" @click="goBack" class="mr-4 text-gray-600">
+        <!-- Add null check for step -->
+        <button v-if="step && step.showBackButton" @click="goBack" class="mr-4 text-gray-600">
           <span><- Tillbaka</span>
         </button>
-        <h1 class="text-center text-2xl font-medium">{{ step.title }}</h1>
+        <h1 class="text-center text-2xl font-medium">{{ step ? step.title : '' }}</h1>
       </div>
 
       <!-- Cards container -->
-       <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-4">
         <Card
-          v-for="(option, index) in step.options"
+          v-for="(option, index) in (step ? step.options : [])"
           :key="index"
-          :title="option.title"
+          :title="getProperTitle(option)"
           :description="option.description"
           :imageSrc="option.imageSrc"
           :price="getOptionPrice(option)"
           :currency="currency" 
           @click="handleSelection(option, index)"
-          />
-       </div>
+        />
+      </div>
 
-       <ShoppingCart :totalPrice="order.totalPrice" title="Dina glas" currency="kr" />
+      <ShoppingCart :totalPrice="order.totalPrice" title="Dina glas" currency="kr" />
     </div>
   </div>
-
-
 </template>
