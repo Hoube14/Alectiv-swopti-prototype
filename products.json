@@ -14,7 +14,10 @@
         "sunglass_polarized": 750,
         "tint_12percent": 300,
         "tint_20percent": 350,
-        "tint_65percent": 400
+        "tint_65percent": 400,
+        "tint_gradient_25_10": 300,
+        "tint_gradient_75_10": 350,
+        "tint_gradient_85_40": 400
       }
     },
     "store_2": {
@@ -31,7 +34,10 @@
         "sunglass_polarized": 90,
         "tint_12percent": 35,
         "tint_20percent": 42,
-        "tint_65percent": 48
+        "tint_65percent": 48,
+        "tint_gradient_25_10": 35,
+        "tint_gradient_75_10": 42,
+        "tint_gradient_85_40": 48
       }
     }
   },

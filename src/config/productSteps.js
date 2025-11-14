@@ -66,7 +66,8 @@ export default [
         title: "Gradalttonade glas",
         description: "Tonas successivt - Mörkare upptill, ljusare nedtill.",
         imageSrc: "/images/Gradaltonade.png",
-        priceKey: 'tint_gradient'
+        priceKey: 'tint_gradient',
+        nextStep: 'gradientTintSelection'
       },
       {
         title: "Färgskiftande glas",
@@ -128,6 +129,35 @@ export default [
         nextStep: 'colorSelection',
         priceKey: 'tint_65percent',
         prevStep: 'heltonadePercent'
+      }
+    ]
+  },
+  {
+    id: 'gradientTintSelection',
+    title: 'Välj gradienttoning',
+    showBackButton: true,
+    backStep: null,
+    options: [
+      {
+        title: "Enkelslipade glas - gradal toning 25-10",
+        description: "25% tonat upptill, 10% nedtill.",
+        imageSrc: "/images/Gradaltonade.png",
+        nextStep: 'colorSelection',
+        priceKey: 'tint_gradient_25_10'
+      },
+      {
+        title: "Enkelslipade glas - gradal toning 75-10",
+        description: "75% tonat upptill, 10% nedtill.",
+        imageSrc: "/images/Gradaltonade.png",
+        nextStep: 'colorSelection',
+        priceKey: 'tint_gradient_75_10'
+      },
+      {
+        title: "Enkelslipade glas - gradal toning 85-40",
+        description: "85% tonat upptill, 40% nedtill.",
+        imageSrc: "/images/Gradaltonade.png",
+        nextStep: 'colorSelection',
+        priceKey: 'tint_gradient_85_40'
       }
     ]
   },
