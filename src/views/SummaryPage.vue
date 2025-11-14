@@ -100,16 +100,21 @@ async function proceedToCheckout() {
               
               <!-- Product attributes -->
               <div class="space-y-2 text-gray-600 text-sm">
-                <div v-if="selections.glassType">
-                  <div>Typ av glas: {{ selections.glassType.title }}</div>
-                </div>
-                
+
                 <div v-if="selections.frame">
                   <div>Vilken typ av båge har du?: {{ selections.frame.title }}</div>
                 </div>
-                
+
                 <div v-if="selections.usage">
                   <div>Hur ska du använda dina glasögon?: {{ selections.usage.title }}</div>
+                </div>
+
+                <div v-if="selections.glassType">
+                  <div>Typ av glas: {{ selections.glassType.title }}</div>
+                </div>
+
+                <div v-if="selections.prescription">
+                  <div>Recept: {{ selections.prescription.title }}</div>
                 </div>
               </div>
             </div>

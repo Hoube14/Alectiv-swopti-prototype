@@ -20,10 +20,16 @@ const updateOrder = inject('updateOrder')
 const navigateTo = inject('navigateTo')
 
 function handleSelection(option, index) {
-  updateOrder(props.step.id, option)
+  updateOrder(props.step.id, option);
 
-  if (option.nextStep) {
-    navigateTo(option.nextStep)
+  // Check if this is terminal glasses from the first step
+  const isTerminalPath = order.value.selections.glassType?.title === "Terminalglas";
+  
+  // Special handling for frame selection in terminal path
+  if (props.step.id === 'frame' && isTerminalPath) {
+    navigateTo('prescription'); // Skip usage for terminal glasses
+  } else if (option.nextStep) {
+    navigateTo(option.nextStep); // Normal flow
   }
 }
 

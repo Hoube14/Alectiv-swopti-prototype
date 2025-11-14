@@ -1,3 +1,5 @@
+import { nextTick } from "vue";
+
 export default [
   {
     id: 'glassType',
@@ -32,7 +34,7 @@ export default [
         title: "Terminalglas",
         description: "Enkelslipade glas avsedda för jobb framför datorn. Ger extra läs-styrka.",
         imageSrc: "/images/Terminal.png",
-        nextStep: 'specialoption'
+        nextStep: 'glass'
 
       }
     ]
@@ -88,7 +90,7 @@ export default [
         title: "Enkelslipade glas - blåljusfiltrerande",
         imageSrc: "/images/blafilter.webp",
         nextStep: 'frame'
-      }
+      },
     ]
   },
   {
@@ -120,6 +122,29 @@ export default [
       {
         title: "Avstånd / Allround",
         description: "Bra i vardagen (t.ex. bilkörning, tv). Välj detta för glasögon som används hela dagen.",
+        nextStep: 'prescription'
+      },
+      {
+        title: "Läsavstånd",
+        description: "Endast nära håll (t.ex. läsa en bok). Kräver en ADD (närstyrka) i ditt recept",
+        nextStep: 'prescription'
+      },
+      {
+        title: "Vet ej",
+        description: "välj detta om du är osäker. Vi kollar på ditt recept och återkopplar till dig",
+        nextStep: 'prescription'
+      }
+    ]
+  },
+  {
+    id: 'prescription',
+    title: 'Lägg till dina styrkor',
+    showBackButton: true,
+    backStep: 'usage',
+    options: [
+      {
+        title: 'Maila senare',
+        description: 'Maila senare',
         nextStep: 'summary'
       }
     ]
