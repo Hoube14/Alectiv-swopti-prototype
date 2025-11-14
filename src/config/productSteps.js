@@ -41,7 +41,7 @@ export default [
     id: 'tintSelection',
     title: 'Välj toning',
     showBackButton: true,
-    backStep: 'glassType',
+    backStep: null,
     options: [
       {
         title: "Ofärgade glas",
@@ -60,6 +60,7 @@ export default [
         title: "Heltonade glas",
         description: "Välj mellan 12-65% toning i nästa steg.",
         imageSrc: "/images/Heltonade.png",
+        nextStep: "solidTintSelection"
       },
       {
         title: "Gradalttonade glas",
@@ -78,57 +79,83 @@ export default [
     id: 'sunglassType',
     title: 'Välj solglas typ',
     showBackButton: true,
-    backStep: 'tintSelection',
+    backStep: null,
     options: [
       {
         title: "Enkelslipade solglas - ej polariserade",
         description: "Standard solglas utan polarisering.",
         imageSrc: "/images/Solglas.png",
-        nextStep: 'sunglassColor',
-        priceKey: 'sunglass_basic'
+        nextStep: 'colorSelection',
+        priceKey: 'sunglass_basic',
+        prevStep: 'sunglassType'
       },
       {
         title: "Enkelslipade solglas - polariserade",
         description: "Polariserade glas som reducerar reflexer och bländning.",
         imageSrc: "/images/Solglas.png",
-        nextStep: 'sunglassColor',
-        priceKey: 'sunglass_polarized'
+        nextStep: 'colorSelection',
+        priceKey: 'sunglass_polarized',
+        prevStep: 'sunglassType'
       }
     ]
   },
   {
-    id: 'sunglassColor',
-    title: 'Välj färg',
+    id: 'solidTintSelection',
+    title: 'Välj toning',
     showBackButton: true,
-    backStep: 'sunglassType',
+    backStep: null,
     options: [
       {
-        title: "Svart",
-        description: "85% mörketsgrad",
-        imageSrc: "/images/Solglas.png",
+        title: "Enkelslipade glas - 12% heltoning",
+        description: "Lätt toning, passar för ljusare miljöer.",
+        imageSrc: "/images/Heltonade.png",
+        nextStep: 'colorSelection',
+        priceKey: 'tint_12percent',
+        prevStep: 'heltonadePercent'
+      },
+      {
+        title: "Enkelslipade glas - 20% heltoning",
+        description: "Mellanmörk toning, balanserad för de flesta miljöer.",
+        imageSrc: "/images/Heltonade.png",
+        nextStep: 'colorSelection',
+        priceKey: 'tint_20percent',
+        prevStep: 'heltonadePercent'
+      },
+      {
+        title: "Enkelslipade glas - 65% heltoning",
+        description: "Kraftig toning, för ljusstarka miljöer.",
+        imageSrc: "/images/Heltonade.png",
+        nextStep: 'colorSelection',
+        priceKey: 'tint_65percent',
+        prevStep: 'heltonadePercent'
+      }
+    ]
+  },
+  {
+    id: 'colorSelection',
+    title: 'Välj färg',
+    showBackButton: true,
+    backStep: null,
+    options: [
+      {
+        title: "Grå",
+        imageSrc: "/images/Enkelslipad.png",
         nextStep: 'frame',
-        priceKey: 'color_black'
       },
       {
         title: "Grön",
-        description: "85% mörketsgrad",
         imageSrc: "/images/Gron.png",
         nextStep: 'frame',
-        priceKey: 'color_green'
       },
       {
         title: "Brun",
-        description: "85% mörketsgrad",
         imageSrc: "/images/Brun.png",
         nextStep: 'frame',
-        priceKey: 'color_brown'
       },
       {
         title: "Blå",
-        description: "85% mörketsgrad",
         imageSrc: "/images/Bla.png",
         nextStep: 'frame',
-        priceKey: 'color_blue'
       }
     ]
   },
@@ -136,7 +163,7 @@ export default [
     id: 'glass',
     title: 'Välj glas',
     showBackButton: true,
-    backStep: 'tintSelection',
+    backStep: null,
     options: [
       {
         title: "Enkelslipade glas - ofärgade",
@@ -154,7 +181,7 @@ export default [
     id: 'frame',
     title: 'Välj båge',
     showBackButton: true,
-    backStep: 'glass',
+    backStep: null,
     options: [
       {
         title: "Standard båge",
@@ -174,7 +201,7 @@ export default [
     id: 'usage',
     title: 'Hur ska du använda din glasögon?',
     showBackButton: true,
-    backStep: 'frame',
+    backStep: null,
     options: [
       {
         title: "Avstånd / Allround",
@@ -197,7 +224,7 @@ export default [
     id: 'prescription',
     title: 'Lägg till dina styrkor',
     showBackButton: true,
-    backStep: 'usage',
+    backStep: null,
     options: [
       {
         title: 'Maila senare',
@@ -210,6 +237,6 @@ export default [
     id: 'summary',
     title: 'sammanfattning',
     showBackButton: true,
-    backStep: 'usage'
+    backStep: null
   }
 ]

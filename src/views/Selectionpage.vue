@@ -21,6 +21,7 @@ const navigateTo = inject('navigateTo')
 const priceModifiers = inject('priceModifiers')
 const currentStore = inject('currentStore')
 const stores = inject('stores')
+const navigationHistory = inject('navigationHistory')
 
 // Get the current store's currency
 const currency = computed(() => {
@@ -49,7 +50,11 @@ function handleSelection(option, index) {
 
 function goBack() {
   if (props.step.backStep) {
-    navigateTo(props.step.backStep)
+    navigateTo(props.step.backStep, true); // true indicates back navigation
+  } 
+  else if (navigationHistory.value.length > 0) {
+    const previousStep = navigationHistory.value.pop();
+    navigateTo(previousStep, true);
   }
 }
 </script>

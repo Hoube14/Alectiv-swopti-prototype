@@ -11,6 +11,7 @@ const activeStore = computed(() => stores.value[currentStore.value])
 const priceModifiers = computed(() => activeStore.value?.priceModifiers || {})
 
 const steps = ref(productSteps)
+const navigationHistory = ref([]);
 
 const currentStepId = ref('glassType')
 
@@ -29,8 +30,13 @@ const currentStepIndex = computed(() =>
   steps.value.findIndex(step => step.id === currentStepId.value) + 1
 )
 
-function navigateTo(stepId) {
-  currentStepId.value = stepId
+function navigateTo(stepId, isBackNavigation = false) {
+  // Only add to history if not going back
+  if (!isBackNavigation && currentStepId.value) {
+    navigationHistory.value.push(currentStepId.value);
+  }
+  
+  currentStepId.value = stepId;
 
   if (stepId === 'summary') {
     calculateTotalPrice();
@@ -79,6 +85,7 @@ provide('currentStore', currentStore);
 provide('switchStore', switchStore);
 provide('priceModifiers', priceModifiers);
 provide('storeData', productData);
+provide('navigationHistory', navigationHistory);
 
 </script>
 

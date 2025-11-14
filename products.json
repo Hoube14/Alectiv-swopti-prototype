@@ -12,10 +12,9 @@
         "frame_premium": 900,
         "sunglass_basic": 450,
         "sunglass_polarized": 750,
-        "color_black": 50,
-        "color_green": 50,
-        "color_brown": 50,
-        "color_blue": 75
+        "tint_12percent": 300,
+        "tint_20percent": 350,
+        "tint_65percent": 400
       }
     },
     "store_2": {
@@ -30,10 +29,9 @@
         "frame_premium": 110,
         "sunglass_basic": 55,
         "sunglass_polarized": 90,
-        "color_black": 5,
-        "color_green": 5,
-        "color_brown": 5,
-        "color_blue": 8
+        "tint_12percent": 35,
+        "tint_20percent": 42,
+        "tint_65percent": 48
       }
     }
   },
