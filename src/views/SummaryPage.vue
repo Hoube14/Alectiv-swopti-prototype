@@ -101,6 +101,10 @@ async function proceedToCheckout() {
               <!-- Product attributes -->
               <div class="space-y-2 text-gray-600 text-sm">
 
+                <div v-if="selections.photochromicColorSelection">
+                  <div>Färgskiftande glas: {{ selections.photochromicColorSelection.title }}</div>
+                </div>
+
                 <div v-if="selections.colorSelection">
                   <div>Färg: {{ selections.colorSelection.title }}</div>
                 </div>

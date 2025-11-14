@@ -73,6 +73,7 @@ export default [
         title: "Färgskiftande glas",
         description: "Klara inomhus - mörknar i solen.",
         imageSrc: "/images/Fargskiftande.gif",
+        nextStep: 'photochromicColorSelection'
       }
     ]
   },
@@ -158,6 +159,42 @@ export default [
         imageSrc: "/images/Gradaltonade.png",
         nextStep: 'colorSelection',
         priceKey: 'tint_gradient_85_40'
+      }
+    ]
+  },
+  {
+    id: 'photochromicColorSelection',
+    title: 'Välj färg för färgskiftande glas',
+    showBackButton: true,
+    backStep: null,
+    options: [
+      {
+        title: "Svarta",
+        description: "Klara inomhus - mörknar i solen.",
+        imageSrc: "/images/Fargskiftandesvart.webp",
+        nextStep: 'frame',
+        priceKey: 'photochromic_black'
+      },
+      {
+        title: "Gröna",
+        description: "Klara inomhus - mörknar i solen.",
+        imageSrc: "/images/Fargskiftandegron.webp",
+        nextStep: 'frame',
+        priceKey: 'photochromic_green'
+      },
+      {
+        title: "Bruna",
+        description: "Klara inomhus - mörknar i solen.",
+        imageSrc: "/images/Fargskiftandebrun.webp",
+        nextStep: 'frame',
+        priceKey: 'photochromic_brown'
+      },
+      {
+        title: "Blåa",
+        description: "Klara inomhus - mörknar i solen.",
+        imageSrc: "/images/Fargskiftandebla.webp",
+        nextStep: 'frame',
+        priceKey: 'photochromic_blue'
       }
     ]
   },

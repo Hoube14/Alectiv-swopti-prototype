@@ -17,7 +17,11 @@
         "tint_65percent": 400,
         "tint_gradient_25_10": 300,
         "tint_gradient_75_10": 350,
-        "tint_gradient_85_40": 400
+        "tint_gradient_85_40": 400,
+        "photochromic_black": 500,
+        "photochromic_green": 500,
+        "photochromic_brown": 500,
+        "photochromic_blue": 500
       }
     },
     "store_2": {
@@ -37,7 +41,11 @@
         "tint_65percent": 48,
         "tint_gradient_25_10": 35,
         "tint_gradient_75_10": 42,
-        "tint_gradient_85_40": 48
+        "tint_gradient_85_40": 48,
+        "photochromic_black": 50,
+        "photochromic_green": 50,
+        "photochromic_brown": 50,
+        "photochromic_blue": 50
       }
     }
   },
