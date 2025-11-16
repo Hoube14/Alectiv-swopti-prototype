@@ -25,10 +25,15 @@ const currentStep = computed(() =>
   steps.value.find(step => step.id === currentStepId.value)
 );
 
-// Get the current step index (for progress bar)
-const currentStepIndex = computed(() =>
-  steps.value.findIndex(step => step.id === currentStepId.value) + 1
-)
+// Track unique steps visited (including current)
+const visitedSteps = computed(() => {
+  const allSteps = [...navigationHistory.value, currentStepId.value];
+  return [...new Set(allSteps)].length;
+});
+
+// The total is the number of unique steps visited so far
+// The bar will grow as the user progresses
+const currentStepIndex = computed(() => visitedSteps.value)
 
 function navigateTo(stepId, isBackNavigation = false) {
   // Only add to history if not going back
@@ -105,13 +110,13 @@ provide('navigationHistory', navigationHistory);
     v-if="currentStepId !== 'summary'"
     :step="currentStep"
     :currentStepIndex="currentStepIndex"
-    :totalSteps="steps.length"
+    :totalSteps="visitedSteps"
     />
 
     <SummaryPage
     v-else
     :currentStepIndex="currentStepIndex"
-    :totalSteps="steps.length"
+    :totalSteps="visitedSteps"
     />
 </template>
 
