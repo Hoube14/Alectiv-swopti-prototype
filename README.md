@@ -103,6 +103,9 @@ Response: { url: [Stripe Checkout URL] }
 - Add precsription input with form validation
 - Implement persistent cart (localStorage or probably database)
 - Improve mobile responsiveness
+- Better styling
+- More robust and safe code in general
+- Look for better/simpler ways to write the code
 
 ## Tech Stack
 
