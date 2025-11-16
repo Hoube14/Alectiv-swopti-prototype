@@ -73,12 +73,13 @@ function handleSelection(option, index) {
 }
 
 function goBack() {
-  if (props.step.backStep) {
-    navigateTo(props.step.backStep, true);
-  } 
-  else if (navigationHistory.value && navigationHistory.value.length > 0) {
-    const previousStep = navigationHistory.value.pop();
-    navigateTo(previousStep, true);
+  // Get the last step from history
+  if (navigationHistory.value && navigationHistory.value.length > 0) {
+    const previousStepId = navigationHistory.value[navigationHistory.value.length - 1];
+    navigateTo(previousStepId, true);
+  } else {
+    // If no history, go to first step
+    navigateTo('glassType', true);
   }
 }
 </script>

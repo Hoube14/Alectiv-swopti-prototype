@@ -36,9 +36,16 @@ const visitedSteps = computed(() => {
 const currentStepIndex = computed(() => visitedSteps.value)
 
 function navigateTo(stepId, isBackNavigation = false) {
-  // Only add to history if not going back
-  if (!isBackNavigation && currentStepId.value) {
-    navigationHistory.value.push(currentStepId.value);
+  if (isBackNavigation) {
+    // When going back, simply pop the last step from history
+    if (navigationHistory.value.length > 0) {
+      navigationHistory.value.pop();
+    }
+  } else {
+    // When going forward, add current step to history (but not summary)
+    if (currentStepId.value && currentStepId.value !== 'summary') {
+      navigationHistory.value.push(currentStepId.value);
+    }
   }
   
   currentStepId.value = stepId;
