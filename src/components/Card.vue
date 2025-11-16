@@ -14,7 +14,8 @@ defineEmits(['click']);
 
 <template>
   <div @click="$emit('click')" class="border rounded-lg p-6 flex flex-col items-center bg-white bg-opacity-10 cursor-pointer">
-    <div class="mb-4">
+    <!-- Only render image if imageSrc exists -->
+    <div v-if="imageSrc" class="mb-4">
       <img :src="imageSrc" :alt="title" class="h-24">
     </div>
     <h3 class="font-medium text-lg mb-2">{{ title }}</h3>
