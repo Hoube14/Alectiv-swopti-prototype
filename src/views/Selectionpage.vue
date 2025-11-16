@@ -111,7 +111,7 @@ function goBack() {
         />
       </div>
 
-      <ShoppingCart :totalPrice="order.totalPrice" title="Dina glas" currency="kr" />
+      <ShoppingCart :totalPrice="order.totalPrice" title="Dina glas" :currency="currency" />
     </div>
   </div>
 </template>

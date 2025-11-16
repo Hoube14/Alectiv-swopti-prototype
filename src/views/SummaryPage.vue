@@ -20,6 +20,10 @@ const selections = computed(() => {
   return order?.value?.selections || [];
 });
 
+// Add currency computed property
+const currency = computed(() => {
+  return stores.value[currentStore.value]?.currency || 'SEK';
+});
 
 // Get product details for each selection for better display
 const productDetails = computed(() => {
@@ -95,7 +99,7 @@ async function proceedToCheckout() {
               <!-- Main product title -->
               <div v-if="selections.glassType">
                 <div class="font-medium">{{ selections.glassType.title }} - {{ selections.tintSelection?.title || 'ofärgade' }}</div>
-                <div>{{ totalPrice - storeData?.defaults?.shipping || 0 }} kr</div>
+                <div>{{ totalPrice - storeData?.defaults?.shipping || 0 }} {{ currency }}</div>
               </div>
               
               <!-- Product attributes -->
@@ -130,12 +134,12 @@ async function proceedToCheckout() {
           
           <div class="flex justify-between py-2">
             <span>Frakt</span>
-            <span>{{ storeData?.defaults?.shipping || 0 }} kr</span>
+            <span>{{ storeData?.defaults?.shipping || 0 }} {{ currency }}</span>
           </div>
           
           <div class="flex justify-between py-2 mt-4 border-t-2 font-bold">
             <span>Totalt att betala</span>
-            <span>{{ totalPrice.toFixed(2) }} kr</span>
+            <span>{{ totalPrice.toFixed(2) }} {{ currency }}</span>
           </div>
         </div>
         
