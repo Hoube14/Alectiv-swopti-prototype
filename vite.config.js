@@ -17,4 +17,13 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        entryFileNames: 'product-selector.js',
+        chunkFileNames: 'product-selector-[name].js',
+        assetFileNames: 'product-selector.[ext]'
+      }
+    }
+  },
 })
