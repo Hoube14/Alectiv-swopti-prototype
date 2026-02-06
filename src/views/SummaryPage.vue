@@ -1,18 +1,22 @@
 <script setup>
-import { inject, computed } from 'vue';
+import { computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import ProgressBar from '@/components/ProgressBar.vue';
+import { useOrderStore } from '@/stores/orderStore';
 
 const props = defineProps({
   currentStepIndex: Number,
   totalSteps: Number
 });
 
-const order = inject('order');
-const navigateTo = inject('navigateTo');
-const storeData = inject('storeData', {}); 
-const priceModifiers = inject('priceModifiers');
-const currentStore = inject('currentStore');
-const stores = inject('stores');
+const orderStore = useOrderStore();
+const {
+  order,
+  priceModifiers,
+  currentStore,
+  stores
+} = storeToRefs(orderStore);
+const { navigateTo, storeData } = orderStore;
 
 const totalPrice = computed(() => order.value?.totalPrice || 0)
 

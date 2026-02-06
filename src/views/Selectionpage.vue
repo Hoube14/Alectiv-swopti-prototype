@@ -1,8 +1,10 @@
 <script setup>
-import { inject, computed } from 'vue';
+import { computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import Card from '@/components/Card.vue';
 import ProgressBar from '@/components/ProgressBar.vue';
 import ShoppingCart from '@/components/ShoppingCart.vue';
+import { useOrderStore } from '@/stores/orderStore';
 
 // Props to make page dynamic
 const props = defineProps({
@@ -14,20 +16,21 @@ const props = defineProps({
   totalSteps: Number
 })
 
+const orderStore = useOrderStore();
+const {
+  order,
+  priceModifiers,
+  currentStore,
+  stores,
+  navigationHistory
+} = storeToRefs(orderStore);
+const { updateOrder, navigateTo } = orderStore;
+
 // Get the image source from the environment variable for widget images
 function getImageSrc(src) {
   if (!src) return '';
   return import.meta.env.BASE_URL + src.replace(/^\//, '');
 }
-
-// Get shared state and functions
-const order = inject('order')
-const updateOrder = inject('updateOrder')
-const navigateTo = inject('navigateTo')
-const priceModifiers = inject('priceModifiers')
-const currentStore = inject('currentStore')
-const stores = inject('stores')
-const navigationHistory = inject('navigationHistory')
 
 // Get the initial glass type selection
 const initialGlassType = computed(() => order.value.selections?.glassType?.title || null);

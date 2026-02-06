@@ -45,7 +45,9 @@ src/
 │   └── SummaryPage.vue   # Order summary
 ├── config/
 │   └── productSteps.js # Configuration for all steps and options
-├── App.vue             # Root component with state management
+├── stores/
+│   └── orderStore.js   # Pinia store (order, navigation, store selection)
+├── App.vue             # Root component
 └── main.js             # Entry point
 
 stripe-server/
@@ -113,12 +115,12 @@ Response: { url: [Stripe Checkout URL] }
 - **Backend**: Node.js, Express
 - **Payment**: Stripe Checkout
 - **Build Tool**: Vite
-- **State Management**: Vue Provide/Inject
+- **State Management**: Pinia
 
 ## Architecture Decisions
 
 ### State Management
-Using Vue's `provide/inject` for sharing state between components instead of Vuex/Pinia for simplicity in this small application.
+Using Pinia for shared state (order, navigation, store selection, pricing). The main store is `stores/orderStore.js`, used in `App.vue`, `Selectionpage.vue`, and `SummaryPage.vue`.
 
 ### Configuration-Driven Design
 All product steps and options are defined in `productSteps.js`, making it easy to add or modify the product flow without changing component code.
