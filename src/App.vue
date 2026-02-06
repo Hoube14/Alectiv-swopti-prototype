@@ -16,8 +16,8 @@ const {
 </script>
 
 <template>
-  <div>
-    <div class="bg-blue-100 p-4 mb-4">
+  <div class="min-h-screen bg-orange-100">
+    <div class="p-4 mb-4">
       <label class="mr-2">Välj butik:</label>
       <select v-model="currentStore" @change="orderStore.calculateTotalPrice" class="border p-2 rounded">
         <option v-for="(store, id) in stores" :key="id" :value="id">
@@ -25,20 +25,20 @@ const {
         </option>
       </select>
     </div>
-  </div>
 
-  <Selectionpage 
-    v-if="currentStepId !== 'summary'"
-    :step="currentStep"
-    :currentStepIndex="currentStepIndex"
-    :totalSteps="visitedSteps"
+    <Selectionpage
+      v-if="currentStepId !== 'summary'"
+      :step="currentStep"
+      :currentStepIndex="currentStepIndex"
+      :totalSteps="visitedSteps"
     />
 
     <SummaryPage
-    v-else
-    :currentStepIndex="currentStepIndex"
-    :totalSteps="visitedSteps"
+      v-else
+      :currentStepIndex="currentStepIndex"
+      :totalSteps="visitedSteps"
     />
+  </div>
 </template>
 
 <style scoped></style>
