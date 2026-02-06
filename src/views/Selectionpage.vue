@@ -14,6 +14,12 @@ const props = defineProps({
   totalSteps: Number
 })
 
+// Get the image source from the environment variable for widget images
+function getImageSrc(src) {
+  if (!src) return '';
+  return import.meta.env.BASE_URL + src.replace(/^\//, '');
+}
+
 // Get shared state and functions
 const order = inject('order')
 const updateOrder = inject('updateOrder')
@@ -104,7 +110,7 @@ function goBack() {
           :key="index"
           :title="getProperTitle(option)"
           :description="option.description"
-          :imageSrc="option.imageSrc"
+          :imageSrc="getImageSrc(option.imageSrc)"
           :price="getOptionPrice(option)"
           :currency="currency" 
           @click="handleSelection(option, index)"
