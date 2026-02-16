@@ -102,9 +102,6 @@ Response: { url: [Stripe Checkout URL] }
 
 ## What I Would Improve in the future
 
-### Known Issues
-- **Back navigation from summary page**: There is a minor issue with the navigation history when clicking back multiple times from the summary page. The back button may skip steps in certain scenarios.
-
 ### Future Improvements
 - Complete the embeddable widget implementation
 - Add precsription input with form validation
