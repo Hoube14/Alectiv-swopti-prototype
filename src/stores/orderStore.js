@@ -74,6 +74,7 @@ export const useOrderStore = defineStore('order', () => {
 
   return {
     order,
+    steps,
     currentStore,
     stores,
     priceModifiers,
