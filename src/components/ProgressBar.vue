@@ -13,31 +13,51 @@ defineProps({
 
 <template>
   <div class="relative w-full my-8">
-    <!-- Track line -->
-    <div class="absolute h-[1px] bg-gray-300 top-1/2 left-0 right-0 -translate-y-1/2"></div>
+    <!-- Background track (light grey) -->
+    <div 
+      class="absolute h-1 bg-gray-300 top-1/2 -translate-y-1/2"
+      style="left: 10px; width: calc(100% - 20px);"
+    ></div>
+    
+    <!-- Filled track (dark blue) - from start to current step -->
+    <div 
+      v-if="totalSteps > 1 && currentStep >= 1"
+      class="absolute h-1 top-1/2 -translate-y-1/2 bg-[#0B3A5A] transition-all duration-300"
+      :style="{
+        left: '10px',
+        width: `calc((100% - 20px) * ${(currentStep - 1) / (totalSteps - 1)})`
+      }"
+    ></div>
     
     <!-- Steps container -->
-    <div class="relative flex justify-between">
+    <div class="relative flex justify-between" style="margin: 0 10px;">
       <div 
         v-for="step in totalSteps" 
         :key="step" 
-        class="relative"
+        class="relative flex items-center justify-center"
       >
+        <!-- Completed step: solid dark blue circle with white checkmark -->
         <div 
-          :class="[
-            'rounded-full w-5 h-5 flex items-center justify-center',
-            step === currentStep 
-              ? 'border-2 border-stone-800' 
-              : step < currentStep
-                ? 'bg-stone-800 flex items-center justify-center'
-                : 'border border-gray-300 bg-white' 
-          ]"
+          v-if="step < currentStep"
+          class="rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 bg-[#0B3A5A]"
         >
-          <div 
-            v-if="step === currentStep" 
-            class="w-1 h-1 bg-stone-800 rounded-full"
-          >
-          </div>
+          <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <!-- Current step: outlined dark blue circle with central dot -->
+        <div 
+          v-else-if="step === currentStep"
+          class="rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 border-2 border-[#0B3A5A] bg-white"
+        >
+          <div class="w-1.5 h-1.5 bg-[#0B3A5A] rounded-full"></div>
+        </div>
+        <!-- Future step: outlined grey circle with central dot -->
+        <div 
+          v-else
+          class="rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 border-2 border-gray-300 bg-white"
+        >
+          <div class="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
         </div>
       </div>
     </div>
