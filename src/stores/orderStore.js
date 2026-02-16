@@ -32,7 +32,18 @@ export const useOrderStore = defineStore('order', () => {
   function navigateTo(stepId, isBackNavigation = false) {
     if (isBackNavigation) {
       if (navigationHistory.value.length > 0) {
+        const stepWeAreGoingBackTo = stepId;
+        let newSelections = order.value.selections || {};
+        if (stepWeAreGoingBackTo in newSelections) {
+          newSelections = Object.fromEntries(
+            Object.entries(newSelections).filter(([key]) => key !== stepWeAreGoingBackTo)
+          );
+          order.value = { ...order.value, selections: newSelections };
+        }
         navigationHistory.value.pop();
+        currentStepId.value = stepId;
+        calculateTotalPrice();
+        return;
       }
     } else {
       if (currentStepId.value && currentStepId.value !== 'summary') {
