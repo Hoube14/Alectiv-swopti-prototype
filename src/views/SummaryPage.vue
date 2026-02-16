@@ -14,9 +14,19 @@ const {
   order,
   priceModifiers,
   currentStore,
-  stores
+  stores,
+  navigationHistory
 } = storeToRefs(orderStore);
 const { navigateTo, storeData } = orderStore;
+
+function goBack() {
+  if (navigationHistory.value && navigationHistory.value.length > 0) {
+    const previousStepId = navigationHistory.value[navigationHistory.value.length - 1];
+    navigateTo(previousStepId, true);
+  } else {
+    navigateTo('glassType', true);
+  }
+}
 
 const totalPrice = computed(() => order.value?.totalPrice || 0)
 
@@ -76,7 +86,7 @@ async function proceedToCheckout() {
       <ProgressBar :current-step="currentStepIndex" :total-steps="totalSteps" />
       
       <div class="flex items-center mb-8">
-        <button @click="navigateTo('usage')" class="mr-4 text-gray-600">
+        <button @click="goBack" class="mr-4 text-gray-600">
           <span><- Tillbaka</span>
         </button>
         <h1 class="text-center text-2xl font-medium">Din beställning</h1>
