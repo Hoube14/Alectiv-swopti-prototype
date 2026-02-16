@@ -20,18 +20,23 @@ cd alectiv-prototype
 npm install
 ```
 
-3. Start the development server
+3. Install Stripe server dependencies (first time only)
+```bash
+cd stripe-server && npm install && cd ..
+```
+
+4. Configure Stripe (first time only). Copy the example env file and add your [Stripe test key](https://dashboard.stripe.com/apikeys):
+```bash
+cp stripe-server/.env.example stripe-server/.env
+# Edit stripe-server/.env and set STRIPE_SECRET_KEY=sk_test_...
+```
+
+5. Start the app (Vite + Stripe server run together)
 ```bash
 npm run dev
 ```
 
-4. Start the Stripe server (in a separate terminal)
-```bash
-cd stripe-server
-node server.js
-```
-
-The application will now run at `http://localhost:5173`
+The app runs at `http://localhost:5173` and the Stripe API at `http://localhost:3001`. Both start from the same command.
 
 ## Project Structure
 ```

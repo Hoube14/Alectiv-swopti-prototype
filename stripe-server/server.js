@@ -1,6 +1,13 @@
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 const express = require('express');
-const stripe = require('stripe')('sk_test_51SSJ3YGVk3fe3BesCGH3TSClgmjKNauwYdNT27XPneurncSW03BKmoIyXCsa9ravqzGnQSlrQJ47q7uNDkMmxksH00XzPCwBwd');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const cors = require('cors');
+
+if (!process.env.STRIPE_SECRET_KEY) {
+  console.error('Missing STRIPE_SECRET_KEY. Copy stripe-server/.env.example to .env and add your key.');
+  process.exit(1);
+}
 
 const app = express();
 app.use(express.json());
