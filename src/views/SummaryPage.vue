@@ -53,13 +53,23 @@ const productDetails = computed(() => {
   return details;
 });
 
+function getCheckoutEndpoint() {
+  // When embedded in WordPress (GlasOnline), URL is set via wp_localize_script
+  if (typeof window !== 'undefined' && window.glasonlineProductSelector?.createCheckoutUrl) {
+    return window.glasonlineProductSelector.createCheckoutUrl;
+  }
+  return 'http://localhost:3001/create-checkout';
+}
+
 async function proceedToCheckout() {
   try {
-    
-    const response = await fetch('http://localhost:3001/create-checkout', {
+    const response = await fetch(getCheckoutEndpoint(), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ amount: totalPrice.value })
+      body: JSON.stringify({
+        amount: totalPrice.value,
+        currency: currency.value
+      })
     });
     
     if (!response.ok) {
