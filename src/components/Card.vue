@@ -14,7 +14,10 @@ defineEmits(['click']);
 </script>
 
 <template>
-  <div @click="$emit('click')" class="h-full border rounded-lg p-6 flex flex-col items-center bg-white bg-opacity-10 cursor-pointer">
+  <div
+    @click="$emit('click')"
+    class="h-full border rounded-lg p-6 flex flex-col items-center bg-white bg-opacity-10 cursor-pointer transition-transform duration-200 ease-out hover:scale-[1.03]"
+  >
     <!-- Only render image if imageSrc exists -->
     <div v-if="imageSrc" class="mb-4 flex-shrink-0">
       <img :src="imageSrc" :alt="title" class="h-24">
