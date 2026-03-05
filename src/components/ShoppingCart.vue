@@ -40,8 +40,6 @@ const stepLabels = {
   gradientTintSelection: 'Gradienttoning',
   photochromicColorSelection: 'Färgskiftande',
   colorSelection: 'Färg',
-  glass: 'Glas',
-  frame: 'Båge',
   usage: 'Användning',
   prescription: 'Recept'
 };

@@ -136,7 +136,7 @@ export default [
         description: "I nästa steg kan du lägga till blåljusfilter som tillval.",
         imageSrc: "/images/Ofargade.png",
         priceKey: 'tint_none',
-        nextStep: 'glass'
+        nextStep: 'usage'
       },
       {
         title: "Solglas",
@@ -260,28 +260,28 @@ export default [
         title: "Svarta",
         description: "Klara inomhus - mörknar i solen.",
         imageSrc: "/images/Fargskiftandesvart.webp",
-        nextStep: 'frame',
+        nextStep: 'usage',
         priceKey: 'photochromic_black'
       },
       {
         title: "Gröna",
         description: "Klara inomhus - mörknar i solen.",
         imageSrc: "/images/Fargskiftandegron.webp",
-        nextStep: 'frame',
+        nextStep: 'usage',
         priceKey: 'photochromic_green'
       },
       {
         title: "Bruna",
         description: "Klara inomhus - mörknar i solen.",
         imageSrc: "/images/Fargskiftandebrun.webp",
-        nextStep: 'frame',
+        nextStep: 'usage',
         priceKey: 'photochromic_brown'
       },
       {
         title: "Blåa",
         description: "Klara inomhus - mörknar i solen.",
         imageSrc: "/images/Fargskiftandebla.webp",
-        nextStep: 'frame',
+        nextStep: 'usage',
         priceKey: 'photochromic_blue'
       }
     ]
@@ -295,60 +295,22 @@ export default [
       {
         title: "Grå",
         imageSrc: "/images/Enkelslipad.png",
-        nextStep: 'frame',
+        nextStep: 'usage',
       },
       {
         title: "Grön",
         imageSrc: "/images/Gron.png",
-        nextStep: 'frame',
+        nextStep: 'usage',
       },
       {
         title: "Brun",
         imageSrc: "/images/Brun.png",
-        nextStep: 'frame',
+        nextStep: 'usage',
       },
       {
         title: "Blå",
         imageSrc: "/images/Bla.png",
-        nextStep: 'frame',
-      }
-    ]
-  },
-  {
-    id: 'glass',
-    title: 'Välj glas',
-    showBackButton: true,
-    backStep: null,
-    options: [
-      {
-        title: "Enkelslipade glas - ofärgade",
-        imageSrc: "/images/Enkelslipad.png",
-        nextStep: 'frame'
-      },
-      {
-        title: "Enkelslipade glas - blåljusfiltrerande",
-        imageSrc: "/images/blafilter.webp",
-        nextStep: 'frame'
-      },
-    ]
-  },
-  {
-    id: 'frame',
-    title: 'Välj båge',
-    showBackButton: true,
-    backStep: null,
-    options: [
-      {
-        title: "Standard båge",
-        description: "Standard båge med lätt design.",
-        priceKey: 'frame_basic',
-        nextStep: "usage"
-      },
-      {
-        title: "Premium båge",
-        description: "Lyxig design med premium material",
-        priceKey: 'frame_premium',
-        nextStep: "usage"
+        nextStep: 'usage',
       }
     ]
   },

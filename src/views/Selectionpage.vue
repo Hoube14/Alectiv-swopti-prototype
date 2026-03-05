@@ -89,7 +89,7 @@ function getNextStepAfterLensRecommendation() {
 }
 
 function getNextStepAfterTreatment() {
-  return initialGlassType.value === 'Terminalglas' ? 'glass' : 'tintSelection';
+  return 'tintSelection';
 }
 
 // Function to get the proper title based on glass type
@@ -126,8 +126,6 @@ function getOptionPrice(option) {
 function handleSelection(option, index) {
   updateOrder(props.step.id, option);
 
-  const isTerminalPath = initialGlassType.value === "Terminalglas";
-
   if (props.step.id === 'prescription') {
     if (option.opensManualForm) {
       showPrescriptionManualForm.value = true;
@@ -152,9 +150,7 @@ function handleSelection(option, index) {
     return;
   }
 
-  if (isTerminalPath && props.step.id === 'frame') {
-    navigateTo('usage');
-  } else if (option.nextStep) {
+  if (option.nextStep) {
     navigateTo(option.nextStep);
   }
 }
