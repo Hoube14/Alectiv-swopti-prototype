@@ -35,15 +35,20 @@ export default [
     backStep: null,
     options: [
       {
+        title: 'Lägg till manuellt',
+        description: 'Fyll i dina styrkor från receptet nedan.',
+        nextStep: null,
+        opensManualForm: true
+      },
+      {
         title: 'Maila in senare',
         description: 'Skicka in ditt recept via e-post när du är redo.',
         nextStep: null
       },
       {
-        title: 'Lägg till manuellt',
-        description: 'Fyll i dina styrkor från receptet nedan.',
-        nextStep: null,
-        opensManualForm: true
+        title: 'Utan styrkor',
+        description: 'Jag behöver inte styrkor – t.ex. solglas utan styrka eller tomma bågar.',
+        nextStep: null
       }
     ]
   },
