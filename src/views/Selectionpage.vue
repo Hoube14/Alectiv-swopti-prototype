@@ -135,11 +135,14 @@ function goBack() {
     <div class="max-w-4xl mx-auto">
       <ProgressBar :current-step="currentStepIndex" :total-steps="totalSteps" />
 
-      <div class="flex items-center mb-8">
-        <button v-if="step && step.showBackButton" @click="goBack" class="mr-4 text-gray-600">
-          <span><- Tillbaka</span>
-        </button>
-        <h1 class="text-center text-2xl font-medium">{{ step ? step.title : '' }}</h1>
+      <div class="grid grid-cols-[1fr_auto_1fr] items-center mb-8 gap-4">
+        <div class="flex justify-start">
+          <button v-if="step && step.showBackButton" @click="goBack" class="text-gray-600">
+            <span><- Tillbaka</span>
+          </button>
+        </div>
+        <h1 class="text-center text-2xl font-medium whitespace-nowrap">{{ step ? step.title : '' }}</h1>
+        <div></div>
       </div>
 
       <!-- Prescription step: show manual form or two options -->
@@ -150,17 +153,21 @@ function goBack() {
         />
       </template>
       <template v-else>
-        <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-4">
-          <Card
+        <div class="grid gap-4 justify-center" style="grid-template-columns: repeat(auto-fit, minmax(280px, 280px));">
+          <div
             v-for="(option, index) in (step ? step.options : [])"
             :key="index"
-            :title="getProperTitle(option)"
-            :description="option.description"
-            :imageSrc="getImageSrc(option.imageSrc)"
-            :price="getOptionPrice(option)"
-            :currency="currency"
-            @click="handleSelection(option, index)"
-          />
+            class="h-full"
+          >
+            <Card
+              :title="getProperTitle(option)"
+              :description="option.description"
+              :imageSrc="getImageSrc(option.imageSrc)"
+              :price="getOptionPrice(option)"
+              :currency="currency"
+              @click="handleSelection(option, index)"
+            />
+          </div>
         </div>
       </template>
 
