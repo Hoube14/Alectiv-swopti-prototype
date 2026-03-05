@@ -1,9 +1,10 @@
 <script setup>
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import Card from '@/components/Card.vue';
 import ProgressBar from '@/components/ProgressBar.vue';
 import ShoppingCart from '@/components/ShoppingCart.vue';
+import PrescriptionForm from '@/components/PrescriptionForm.vue';
 import { useOrderStore } from '@/stores/orderStore';
 
 // Props to make page dynamic
@@ -26,6 +27,8 @@ const {
 } = storeToRefs(orderStore);
 const { updateOrder, navigateTo } = orderStore;
 
+const showPrescriptionManualForm = ref(false);
+
 // Get the image source from the environment variable for widget images
 function getImageSrc(src) {
   if (!src) return '';
@@ -34,6 +37,10 @@ function getImageSrc(src) {
 
 // Get the initial glass type selection
 const initialGlassType = computed(() => order.value.selections?.glassType?.title || null);
+
+function getNextStepAfterPrescription() {
+  return initialGlassType.value === 'Terminalglas' ? 'glass' : 'tintSelection';
+}
 
 // Function to get the proper title based on glass type
 function getProperTitle(option) {
@@ -69,19 +76,40 @@ function getOptionPrice(option) {
 function handleSelection(option, index) {
   updateOrder(props.step.id, option);
 
-  // Check if this is terminal glasses from the first step
   const isTerminalPath = initialGlassType.value === "Terminalglas";
-  
-  // Special handling for terminal path
+
+  if (props.step.id === 'prescription') {
+    if (option.opensManualForm) {
+      showPrescriptionManualForm.value = true;
+      return;
+    }
+    navigateTo(getNextStepAfterPrescription());
+    return;
+  }
+
   if (isTerminalPath && props.step.id === 'frame') {
-    // Skip usage for terminal glasses, go directly to prescription
-    navigateTo('prescription');
+    navigateTo('usage');
   } else if (option.nextStep) {
     navigateTo(option.nextStep);
   }
 }
 
+function onPrescriptionFormSubmit(payload) {
+  updateOrder('prescription', payload);
+  showPrescriptionManualForm.value = false;
+  navigateTo(getNextStepAfterPrescription());
+}
+
+function onPrescriptionFormCancel() {
+  showPrescriptionManualForm.value = false;
+}
+
 function goBack() {
+  // When manual prescription form is open, back should close it and show the two prescription options
+  if (props.step?.id === 'prescription' && showPrescriptionManualForm.value) {
+    showPrescriptionManualForm.value = false;
+    return;
+  }
   // Get the last step from history
   if (navigationHistory.value && navigationHistory.value.length > 0) {
     const previousStepId = navigationHistory.value[navigationHistory.value.length - 1];
@@ -106,19 +134,28 @@ function goBack() {
         <h1 class="text-center text-2xl font-medium">{{ step ? step.title : '' }}</h1>
       </div>
 
-      <!-- Cards container -->
-      <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-4">
-        <Card
-          v-for="(option, index) in (step ? step.options : [])"
-          :key="index"
-          :title="getProperTitle(option)"
-          :description="option.description"
-          :imageSrc="getImageSrc(option.imageSrc)"
-          :price="getOptionPrice(option)"
-          :currency="currency" 
-          @click="handleSelection(option, index)"
+      <!-- Prescription step: show manual form or two options -->
+      <template v-if="step && step.id === 'prescription' && showPrescriptionManualForm">
+        <PrescriptionForm
+          @submit="onPrescriptionFormSubmit"
+          @cancel="onPrescriptionFormCancel"
         />
-      </div>
+      </template>
+      <template v-else>
+        <!-- Cards container -->
+        <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-4">
+          <Card
+            v-for="(option, index) in (step ? step.options : [])"
+            :key="index"
+            :title="getProperTitle(option)"
+            :description="option.description"
+            :imageSrc="getImageSrc(option.imageSrc)"
+            :price="getOptionPrice(option)"
+            :currency="currency"
+            @click="handleSelection(option, index)"
+          />
+        </div>
+      </template>
 
       <ShoppingCart :totalPrice="order.totalPrice" title="Dina glas" :currency="currency" />
     </div>

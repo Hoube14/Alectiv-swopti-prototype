@@ -10,21 +10,40 @@ export default [
         description: "Glas som korrigerar ett synfel - avstånd eller nära.",
         imageSrc: "/images/Enkelslipad.png",
         priceKey: 'glass_single',
-        nextStep: 'tintSelection'
+        nextStep: 'prescription'
       },
       {
         title: "Progressiva glas",
         description: "Glas med flera styrkor. Korrigerar synfel för avstånd och nära",
         imageSrc: "/images/Progressiva.png",
         priceKey: 'glass_progressive',
-        nextStep: 'tintSelection'
+        nextStep: 'prescription'
       },
       {
         title: "Terminalglas",
         description: "Enkelslipade glas avsedda för jobb framför datorn. Ger extra läs-styrka.",
         imageSrc: "/images/Terminal.png",
         priceKey: 'glass_terminal',
-        nextStep: 'glass'
+        nextStep: 'prescription'
+      }
+    ]
+  },
+  {
+    id: 'prescription',
+    title: 'Lägg till dina styrkor',
+    showBackButton: true,
+    backStep: null,
+    options: [
+      {
+        title: 'Maila in senare',
+        description: 'Skicka in ditt recept via e-post när du är redo.',
+        nextStep: null
+      },
+      {
+        title: 'Lägg till manuellt',
+        description: 'Fyll i dina styrkor från receptet nedan.',
+        nextStep: null,
+        opensManualForm: true
       }
     ]
   },
@@ -264,29 +283,16 @@ export default [
       {
         title: "Avstånd / Allround",
         description: "Bra i vardagen (t.ex. bilkörning, tv). Välj detta för glasögon som används hela dagen.",
-        nextStep: 'prescription'
+        nextStep: 'summary'
       },
       {
         title: "Läsavstånd",
         description: "Endast nära håll (t.ex. läsa en bok). Kräver en ADD (närstyrka) i ditt recept",
-        nextStep: 'prescription'
+        nextStep: 'summary'
       },
       {
         title: "Vet ej",
         description: "välj detta om du är osäker. Vi kollar på ditt recept och återkopplar till dig",
-        nextStep: 'prescription'
-      }
-    ]
-  },
-  {
-    id: 'prescription',
-    title: 'Lägg till dina styrkor',
-    showBackButton: true,
-    backStep: null,
-    options: [
-      {
-        title: 'Maila senare',
-        description: 'Maila senare',
         nextStep: 'summary'
       }
     ]
