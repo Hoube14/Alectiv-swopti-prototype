@@ -61,18 +61,16 @@ stripe-server/
 
 ## How the Widget Loads on an External Site
 
-**NOTE: This is a work in progress (WIP) and not fully implemented yet.**
+The Vue app can run both locally (standalone) and as an embedded widget on an external site (e.g. GlasOnline/WordPress).
 
-The goal was to make the application available as an embeddable widget for integration on external websites. Work included:
+**Build and deploy:**  
+Vite is configured with a `base` path that matches the theme’s public folder. Run `npm run build` and copy the `dist/` output to the host site’s static asset directory (e.g. `public/product-selector/` in the GlasOnline theme). The build produces `product-selector.js`, `product-selector.css`, and chunk files.
 
-- Using Web Components (Custom Elements API)
-- Shadow DOM for style isolation
-- Vite configuration to build a standalone widget bundle
+**On the host site:**  
+The host page includes a mount point `<div id="app" class="product-selector-root"></div>`. When the product-selector script and stylesheet are loaded, the Vue app mounts on `#app` and runs as usual. The host can inject configuration (e.g. Stripe checkout URL) via a global such as `glasonlineProductSelector.createCheckoutUrl` so the app knows which API to call.
 
-**Technical challenges remaining:**
-- Shadow DOM style injection with Tailwind CSS
-- Proper CSS bundling and loading in widget context
-- Maintaining dual functionality (standalone app + embeddable widget)
+**Conditional loading:**  
+Assets are only enqueued when the widget or shortcode is actually used (e.g. shortcode in post content or widget in a sidebar), so the script does not load on every page.
 
 
 ## How Fake JSON is Used (API/Backend)
@@ -103,8 +101,7 @@ Response: { url: [Stripe Checkout URL] }
 ## What I Would Improve in the future
 
 ### Future Improvements
-- Complete the embeddable widget implementation
-- Add precsription input with form validation
+- Add prescription input with form validation
 - Implement persistent cart (localStorage or probably database)
 - Improve mobile responsiveness
 - Better styling
