@@ -18,7 +18,7 @@ defineEmits(['click']);
     <div v-if="imageSrc" class="mb-4">
       <img :src="imageSrc" :alt="title" class="h-24">
     </div>
-    <h3 class="font-medium text-lg mb-2">{{ title }}</h3>
+    <h3 class="font-medium text-lg mb-2 text-center">{{ title }}</h3>
     <p class="text-sm text-center text-gray-600">{{ description }}</p>
 
     <!-- Display price if available -->

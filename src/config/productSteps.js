@@ -53,6 +53,24 @@ export default [
     ]
   },
   {
+    id: 'lensBrand',
+    title: 'Välj glasmärke',
+    showBackButton: true,
+    backStep: null,
+    options: [
+      {
+        title: 'Våra egna glasmärken',
+        description: 'Välj från vårt eget sortiment av glas.',
+        nextStep: null
+      },
+      {
+        title: 'Känt märke (t.ex. Rodenstock)',
+        description: 'Premium-glas från etablerade märken som Rodenstock.',
+        nextStep: null
+      }
+    ]
+  },
+  {
     id: 'tintSelection',
     title: 'Välj toning',
     showBackButton: true,

@@ -31,6 +31,7 @@ const toggleExpand = () => {
 // Short labels for cart display (step id -> label)
 const stepLabels = {
   glassType: 'Glastyp',
+  lensBrand: 'Glasmärke',
   tintSelection: 'Toning',
   sunglassType: 'Solglas',
   solidTintSelection: 'Toning',

@@ -39,6 +39,10 @@ function getImageSrc(src) {
 const initialGlassType = computed(() => order.value.selections?.glassType?.title || null);
 
 function getNextStepAfterPrescription() {
+  return 'lensBrand';
+}
+
+function getNextStepAfterLensBrand() {
   return initialGlassType.value === 'Terminalglas' ? 'glass' : 'tintSelection';
 }
 
@@ -87,6 +91,11 @@ function handleSelection(option, index) {
     return;
   }
 
+  if (props.step.id === 'lensBrand') {
+    navigateTo(getNextStepAfterLensBrand());
+    return;
+  }
+
   if (isTerminalPath && props.step.id === 'frame') {
     navigateTo('usage');
   } else if (option.nextStep) {
@@ -127,7 +136,6 @@ function goBack() {
       <ProgressBar :current-step="currentStepIndex" :total-steps="totalSteps" />
 
       <div class="flex items-center mb-8">
-        <!-- Add null check for step -->
         <button v-if="step && step.showBackButton" @click="goBack" class="mr-4 text-gray-600">
           <span><- Tillbaka</span>
         </button>
@@ -142,7 +150,6 @@ function goBack() {
         />
       </template>
       <template v-else>
-        <!-- Cards container -->
         <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-4">
           <Card
             v-for="(option, index) in (step ? step.options : [])"
