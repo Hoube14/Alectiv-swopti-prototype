@@ -69,6 +69,20 @@ const canSubmit = computed(() => {
   return hasSphere && hasPd && form.value.receiptNotOlderThanOneYear;
 });
 
+// Reading power = Sphere + ADD (calculated, for reference)
+const readingPower = computed(() => {
+  const r = form.value.right;
+  const l = form.value.left;
+  const calc = (sphere, add) => {
+    const s = parseFloat(sphere);
+    const a = parseFloat(add);
+    if (Number.isNaN(s) && Number.isNaN(a)) return null;
+    const sum = (Number.isNaN(s) ? 0 : s) + (Number.isNaN(a) ? 0 : a);
+    return sum >= 0 ? `+${sum.toFixed(2)}` : sum.toFixed(2);
+  };
+  return { right: calc(r.sphere, r.add), left: calc(l.sphere, l.add) };
+});
+
 // Clear axis when cylinder is removed or set to 0 (no astigmatism)
 watch(
   () => [form.value.right.cylinder, form.value.left.cylinder],
@@ -186,6 +200,24 @@ function cancel() {
         <select v-model="form.left.add" class="rounded border border-gray-300 px-3 py-2 text-gray-900">
           <option v-for="opt in addOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
         </select>
+      </div>
+    </div>
+
+    <!-- Reading power (Sphere + ADD), calculated -->
+    <div class="mb-4 rounded-lg border border-gray-200 bg-gray-50 p-3">
+      <p class="mb-2 text-sm font-medium text-gray-700">Lässtyrka (beräknad)</p>
+      <p class="mb-2 text-xs text-gray-500">
+        Sfär + Addition = styrka för närbild. Visas endast som information.
+      </p>
+      <div class="grid grid-cols-2 gap-4 text-sm">
+        <div>
+          <span class="text-gray-500">Höger öga (OD):</span>
+          <span class="ml-2 font-medium text-gray-900">{{ readingPower.right ?? '—' }}</span>
+        </div>
+        <div>
+          <span class="text-gray-500">Vänster öga (OS):</span>
+          <span class="ml-2 font-medium text-gray-900">{{ readingPower.left ?? '—' }}</span>
+        </div>
       </div>
     </div>
 
