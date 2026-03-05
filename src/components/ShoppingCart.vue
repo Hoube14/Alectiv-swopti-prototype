@@ -32,6 +32,7 @@ const toggleExpand = () => {
 const stepLabels = {
   glassType: 'Glastyp',
   lensBrand: 'Glasmärke',
+  lensRecommendation: 'Glasindex',
   tintSelection: 'Toning',
   sunglassType: 'Solglas',
   solidTintSelection: 'Toning',

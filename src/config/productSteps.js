@@ -61,12 +61,47 @@ export default [
       {
         title: 'Våra egna glasmärken',
         description: 'Välj från vårt eget sortiment av glas.',
-        nextStep: null
+        nextStep: 'lensRecommendation'
       },
       {
         title: 'Känt märke (t.ex. Rodenstock)',
         description: 'Premium-glas från etablerade märken som Rodenstock.',
-        nextStep: null
+        nextStep: 'lensRecommendation'
+      }
+    ]
+  },
+  {
+    id: 'lensRecommendation',
+    title: 'Vi rekommenderar detta glaset',
+    showBackButton: true,
+    backStep: null,
+    options: [
+      {
+        title: 'Glas 1.6',
+        description: 'Tunnare och lättare glas. Rekommenderas för styrkor cirka 2 till 4.',
+        priceKey: 'lens_1_6',
+        nextStep: 'tintSelection',
+        minSphereToShow: 0,
+        recommendMinSphere: 2,
+        recommendMaxSphere: 4
+      },
+      {
+        title: 'Glas 1.67',
+        description: 'Tunnare glas vid medelhöga styrkor. Rekommenderas för styrkor cirka 4 till 6.',
+        priceKey: 'lens_1_67',
+        nextStep: 'tintSelection',
+        minSphereToShow: 0,
+        recommendMinSphere: 4,
+        recommendMaxSphere: 6
+      },
+      {
+        title: 'Glas 1.74',
+        description: 'Tunnaste glasen vid höga styrkor. Rekommenderas för styrkor över 6.',
+        priceKey: 'lens_1_74',
+        nextStep: 'tintSelection',
+        minSphereToShow: 6,
+        recommendMinSphere: 6,
+        recommendMaxSphere: Infinity
       }
     ]
   },

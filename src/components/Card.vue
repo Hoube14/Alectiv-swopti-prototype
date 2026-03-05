@@ -5,7 +5,8 @@ defineProps({
   description: String,
   imageSrc: String,
   price: Number,
-  currency: String
+  currency: String,
+  recommended: Boolean
 });
 
 defineEmits(['click']);
@@ -19,6 +20,7 @@ defineEmits(['click']);
       <img :src="imageSrc" :alt="title" class="h-24">
     </div>
     <h3 class="font-medium text-lg mb-2 text-center flex-shrink-0">{{ title }}</h3>
+    <p v-if="recommended" class="text-xs font-medium text-blue-600 mb-1 flex-shrink-0">Rekommenderas för dina styrkor</p>
     <p class="text-sm text-center text-gray-600 flex-1 min-h-0">{{ description }}</p>
 
     <!-- Display price if available -->

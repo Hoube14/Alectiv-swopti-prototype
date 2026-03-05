@@ -38,11 +38,53 @@ function getImageSrc(src) {
 // Get the initial glass type selection
 const initialGlassType = computed(() => order.value.selections?.glassType?.title || null);
 
+// Max absolute sphere from prescription (for lens recommendation). Null if no manual prescription.
+const maxSphereFromPrescription = computed(() => {
+  const manual = order.value.selections?.prescription?.manual;
+  if (!manual?.right?.sphere && !manual?.left?.sphere) return null;
+  const right = Math.abs(parseFloat(manual?.right?.sphere) || 0);
+  const left = Math.abs(parseFloat(manual?.left?.sphere) || 0);
+  return Math.max(right, left);
+});
+
+// For lensRecommendation step: only show options the customer is eligible for (1.74 only when strength >= 6).
+const lensRecommendationOptions = computed(() => {
+  if (props.step?.id !== 'lensRecommendation' || !props.step.options) return [];
+  const maxSphere = maxSphereFromPrescription.value;
+  return props.step.options.filter((opt) => {
+    const minShow = opt.minSphereToShow ?? 0;
+    if (maxSphere === null) return minShow === 0;
+    return maxSphere >= minShow;
+  });
+});
+
+// Which option index (within visible options) is recommended based on sphere strength.
+const recommendedLensIndex = computed(() => {
+  const maxSphere = maxSphereFromPrescription.value;
+  if (maxSphere === null) return null;
+  const opts = lensRecommendationOptions.value;
+  const idx = opts.findIndex(
+    (opt) =>
+      maxSphere >= (opt.recommendMinSphere ?? 0) && maxSphere < (opt.recommendMaxSphere ?? Infinity)
+  );
+  return idx >= 0 ? idx : null;
+});
+
+// Options to display: use filtered list for lensRecommendation, otherwise step.options
+const displayOptions = computed(() => {
+  if (props.step?.id === 'lensRecommendation') return lensRecommendationOptions.value;
+  return props.step?.options ?? [];
+});
+
 function getNextStepAfterPrescription() {
   return 'lensBrand';
 }
 
 function getNextStepAfterLensBrand() {
+  return 'lensRecommendation';
+}
+
+function getNextStepAfterLensRecommendation() {
   return initialGlassType.value === 'Terminalglas' ? 'glass' : 'tintSelection';
 }
 
@@ -93,6 +135,11 @@ function handleSelection(option, index) {
 
   if (props.step.id === 'lensBrand') {
     navigateTo(getNextStepAfterLensBrand());
+    return;
+  }
+
+  if (props.step.id === 'lensRecommendation') {
+    navigateTo(getNextStepAfterLensRecommendation());
     return;
   }
 
@@ -155,8 +202,8 @@ function goBack() {
       <template v-else>
         <div class="grid gap-4 justify-center" style="grid-template-columns: repeat(auto-fit, minmax(280px, 280px));">
           <div
-            v-for="(option, index) in (step ? step.options : [])"
-            :key="index"
+            v-for="(option, index) in displayOptions"
+            :key="option.title"
             class="h-full"
           >
             <Card
@@ -165,6 +212,7 @@ function goBack() {
               :imageSrc="getImageSrc(option.imageSrc)"
               :price="getOptionPrice(option)"
               :currency="currency"
+              :recommended="step?.id === 'lensRecommendation' && recommendedLensIndex === index"
               @click="handleSelection(option, index)"
             />
           </div>

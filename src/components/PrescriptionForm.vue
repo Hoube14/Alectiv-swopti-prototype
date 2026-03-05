@@ -6,7 +6,7 @@ const emit = defineEmits(['submit', 'cancel']);
 // Sphere: minus first, plus last (common prescription order). 0 ends up in the middle.
 const sphereOptions = (() => {
   const opts = [{ value: '', label: 'Välj' }];
-  for (let i = -20; i <= 6; i += 0.25) {
+  for (let i = -20; i <= 20; i += 0.25) {
     const v = i.toFixed(2);
     opts.push({ value: v, label: i >= 0 ? `+${v}` : v });
   }

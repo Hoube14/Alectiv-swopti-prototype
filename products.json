@@ -22,7 +22,10 @@
         "photochromic_black": 500,
         "photochromic_green": 500,
         "photochromic_brown": 500,
-        "photochromic_blue": 500
+        "photochromic_blue": 500,
+        "lens_1_6": 200,
+        "lens_1_67": 400,
+        "lens_1_74": 700
       }
     },
     "store_2": {
@@ -47,7 +50,10 @@
         "photochromic_black": 50,
         "photochromic_green": 50,
         "photochromic_brown": 50,
-        "photochromic_blue": 50
+        "photochromic_blue": 50,
+        "lens_1_6": 22,
+        "lens_1_67": 45,
+        "lens_1_74": 78
       }
     }
   },
