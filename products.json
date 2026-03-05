@@ -25,7 +25,9 @@
         "photochromic_blue": 500,
         "lens_1_6": 200,
         "lens_1_67": 400,
-        "lens_1_74": 700
+        "lens_1_74": 700,
+        "treatment_standard": 600,
+        "treatment_blue_light": 500
       }
     },
     "store_2": {
@@ -53,7 +55,9 @@
         "photochromic_blue": 50,
         "lens_1_6": 22,
         "lens_1_67": 45,
-        "lens_1_74": 78
+        "lens_1_74": 78,
+        "treatment_standard": 45,
+        "treatment_blue_light": 35
       }
     }
   },

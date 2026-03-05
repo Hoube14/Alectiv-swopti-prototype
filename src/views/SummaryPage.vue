@@ -152,6 +152,18 @@ async function proceedToCheckout() {
                 <div v-if="selections.prescription">
                   <div>Recept: {{ selections.prescription.title }}</div>
                 </div>
+
+                <div v-if="selections.lensBrand">
+                  <div>Glasmärke: {{ selections.lensBrand.title }}</div>
+                </div>
+
+                <div v-if="selections.lensRecommendation">
+                  <div>Glas: {{ selections.lensRecommendation.title }}</div>
+                </div>
+
+                <div v-if="selections.treatment">
+                  <div>Behandling: {{ selections.treatment.title }}</div>
+                </div>
               </div>
             </div>
           </div>

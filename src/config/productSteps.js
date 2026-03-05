@@ -80,7 +80,7 @@ export default [
         title: 'Glas 1.6',
         description: 'Tunnare och lättare glas. Rekommenderas för styrkor cirka 2 till 4.',
         priceKey: 'lens_1_6',
-        nextStep: 'tintSelection',
+        nextStep: 'treatment',
         minSphereToShow: 0,
         recommendMinSphere: 2,
         recommendMaxSphere: 4
@@ -89,7 +89,7 @@ export default [
         title: 'Glas 1.67',
         description: 'Tunnare glas vid medelhöga styrkor. Rekommenderas för styrkor cirka 4 till 6.',
         priceKey: 'lens_1_67',
-        nextStep: 'tintSelection',
+        nextStep: 'treatment',
         minSphereToShow: 0,
         recommendMinSphere: 4,
         recommendMaxSphere: 6
@@ -98,10 +98,30 @@ export default [
         title: 'Glas 1.74',
         description: 'Tunnaste glasen vid höga styrkor. Rekommenderas för styrkor över 6.',
         priceKey: 'lens_1_74',
-        nextStep: 'tintSelection',
+        nextStep: 'treatment',
         minSphereToShow: 6,
         recommendMinSphere: 6,
         recommendMaxSphere: Infinity
+      }
+    ]
+  },
+  {
+    id: 'treatment',
+    title: 'Behandling',
+    showBackButton: true,
+    backStep: null,
+    options: [
+      {
+        title: 'Standardbehandling',
+        description: 'Anti-reflex, respkydd och antistatisk behandling.',
+        nextStep: 'tintSelection',
+        priceKey: 'treatment_standard'
+      },
+      {
+        title: 'Standardbehandling + blåljusfilter',
+        description: 'Anti-reflex, respkydd, antistatisk behandling samt blåljusfilter som skärmar mot blått ljus.',
+        nextStep: 'tintSelection',
+        priceKey: 'treatment_blue_light'
       }
     ]
   },

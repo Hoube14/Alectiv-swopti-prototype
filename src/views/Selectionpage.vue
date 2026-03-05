@@ -85,6 +85,10 @@ function getNextStepAfterLensBrand() {
 }
 
 function getNextStepAfterLensRecommendation() {
+  return 'treatment';
+}
+
+function getNextStepAfterTreatment() {
   return initialGlassType.value === 'Terminalglas' ? 'glass' : 'tintSelection';
 }
 
@@ -140,6 +144,11 @@ function handleSelection(option, index) {
 
   if (props.step.id === 'lensRecommendation') {
     navigateTo(getNextStepAfterLensRecommendation());
+    return;
+  }
+
+  if (props.step.id === 'treatment') {
+    navigateTo(getNextStepAfterTreatment());
     return;
   }
 

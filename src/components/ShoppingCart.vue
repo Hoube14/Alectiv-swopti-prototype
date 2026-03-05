@@ -33,6 +33,7 @@ const stepLabels = {
   glassType: 'Glastyp',
   lensBrand: 'Glasmärke',
   lensRecommendation: 'Glasindex',
+  treatment: 'Behandling',
   tintSelection: 'Toning',
   sunglassType: 'Solglas',
   solidTintSelection: 'Toning',
