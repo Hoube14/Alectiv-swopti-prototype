@@ -217,6 +217,7 @@ function goBack() {
               :title="getProperTitle(option)"
               :description="option.description"
               :imageSrc="getImageSrc(option.imageSrc)"
+              :imageSrcDark="option.imageSrcDark ? getImageSrc(option.imageSrcDark) : undefined"
               :price="getOptionPrice(option)"
               :currency="currency"
               :recommended="step?.id === 'lensRecommendation' && recommendedLensIndex === index"

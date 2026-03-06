@@ -170,7 +170,8 @@ export default [
       {
         title: "Färgskiftande glas",
         description: "Klara inomhus - mörknar i solen.",
-        imageSrc: "/images/Fargskiftande.gif",
+        imageSrc: "/images/Fargskiftande-light.png",
+        imageSrcDark: "/images/Fargskiftande-dark.png",
         nextStep: 'photochromicColorSelection'
       }
     ]

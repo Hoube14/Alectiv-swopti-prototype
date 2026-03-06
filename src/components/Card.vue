@@ -4,6 +4,8 @@ defineProps({
   title: String,
   description: String,
   imageSrc: String,
+  /** When set with imageSrc, renders a light-to-dark crossfade animation (e.g. färgskiftande glas) */
+  imageSrcDark: String,
   price: Number,
   currency: String,
   recommended: Boolean
@@ -20,8 +22,13 @@ defineEmits(['click']);
     style="background-color: var(--color-card); border-color: var(--color-border)"
   >
     <!-- Only render image if imageSrc exists -->
-    <div v-if="imageSrc" class="mb-4 flex-shrink-0">
-      <img :src="imageSrc" :alt="title" class="h-24 object-contain">
+    <div v-if="imageSrc" class="mb-4 flex-shrink-0 h-24 flex items-center justify-center relative w-full">
+      <!-- Animated pair: light ↔ dark crossfade -->
+      <template v-if="imageSrcDark">
+        <img :src="imageSrc" :alt="title" class="h-24 object-contain absolute inset-0 m-auto photochromic-light">
+        <img :src="imageSrcDark" :alt="title" class="h-24 object-contain absolute inset-0 m-auto photochromic-dark">
+      </template>
+      <img v-else :src="imageSrc" :alt="title" class="h-24 object-contain">
     </div>
     <h3 class="font-semibold text-lg mb-2 text-center flex-shrink-0" style="color: var(--color-heading)">{{ title }}</h3>
     <p v-if="recommended" class="text-xs font-medium mb-1 flex-shrink-0" style="color: var(--color-primary)">Rekommenderas för dina styrkor</p>
@@ -33,3 +40,20 @@ defineEmits(['click']);
     </div>
   </div>
 </template>
+
+<style scoped>
+@keyframes photochromic-light {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+@keyframes photochromic-dark {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+.photochromic-light {
+  animation: photochromic-light 4s ease-in-out infinite;
+}
+.photochromic-dark {
+  animation: photochromic-dark 4s ease-in-out infinite;
+}
+</style>
