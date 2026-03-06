@@ -1,3 +1,6 @@
+# Local-only files (theme snapshots, drafts – never commit)
+/local/
+
 # Logs
 logs
 *.log

@@ -91,43 +91,47 @@ async function proceedToCheckout() {
 </script>
 
 <template>
-  <div class="min-h-screen bg-orange-100 p-8">
+  <div class="min-h-screen p-6 md:p-8">
     <div class="max-w-4xl mx-auto">
       <ProgressBar :current-step="currentStepIndex" :total-steps="totalSteps" />
-      
+
       <div class="flex items-center mb-8">
-        <button @click="goBack" class="mr-4 text-gray-600">
-          <span><- Tillbaka</span>
+        <button
+          @click="goBack"
+          class="mr-4 text-sm font-medium transition hover:opacity-80"
+          style="color: var(--color-primary)"
+        >
+          <span>← Tillbaka</span>
         </button>
-        <h1 class="text-center text-2xl font-medium">Din beställning</h1>
+        <h1 class="text-center text-2xl md:text-3xl font-semibold flex-1" style="color: var(--color-heading)">Din beställning</h1>
       </div>
 
-      <div class="bg-white rounded-lg shadow-lg p-8">
-        <h2 class="text-xl font-bold mb-4">Sammanfattning</h2>
-        
+      <div class="rounded-2xl border shadow-md p-6 md:p-8" style="background-color: var(--color-card); border-color: var(--color-border)">
+        <h2 class="text-xl font-semibold mb-4" style="color: var(--color-heading)">Sammanfattning</h2>
+
         <div class="mb-6">
           <!-- Header row -->
-          <div class="flex justify-between py-2 border-b">
-            <span class="font-medium">Produkt</span>
-            <span class="font-medium">Pris</span>
+          <div class="flex justify-between py-2 border-b" style="border-color: var(--color-border)">
+            <span class="font-medium" style="color: var(--color-text)">Produkt</span>
+            <span class="font-medium" style="color: var(--color-text)">Pris</span>
           </div>
-          
+
           <!-- Product selection section -->
-          <div class="py-4 border-b">
+          <div class="py-4 border-b" style="border-color: var(--color-border)">
             <div class="mb-2">
-              <span class="font-medium">Dina val:</span>
+              <span class="font-medium" style="color: var(--color-heading)">Dina val:</span>
             </div>
-            
+
             <!-- Product details section -->
             <div class="mt-4 space-y-4">
               <!-- Main product title -->
               <div v-if="selections.glassType">
-                <div class="font-medium">{{ selections.glassType.title }} - {{ selections.tintSelection?.title || 'ofärgade' }}</div>
-                <div>{{ totalPrice - storeData?.defaults?.shipping || 0 }} {{ currency }}</div>
+                <div class="font-medium" style="color: var(--color-heading)">{{ selections.glassType.title }} - {{ selections.tintSelection?.title || 'ofärgade' }}</div>
+                <div style="color: var(--color-text)">{{ totalPrice - storeData?.defaults?.shipping || 0 }} {{ currency }}</div>
               </div>
-              
+
               <!-- Product attributes -->
-              <div class="space-y-2 text-gray-600 text-sm">
+              <div class="space-y-2 text-sm" style="color: var(--color-text)">
 
                 <div v-if="selections.photochromicColorSelection">
                   <div>Färgskiftande glas: {{ selections.photochromicColorSelection.title }}</div>
@@ -164,26 +168,27 @@ async function proceedToCheckout() {
             </div>
           </div>
           
-          <div class="flex justify-between py-2">
+          <div class="flex justify-between py-2" style="color: var(--color-text)">
             <span>Frakt</span>
             <span>{{ storeData?.defaults?.shipping || 0 }} {{ currency }}</span>
           </div>
-          
-          <div class="flex justify-between py-2 mt-4 border-t-2 font-bold">
+
+          <div class="flex justify-between py-2 mt-4 border-t-2 font-semibold" style="border-color: var(--color-border); color: var(--color-heading)">
             <span>Totalt att betala</span>
             <span>{{ totalPrice.toFixed(2) }} {{ currency }}</span>
           </div>
         </div>
-        
-        <button 
-          @click="proceedToCheckout" 
-          class="w-full py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700"
+
+        <button
+          @click="proceedToCheckout"
+          class="w-full py-3.5 text-white rounded-xl font-semibold shadow-sm transition hover:opacity-95"
+          style="background-color: var(--color-primary);"
         >
           Gå till betalning
         </button>
       </div>
-      
-      <div class="mt-4 text-center text-sm text-gray-500">
+
+      <div class="mt-4 text-center text-sm" style="color: var(--color-muted)">
         Skatt ingår. Leverans och rabatter beräknas i kassan.
       </div>
     </div>

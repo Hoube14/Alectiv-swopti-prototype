@@ -65,16 +65,19 @@ const displayTotal = computed(() => {
 </script>
 
 <template>
-  <div v-if="!isExpanded"
-       @click="toggleExpand"
-       class="fixed bottom-0 left-0 right-0 bg-custom-wheat py-2 border-t border-gray-200 cursor-pointer">
+  <div
+    v-if="!isExpanded"
+    @click="toggleExpand"
+    class="fixed bottom-0 left-0 right-0 py-3.5 px-4 cursor-pointer shadow-[0_-4px_20px_rgba(0,0,0,0.08)] rounded-t-2xl transition"
+    style="background-color: var(--color-primary);"
+  >
     <div class="flex justify-center items-center">
       <div class="flex items-center gap-4">
-        <span class="text-gray-700">{{ title }}</span>
-        <div class="flex items-center">
+        <span class="text-white font-medium">{{ title }}</span>
+        <div class="flex items-center text-white font-semibold">
           <span>{{ displayTotal }} {{ currency }}</span>
           <svg
-            class="ml-2 w-4 h-4"
+            class="ml-2 w-4 h-4 text-white"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
             fill="currentColor"
@@ -87,8 +90,8 @@ const displayTotal = computed(() => {
   </div>
 
   <!-- Expanded view when expanded - modal panel -->
-  <div v-if="isExpanded" class="fixed inset-0 flex justify-center items-end bg-black/20" @click.self="toggleExpand">
-    <div class="bg-white border border-gray-200 rounded-t-lg shadow-lg w-full max-w-md max-h-[85vh] flex flex-col">
+  <div v-if="isExpanded" class="fixed inset-0 flex justify-center items-end bg-black/20 backdrop-blur-sm" @click.self="toggleExpand">
+    <div class="rounded-t-2xl shadow-2xl w-full max-w-md max-h-[85vh] flex flex-col" style="background-color: var(--color-card); border: 1px solid var(--color-border); border-bottom: none">
       <!-- Header with close button -->
       <div class="flex justify-between items-center p-4 flex-shrink-0">
         <h2 class="text-lg font-semibold text-gray-900">Nya glas i egen båge</h2>

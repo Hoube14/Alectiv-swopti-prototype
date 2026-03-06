@@ -183,17 +183,24 @@ function goBack() {
 </script>
 
 <template>
-  <div class="min-h-screen bg-orange-100 p-8">
+  <div class="min-h-screen p-6 md:p-8">
     <div class="max-w-4xl mx-auto">
       <ProgressBar :current-step="currentStepIndex" :total-steps="totalSteps" />
 
       <div class="grid grid-cols-[1fr_auto_1fr] items-center mb-8 gap-4">
         <div class="flex justify-start">
-          <button v-if="step && step.showBackButton" @click="goBack" class="text-gray-600">
-            <span><- Tillbaka</span>
+          <button
+            v-if="step && step.showBackButton"
+            @click="goBack"
+            class="text-sm font-medium transition hover:opacity-80"
+            style="color: var(--color-primary)"
+          >
+            <span>← Tillbaka</span>
           </button>
         </div>
-        <h1 class="text-center text-2xl font-medium whitespace-nowrap">{{ step ? step.title : '' }}</h1>
+        <h1 class="text-center text-2xl md:text-3xl font-semibold whitespace-nowrap" style="color: var(--color-heading)">
+          {{ step ? step.title : '' }}
+        </h1>
         <div></div>
       </div>
 
