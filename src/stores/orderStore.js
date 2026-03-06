@@ -26,6 +26,28 @@ export const useOrderStore = defineStore('order', () => {
 
   const currentStepIndex = computed(() => visitedSteps.value);
 
+  // Max steps from a step to summary (following nextStep); used so progress bar total reflects actual path length
+  function maxStepsToSummary(stepId) {
+    if (stepId === 'summary') return 0;
+    const step = steps.value.find((s) => s.id === stepId);
+    if (!step?.options?.length) return 1;
+    let max = 0;
+    for (const opt of step.options) {
+      let next = opt.nextStep;
+      if (!next && stepId === 'prescription') next = 'lensBrand';
+      if (!next) next = 'summary';
+      max = Math.max(max, 1 + maxStepsToSummary(next));
+    }
+    return max;
+  }
+
+  // Dynamic progress: total = completed + remaining (so bar doesn't jump when path is shorter than max)
+  const progressBarTotalSteps = computed(() => {
+    const remaining = maxStepsToSummary(currentStepId.value);
+    return visitedSteps.value + remaining;
+  });
+  const progressBarCurrentIndex = computed(() => visitedSteps.value);
+
   function navigateTo(stepId, isBackNavigation = false) {
     if (isBackNavigation) {
       if (navigationHistory.value.length > 0) {
@@ -85,6 +107,8 @@ export const useOrderStore = defineStore('order', () => {
     currentStep,
     visitedSteps,
     currentStepIndex,
+    progressBarTotalSteps,
+    progressBarCurrentIndex,
     navigateTo,
     updateOrder,
     calculateTotalPrice

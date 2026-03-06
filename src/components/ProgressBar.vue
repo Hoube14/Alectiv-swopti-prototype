@@ -16,30 +16,36 @@ defineProps({
     <!-- Background track -->
     <div
       class="absolute h-1.5 rounded-full top-1/2 -translate-y-1/2 transition-all duration-300"
-      style="left: 10px; width: calc(100% - 20px); background-color: var(--color-border);"
+      style="left: 14px; width: calc(100% - 28px); background-color: var(--color-border);"
     ></div>
 
-    <!-- Filled track (primary) - from start to current step -->
+    <!-- Filled track - from start toward end by progress -->
     <div
       v-if="totalSteps > 1 && currentStep >= 1"
       class="absolute h-1.5 rounded-full top-1/2 -translate-y-1/2 transition-all duration-300"
       :style="{
-        left: '10px',
-        width: `calc((100% - 20px) * ${(currentStep - 1) / (totalSteps - 1)})`,
+        left: '14px',
+        width: `calc((100% - 28px) * ${Math.min(1, (currentStep - 1) / (totalSteps - 1))})`,
         backgroundColor: 'var(--color-primary)'
       }"
     ></div>
 
-    <!-- Steps container -->
-    <div class="relative flex justify-between" style="margin: 0 10px;">
-      <div
-        v-for="step in totalSteps"
-        :key="step"
-        class="relative flex items-center justify-center"
-      >
-        <!-- Completed step: solid primary circle with white checkmark -->
+    <!-- Two points only: start (left) and end (right) -->
+    <div class="relative flex justify-between" style="margin: 0 0;">
+      <!-- Start point: current position -->
+      <div class="flex items-center justify-center flex-shrink-0 w-7 h-7">
         <div
-          v-if="step < currentStep"
+          class="rounded-full w-7 h-7 flex items-center justify-center border-2 bg-white"
+          style="border-color: var(--color-primary);"
+        >
+          <div class="w-2 h-2 rounded-full" style="background-color: var(--color-primary);"></div>
+        </div>
+      </div>
+
+      <!-- End point: goal -->
+      <div class="flex items-center justify-center flex-shrink-0 w-7 h-7">
+        <div
+          v-if="currentStep >= totalSteps"
           class="rounded-full w-7 h-7 flex items-center justify-center flex-shrink-0 text-white transition-colors"
           style="background-color: var(--color-primary);"
         >
@@ -47,18 +53,9 @@ defineProps({
             <polyline points="20 6 9 17 4 12"></polyline>
           </svg>
         </div>
-        <!-- Current step: outlined primary circle with central dot -->
-        <div
-          v-else-if="step === currentStep"
-          class="rounded-full w-7 h-7 flex items-center justify-center flex-shrink-0 border-2 bg-white"
-          style="border-color: var(--color-primary);"
-        >
-          <div class="w-2 h-2 rounded-full" style="background-color: var(--color-primary);"></div>
-        </div>
-        <!-- Future step -->
         <div
           v-else
-          class="rounded-full w-7 h-7 flex items-center justify-center flex-shrink-0 border-2 bg-white"
+          class="rounded-full w-7 h-7 flex items-center justify-center border-2 bg-white"
           style="border-color: var(--color-border);"
         >
           <div class="w-2 h-2 rounded-full" style="background-color: var(--color-muted);"></div>

@@ -9,7 +9,9 @@ const {
   currentStepId,
   currentStep,
   currentStepIndex,
-  visitedSteps
+  visitedSteps,
+  progressBarTotalSteps,
+  progressBarCurrentIndex
 } = storeToRefs(orderStore);
 </script>
 
@@ -18,14 +20,14 @@ const {
     <Selectionpage
       v-if="currentStepId !== 'summary' && currentStep"
       :step="currentStep"
-      :currentStepIndex="currentStepIndex"
-      :totalSteps="visitedSteps"
+      :currentStepIndex="progressBarCurrentIndex"
+      :totalSteps="progressBarTotalSteps"
     />
 
     <SummaryPage
       v-else-if="currentStepId === 'summary'"
-      :currentStepIndex="currentStepIndex"
-      :totalSteps="visitedSteps"
+      :currentStepIndex="progressBarCurrentIndex"
+      :totalSteps="progressBarTotalSteps"
     />
   </div>
 </template>
