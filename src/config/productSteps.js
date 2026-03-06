@@ -37,17 +37,20 @@ export default [
       {
         title: 'Lägg till manuellt',
         description: 'Fyll i dina styrkor från receptet nedan.',
+        imageSrc: '/images/Manuellt.png',
         nextStep: null,
         opensManualForm: true
       },
       {
         title: 'Maila in senare',
         description: 'Skicka in ditt recept via e-post när du är redo.',
+        imageSrc: '/images/MailaSenare.png',
         nextStep: null
       },
       {
         title: 'Utan styrkor',
         description: 'Jag behöver inte styrkor – t.ex. solglas utan styrka eller tomma bågar.',
+        imageSrc: '/images/UtanStyrkor.png',
         nextStep: null
       }
     ]
@@ -61,11 +64,13 @@ export default [
       {
         title: 'Våra egna glasmärken',
         description: 'Välj från vårt eget sortiment av glas.',
+        imageSrc: '/images/VaraEgnaGlasmarken.png',
         nextStep: 'lensRecommendation'
       },
       {
         title: 'Känt märke (t.ex. Rodenstock)',
         description: 'Premium-glas från etablerade märken som Rodenstock.',
+        imageSrc: '/images/KantMarke.png',
         nextStep: 'lensRecommendation'
       }
     ]
@@ -79,6 +84,7 @@ export default [
       {
         title: 'Glas 1.6',
         description: 'Tunnare och lättare glas. Rekommenderas för styrkor cirka 2 till 4.',
+        imageSrc: '/images/Glas16.png',
         priceKey: 'lens_1_6',
         nextStep: 'treatment',
         minSphereToShow: 0,
@@ -88,6 +94,7 @@ export default [
       {
         title: 'Glas 1.67',
         description: 'Tunnare glas vid medelhöga styrkor. Rekommenderas för styrkor cirka 4 till 6.',
+        imageSrc: '/images/Glas167.png',
         priceKey: 'lens_1_67',
         nextStep: 'treatment',
         minSphereToShow: 0,
@@ -97,6 +104,7 @@ export default [
       {
         title: 'Glas 1.74',
         description: 'Tunnaste glasen vid höga styrkor. Rekommenderas för styrkor över 6.',
+        imageSrc: '/images/Glas174.png',
         priceKey: 'lens_1_74',
         nextStep: 'treatment',
         minSphereToShow: 6,
@@ -114,12 +122,14 @@ export default [
       {
         title: 'Standardbehandling',
         description: 'Anti-reflex, respkydd och antistatisk behandling.',
+        imageSrc: '/images/Standardbehandling.png',
         nextStep: 'tintSelection',
         priceKey: 'treatment_standard'
       },
       {
         title: 'Standardbehandling + blåljusfilter',
         description: 'Anti-reflex, respkydd, antistatisk behandling samt blåljusfilter som skärmar mot blått ljus.',
+        imageSrc: '/images/Blaljusfilter.png',
         nextStep: 'tintSelection',
         priceKey: 'treatment_blue_light'
       }
@@ -134,7 +144,7 @@ export default [
       {
         title: "Ofärgade glas",
         description: "I nästa steg kan du lägga till blåljusfilter som tillval.",
-        imageSrc: "/images/Ofargade.png",
+        imageSrc: "/images/Enkelslipad.png",
         priceKey: 'tint_none',
         nextStep: 'usage'
       },
