@@ -4,7 +4,6 @@ import productData from '../../products.json';
 import productSteps from '../config/productSteps';
 
 export const useOrderStore = defineStore('order', () => {
-  const currentStore = ref('store_1');
   const steps = ref(productSteps);
   const navigationHistory = ref([]);
   const currentStepId = ref('glassType');
@@ -14,9 +13,7 @@ export const useOrderStore = defineStore('order', () => {
     totalPrice: 0
   });
 
-  const stores = computed(() => productData.stores);
-  const activeStore = computed(() => stores.value[currentStore.value]);
-  const priceModifiers = computed(() => activeStore.value?.priceModifiers || {});
+  const priceModifiers = computed(() => productData.store?.priceModifiers || {});
 
   const currentStep = computed(() =>
     steps.value.find((step) => step.id === currentStepId.value)
@@ -78,16 +75,9 @@ export const useOrderStore = defineStore('order', () => {
     order.value.totalPrice = total;
   }
 
-  function switchStore(storeId) {
-    currentStore.value = storeId;
-    calculateTotalPrice();
-  }
-
   return {
     order,
     steps,
-    currentStore,
-    stores,
     priceModifiers,
     storeData: productData,
     navigationHistory,
@@ -97,7 +87,6 @@ export const useOrderStore = defineStore('order', () => {
     currentStepIndex,
     navigateTo,
     updateOrder,
-    calculateTotalPrice,
-    switchStore
+    calculateTotalPrice
   };
 });

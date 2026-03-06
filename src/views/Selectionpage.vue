@@ -21,8 +21,6 @@ const orderStore = useOrderStore();
 const {
   order,
   priceModifiers,
-  currentStore,
-  stores,
   navigationHistory
 } = storeToRefs(orderStore);
 const { updateOrder, navigateTo } = orderStore;
@@ -112,10 +110,7 @@ function getProperTitle(option) {
   return option.title;
 }
 
-// Get the current store's currency
-const currency = computed(() => {
-  return stores.value[currentStore.value]?.currency || 'SEK';
-});
+const currency = 'SEK';
 
 // Calculate the price for an option based on its priceKey
 function getOptionPrice(option) {

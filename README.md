@@ -51,7 +51,7 @@ src/
 ├── config/
 │   └── productSteps.js # Configuration for all steps and options
 ├── stores/
-│   └── orderStore.js   # Pinia store (order, navigation, store selection)
+│   └── orderStore.js   # Pinia store (order, navigation, pricing)
 ├── App.vue             # Root component
 └── main.js             # Entry point
 
@@ -78,7 +78,7 @@ Assets are only enqueued when the widget or shortcode is actually used (e.g. sho
 The project uses a combination of static JSON data and a backend server:
 
 ### Static Product Data (`products.json`)
-- Contains store data with different currencies (SEK/EUR)
+- Single store config with SEK currency
 - Price modifiers for different glass types and options
 - Default values for tax and shipping
 
@@ -119,7 +119,7 @@ Response: { url: [Stripe Checkout URL] }
 ## Architecture Decisions
 
 ### State Management
-Using Pinia for shared state (order, navigation, store selection, pricing). The main store is `stores/orderStore.js`, used in `App.vue`, `Selectionpage.vue`, and `SummaryPage.vue`.
+Using Pinia for shared state (order, navigation, pricing). The main store is `stores/orderStore.js`, used in `App.vue`, `Selectionpage.vue`, and `SummaryPage.vue`.
 
 ### Configuration-Driven Design
 All product steps and options are defined in `productSteps.js`, making it easy to add or modify the product flow without changing component code.
@@ -128,4 +128,4 @@ All product steps and options are defined in `productSteps.js`, making it easy t
 The `Selectionpage.vue` component is reused for all selection steps, receiving step configuration as props for maximum flexibility.
 
 ### Dynamic Pricing
-Prices update in real-time based on store selection, with support for multiple currencies and price modifiers.
+Prices update in real-time; all prices are in SEK with configurable price modifiers.

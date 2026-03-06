@@ -13,8 +13,6 @@ const orderStore = useOrderStore();
 const {
   order,
   priceModifiers,
-  currentStore,
-  stores,
   navigationHistory
 } = storeToRefs(orderStore);
 const { navigateTo, storeData } = orderStore;
@@ -34,10 +32,7 @@ const selections = computed(() => {
   return order?.value?.selections || [];
 });
 
-// Add currency computed property
-const currency = computed(() => {
-  return stores.value[currentStore.value]?.currency || 'SEK';
-});
+const currency = 'SEK';
 
 // Get product details for each selection for better display
 const productDetails = computed(() => {
@@ -68,7 +63,7 @@ async function proceedToCheckout() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         amount: totalPrice.value,
-        currency: currency.value
+        currency
       })
     });
     

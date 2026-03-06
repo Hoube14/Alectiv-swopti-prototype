@@ -2,7 +2,6 @@ import { fileURLToPath, URL } from 'node:url'
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import vueDevTools from 'vite-plugin-vue-devtools'
 import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
@@ -10,7 +9,8 @@ export default defineConfig({
   base: '/app/themes/glasonline/public/product-selector/',
   plugins: [
     vue(),
-    vueDevTools(),
+    // Vue DevTools plugin can cause "Cannot read properties of null (reading 'tap')" when DOM/base path differs; disable if needed
+    // vueDevTools(),
     tailwindcss(),
   ],
   resolve: {
