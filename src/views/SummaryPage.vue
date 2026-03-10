@@ -76,11 +76,11 @@ async function proceedToCheckout() {
     }
     
     const data = await response.json();
-    
-    if (data && data.url) {
-      window.location.href = data.url;
+    const redirectUrl = data?.checkoutUrl ?? data?.url;
+    if (redirectUrl) {
+      window.location.href = redirectUrl;
     } else {
-      throw new Error("No URL in server response");
+      throw new Error("No checkout URL in server response");
     }
   } catch (error) {
     alert('Det uppstod ett fel vid betalning: ' + error.message);
