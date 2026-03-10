@@ -61,12 +61,16 @@ function getCheckoutEndpoint() {
 async function proceedToCheckout() {
   try {
     const amount = Math.round(totalPrice.value * 100) / 100;
+    const returnBase = typeof window !== 'undefined' ? window.location.origin + window.location.pathname : '';
+    const q = returnBase && (returnBase.includes('?') ? '&' : '?');
     const response = await fetch(getCheckoutEndpoint(), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         amount,
-        currency
+        currency,
+        redirectUrl: returnBase ? `${returnBase}${q}checkout=success` : undefined,
+        cancelUrl: returnBase ? `${returnBase}${q}checkout=cancel` : undefined
       })
     });
     

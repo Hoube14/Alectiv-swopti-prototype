@@ -97,6 +97,16 @@ export const useOrderStore = defineStore('order', () => {
     order.value.totalPrice = total;
   }
 
+  const showCheckoutSuccess = ref(false);
+  function setShowCheckoutSuccess(value) {
+    showCheckoutSuccess.value = !!value;
+  }
+
+  const showCheckoutCancel = ref(false);
+  function setShowCheckoutCancel(value) {
+    showCheckoutCancel.value = !!value;
+  }
+
   return {
     order,
     steps,
@@ -111,6 +121,10 @@ export const useOrderStore = defineStore('order', () => {
     progressBarCurrentIndex,
     navigateTo,
     updateOrder,
-    calculateTotalPrice
+    calculateTotalPrice,
+    showCheckoutSuccess,
+    setShowCheckoutSuccess,
+    showCheckoutCancel,
+    setShowCheckoutCancel
   };
 });
