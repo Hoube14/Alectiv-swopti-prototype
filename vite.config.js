@@ -7,6 +7,10 @@ import tailwindcss from '@tailwindcss/vite'
 // https://vite.dev/config/
 export default defineConfig({
   base: '/app/themes/glasonline/public/product-selector/',
+  define: {
+    // Cache-bust image URLs on each build so browsers and proxies fetch fresh assets
+    __BUILD_TIME__: JSON.stringify(Date.now()),
+  },
   plugins: [
     vue(),
     // Vue DevTools plugin can cause "Cannot read properties of null (reading 'tap')" when DOM/base path differs; disable if needed

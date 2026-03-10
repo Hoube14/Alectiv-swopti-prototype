@@ -27,10 +27,12 @@ const { updateOrder, navigateTo } = orderStore;
 
 const showPrescriptionManualForm = ref(false);
 
-// Get the image source from the environment variable for widget images
+// Get the image source; append build-time query to bust cache after deploys
 function getImageSrc(src) {
   if (!src) return '';
-  return import.meta.env.BASE_URL + src.replace(/^\//, '');
+  const path = import.meta.env.BASE_URL + src.replace(/^\//, '');
+  const v = typeof __BUILD_TIME__ !== 'undefined' ? __BUILD_TIME__ : '';
+  return v ? `${path}?v=${v}` : path;
 }
 
 // Get the initial glass type selection
