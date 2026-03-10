@@ -21,6 +21,12 @@ onMounted(() => {
   const checkout = params.get('checkout');
   orderStore.setShowCheckoutSuccess(checkout === 'success');
   orderStore.setShowCheckoutCancel(checkout === 'cancel');
+  if (checkout === 'success') {
+    try {
+      const saved = sessionStorage.getItem('glasonline_checkout_order');
+      if (saved) orderStore.restoreOrderFromCheckout(JSON.parse(saved));
+    } catch (_) { /* ignore */ }
+  }
 });
 
 const { showCheckoutSuccess, showCheckoutCancel } = storeToRefs(orderStore);

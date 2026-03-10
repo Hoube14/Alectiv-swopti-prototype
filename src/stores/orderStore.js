@@ -107,6 +107,16 @@ export const useOrderStore = defineStore('order', () => {
     showCheckoutCancel.value = !!value;
   }
 
+  function restoreOrderFromCheckout(payload) {
+    if (!payload || typeof payload !== 'object') return;
+    order.value = {
+      ...order.value,
+      selections: payload.selections && typeof payload.selections === 'object' ? payload.selections : {},
+      totalPrice: typeof payload.totalPrice === 'number' ? payload.totalPrice : 0,
+      shipping: typeof payload.shipping === 'number' ? payload.shipping : 0
+    };
+  }
+
   return {
     order,
     steps,
@@ -125,6 +135,7 @@ export const useOrderStore = defineStore('order', () => {
     showCheckoutSuccess,
     setShowCheckoutSuccess,
     showCheckoutCancel,
-    setShowCheckoutCancel
+    setShowCheckoutCancel,
+    restoreOrderFromCheckout
   };
 });

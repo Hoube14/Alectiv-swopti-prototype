@@ -82,6 +82,11 @@ async function proceedToCheckout() {
     const data = await response.json();
     const redirectUrl = data?.checkoutUrl ?? data?.url;
     if (redirectUrl) {
+      sessionStorage.setItem('glasonline_checkout_order', JSON.stringify({
+        selections: order.value?.selections ?? {},
+        totalPrice: order.value?.totalPrice ?? 0,
+        shipping: storeData?.defaults?.shipping ?? 0
+      }));
       window.location.href = redirectUrl;
     } else {
       throw new Error("No checkout URL in server response");
