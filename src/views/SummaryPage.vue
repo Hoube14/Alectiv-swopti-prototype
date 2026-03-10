@@ -56,13 +56,16 @@ function getCheckoutEndpoint() {
   return 'http://localhost:3001/create-checkout';
 }
 
+// Checkout payload: amount (order total from store: selections + tax + shipping), currency (SEK).
+// Same shape for Stripe create-checkout and Mollie create-payment.
 async function proceedToCheckout() {
   try {
+    const amount = Math.round(totalPrice.value * 100) / 100;
     const response = await fetch(getCheckoutEndpoint(), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        amount: totalPrice.value,
+        amount,
         currency
       })
     });
