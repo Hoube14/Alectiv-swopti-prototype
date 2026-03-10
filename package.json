@@ -7,9 +7,8 @@
     "node": "^20.19.0 || >=22.12.0"
   },
   "scripts": {
-    "dev": "concurrently \"vite\" \"npm run dev:stripe\"",
+    "dev": "vite",
     "dev:client": "vite",
-    "dev:stripe": "npm run start --prefix stripe-server",
     "build": "vite build",
     "build:wp": "npm run build && cp dist/product-selector*.js dist/product-selector*.css ../GlasOnline/web/app/themes/glasonline/public/product-selector/ && cp -r dist/images ../GlasOnline/web/app/themes/glasonline/public/product-selector/",
     "preview": "vite preview",
@@ -24,7 +23,6 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.1",
-    "concurrently": "^9.1.2",
     "prettier": "3.6.2",
     "vite": "^7.1.11",
     "vite-plugin-vue-devtools": "^8.0.3"

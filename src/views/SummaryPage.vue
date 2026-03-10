@@ -53,11 +53,11 @@ function getCheckoutEndpoint() {
   if (typeof window !== 'undefined' && window.glasonlineProductSelector?.createCheckoutUrl) {
     return window.glasonlineProductSelector.createCheckoutUrl;
   }
-  return 'http://localhost:3001/create-checkout';
+  return ''; // When not embedded, set glasonlineProductSelector.createCheckoutUrl to your Mollie create-payment URL.
 }
 
 // Checkout payload: amount (order total from store: selections + tax + shipping), currency (SEK).
-// Same shape for Stripe create-checkout and Mollie create-payment.
+// Payload for Mollie create-payment (amount, currency, redirectUrl, cancelUrl).
 async function proceedToCheckout() {
   try {
     const amount = Math.round(totalPrice.value * 100) / 100;
