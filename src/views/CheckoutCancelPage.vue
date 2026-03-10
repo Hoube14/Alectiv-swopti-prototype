@@ -6,7 +6,11 @@ const orderStore = useOrderStore();
 function clearUrlAndGo(stepId) {
   orderStore.setShowCheckoutSuccess(false);
   orderStore.setShowCheckoutCancel(false);
-  orderStore.navigateTo(stepId);
+  if (stepId === 'glassType') {
+    orderStore.resetOrder();
+  } else {
+    orderStore.navigateTo(stepId);
+  }
   if (typeof window !== 'undefined' && window.history.replaceState) {
     const url = new URL(window.location.href);
     url.searchParams.delete('checkout');

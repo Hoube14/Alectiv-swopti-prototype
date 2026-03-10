@@ -13,7 +13,7 @@ const currency = 'SEK';
 
 function startOver() {
   orderStore.setShowCheckoutSuccess(false);
-  orderStore.navigateTo('glassType');
+  orderStore.resetOrder();
   if (typeof window !== 'undefined') {
     sessionStorage.removeItem('glasonline_checkout_order');
     if (window.history.replaceState) {

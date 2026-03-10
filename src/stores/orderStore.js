@@ -117,6 +117,13 @@ export const useOrderStore = defineStore('order', () => {
     };
   }
 
+  /** Reset order and navigation so the user can start a new configuration from step 1. */
+  function resetOrder() {
+    order.value = { selections: {}, totalPrice: 0 };
+    navigationHistory.value = [];
+    currentStepId.value = 'glassType';
+  }
+
   return {
     order,
     steps,
@@ -136,6 +143,7 @@ export const useOrderStore = defineStore('order', () => {
     setShowCheckoutSuccess,
     showCheckoutCancel,
     setShowCheckoutCancel,
-    restoreOrderFromCheckout
+    restoreOrderFromCheckout,
+    resetOrder
   };
 });
