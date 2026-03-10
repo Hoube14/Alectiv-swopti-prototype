@@ -270,28 +270,32 @@ export default [
       {
         title: "Svarta",
         description: "Klara inomhus - mörknar i solen.",
-        imageSrc: "/images/Fargskiftandesvart.webp",
+        imageSrc: "/images/Fargskiftande-light.png",
+        imageSrcDark: "/images/Fargskiftande-svart.png",
         nextStep: 'usage',
         priceKey: 'photochromic_black'
       },
       {
         title: "Gröna",
         description: "Klara inomhus - mörknar i solen.",
-        imageSrc: "/images/Fargskiftandegron.webp",
+        imageSrc: "/images/Fargskiftande-light.png",
+        imageSrcDark: "/images/Fargskiftande-gron.png",
         nextStep: 'usage',
         priceKey: 'photochromic_green'
       },
       {
         title: "Bruna",
         description: "Klara inomhus - mörknar i solen.",
-        imageSrc: "/images/Fargskiftandebrun.webp",
+        imageSrc: "/images/Fargskiftande-light.png",
+        imageSrcDark: "/images/Fargskiftande-brun.png",
         nextStep: 'usage',
         priceKey: 'photochromic_brown'
       },
       {
         title: "Blåa",
         description: "Klara inomhus - mörknar i solen.",
-        imageSrc: "/images/Fargskiftandebla.webp",
+        imageSrc: "/images/Fargskiftande-light.png",
+        imageSrcDark: "/images/Fargskiftande-bla.png",
         nextStep: 'usage',
         priceKey: 'photochromic_blue'
       }
