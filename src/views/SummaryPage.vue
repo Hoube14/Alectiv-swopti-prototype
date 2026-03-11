@@ -24,6 +24,17 @@ const customerAddress1 = ref('');
 const customerPostcode = ref('');
 const customerCity = ref('');
 
+// Per-field validation errors (key = field name, value = error message or empty)
+const formErrors = ref({
+  customerName: '',
+  customerEmail: '',
+  customerPhone: '',
+  customerAddress1: '',
+  customerPostcode: '',
+  customerCity: ''
+});
+const formTouched = ref(false); // true after first submit attempt, to show errors
+
 function goBack() {
   if (navigationHistory.value && navigationHistory.value.length > 0) {
     const previousStepId = navigationHistory.value[navigationHistory.value.length - 1];
@@ -55,18 +66,73 @@ const productDetails = computed(() => {
   return details;
 });
 
+// Simple email format check
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// Swedish postcode: 5 digits, optional space between 3 and 2
+const postcodeRegex = /^\d{3}\s?\d{2}$/;
+// Phone: digits, spaces, +, - only; 7–15 digits for length
+function phoneDigitsOnly(str) {
+  const d = str.replace(/\D/g, '');
+  return d.length >= 7 && d.length <= 15;
+}
+// Name: only letters, spaces, hyphens (no digits)
+const nameOnlyLettersRegex = /^[\p{L}\p{M}\s\-]+$/u;
+
 function validateCustomerForm() {
-  if (
-    !customerName.value.trim() ||
-    !customerEmail.value.trim() ||
-    !customerAddress1.value.trim() ||
-    !customerPostcode.value.trim() ||
-    !customerCity.value.trim()
-  ) {
-    alert('Fyll i dina kund- och leveransuppgifter innan du går till betalning.');
-    return false;
+  formTouched.value = true;
+  const err = {
+    customerName: '',
+    customerEmail: '',
+    customerPhone: '',
+    customerAddress1: '',
+    customerPostcode: '',
+    customerCity: ''
+  };
+
+  const name = customerName.value.trim();
+  if (!name) {
+    err.customerName = 'Ange för- och efternamn';
+  } else if (name.length < 2) {
+    err.customerName = 'Namnet är för kort';
+  } else if (!nameOnlyLettersRegex.test(name)) {
+    err.customerName = 'Namnet får bara innehålla bokstäver (inga siffror)';
   }
-  return true;
+
+  const email = customerEmail.value.trim();
+  if (!email) {
+    err.customerEmail = 'Ange e-postadress';
+  } else if (!emailRegex.test(email)) {
+    err.customerEmail = 'Ange en giltig e-postadress';
+  }
+
+  const phone = customerPhone.value.trim();
+  if (phone && !phoneDigitsOnly(phone)) {
+    err.customerPhone = 'Ange ett giltigt telefonnummer (7–15 siffror)';
+  }
+
+  const address = customerAddress1.value.trim();
+  if (!address) {
+    err.customerAddress1 = 'Ange gatuadress';
+  } else if (address.length < 3) {
+    err.customerAddress1 = 'Adressen är för kort';
+  }
+
+  const postcodeRaw = customerPostcode.value.trim();
+  if (!postcodeRaw) {
+    err.customerPostcode = 'Ange postnummer';
+  } else if (!postcodeRegex.test(postcodeRaw)) {
+    err.customerPostcode = 'Ange ett giltigt postnummer (t.ex. 123 45)';
+  }
+
+  const city = customerCity.value.trim();
+  if (!city) {
+    err.customerCity = 'Ange ort';
+  } else if (city.length < 2) {
+    err.customerCity = 'Orten är för kort';
+  }
+
+  formErrors.value = err;
+  return !Object.values(err).some(Boolean);
 }
 
 function getCheckoutEndpoint() {
@@ -233,66 +299,100 @@ async function proceedToCheckout() {
 
           <div class="mt-8">
             <h2 class="text-xl font-semibold mb-4" style="color: var(--color-heading)">Dina uppgifter</h2>
+            <p v-if="formTouched && Object.values(formErrors).some(Boolean)" class="mb-4 text-sm rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-red-700" role="alert">
+              Kontrollera uppgifterna nedan. Fälten med fel måste rättas innan du kan gå vidare till betalning.
+            </p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="md:col-span-2">
                 <label class="block text-sm font-medium mb-1" style="color: var(--color-text)">Namn *</label>
                 <input
                   v-model="customerName"
                   type="text"
+                  :aria-invalid="!!formErrors.customerName"
+                  :aria-describedby="formErrors.customerName ? 'err-customerName' : undefined"
                   class="w-full rounded-lg border px-3 py-2 text-sm"
-                  style="border-color: var(--color-border); color: var(--color-text); background-color: var(--color-background);"
+                  :class="{ 'border-red-500': formErrors.customerName }"
+                  style="color: var(--color-text); background-color: var(--color-background);"
+                  :style="formErrors.customerName ? {} : { borderColor: 'var(--color-border)' }"
                   placeholder="För- och efternamn"
                 >
+                <p v-if="formErrors.customerName" id="err-customerName" class="mt-1 text-sm text-red-600">{{ formErrors.customerName }}</p>
               </div>
               <div>
                 <label class="block text-sm font-medium mb-1" style="color: var(--color-text)">E-post *</label>
                 <input
                   v-model="customerEmail"
                   type="email"
+                  :aria-invalid="!!formErrors.customerEmail"
+                  :aria-describedby="formErrors.customerEmail ? 'err-customerEmail' : undefined"
                   class="w-full rounded-lg border px-3 py-2 text-sm"
-                  style="border-color: var(--color-border); color: var(--color-text); background-color: var(--color-background);"
+                  :class="{ 'border-red-500': formErrors.customerEmail }"
+                  style="color: var(--color-text); background-color: var(--color-background);"
+                  :style="formErrors.customerEmail ? {} : { borderColor: 'var(--color-border)' }"
                   placeholder="namn@exempel.se"
                 >
+                <p v-if="formErrors.customerEmail" id="err-customerEmail" class="mt-1 text-sm text-red-600">{{ formErrors.customerEmail }}</p>
               </div>
               <div>
                 <label class="block text-sm font-medium mb-1" style="color: var(--color-text)">Telefon</label>
                 <input
                   v-model="customerPhone"
                   type="tel"
+                  :aria-invalid="!!formErrors.customerPhone"
+                  :aria-describedby="formErrors.customerPhone ? 'err-customerPhone' : undefined"
                   class="w-full rounded-lg border px-3 py-2 text-sm"
-                  style="border-color: var(--color-border); color: var(--color-text); background-color: var(--color-background);"
+                  :class="{ 'border-red-500': formErrors.customerPhone }"
+                  style="color: var(--color-text); background-color: var(--color-background);"
+                  :style="formErrors.customerPhone ? {} : { borderColor: 'var(--color-border)' }"
                   placeholder="Mobilnummer"
                 >
+                <p v-if="formErrors.customerPhone" id="err-customerPhone" class="mt-1 text-sm text-red-600">{{ formErrors.customerPhone }}</p>
               </div>
               <div class="md:col-span-2">
                 <label class="block text-sm font-medium mb-1" style="color: var(--color-text)">Adress *</label>
                 <input
                   v-model="customerAddress1"
                   type="text"
+                  :aria-invalid="!!formErrors.customerAddress1"
+                  :aria-describedby="formErrors.customerAddress1 ? 'err-customerAddress1' : undefined"
                   class="w-full rounded-lg border px-3 py-2 text-sm"
-                  style="border-color: var(--color-border); color: var(--color-text); background-color: var(--color-background);"
+                  :class="{ 'border-red-500': formErrors.customerAddress1 }"
+                  style="color: var(--color-text); background-color: var(--color-background);"
+                  :style="formErrors.customerAddress1 ? {} : { borderColor: 'var(--color-border)' }"
                   placeholder="Gatuadress och nummer"
                 >
+                <p v-if="formErrors.customerAddress1" id="err-customerAddress1" class="mt-1 text-sm text-red-600">{{ formErrors.customerAddress1 }}</p>
               </div>
               <div>
                 <label class="block text-sm font-medium mb-1" style="color: var(--color-text)">Postnummer *</label>
                 <input
                   v-model="customerPostcode"
                   type="text"
+                  inputmode="numeric"
+                  :aria-invalid="!!formErrors.customerPostcode"
+                  :aria-describedby="formErrors.customerPostcode ? 'err-customerPostcode' : undefined"
                   class="w-full rounded-lg border px-3 py-2 text-sm"
-                  style="border-color: var(--color-border); color: var(--color-text); background-color: var(--color-background);"
+                  :class="{ 'border-red-500': formErrors.customerPostcode }"
+                  style="color: var(--color-text); background-color: var(--color-background);"
+                  :style="formErrors.customerPostcode ? {} : { borderColor: 'var(--color-border)' }"
                   placeholder="t.ex. 123 45"
                 >
+                <p v-if="formErrors.customerPostcode" id="err-customerPostcode" class="mt-1 text-sm text-red-600">{{ formErrors.customerPostcode }}</p>
               </div>
               <div>
                 <label class="block text-sm font-medium mb-1" style="color: var(--color-text)">Ort *</label>
                 <input
                   v-model="customerCity"
                   type="text"
+                  :aria-invalid="!!formErrors.customerCity"
+                  :aria-describedby="formErrors.customerCity ? 'err-customerCity' : undefined"
                   class="w-full rounded-lg border px-3 py-2 text-sm"
-                  style="border-color: var(--color-border); color: var(--color-text); background-color: var(--color-background);"
+                  :class="{ 'border-red-500': formErrors.customerCity }"
+                  style="color: var(--color-text); background-color: var(--color-background);"
+                  :style="formErrors.customerCity ? {} : { borderColor: 'var(--color-border)' }"
                   placeholder="Stad/ort"
                 >
+                <p v-if="formErrors.customerCity" id="err-customerCity" class="mt-1 text-sm text-red-600">{{ formErrors.customerCity }}</p>
               </div>
             </div>
           </div>
