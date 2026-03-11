@@ -53,6 +53,13 @@ export default [
         description: 'Skicka in ditt recept via e-post när du är redo.',
         imageSrc: '/images/MailaSenare.png',
         nextStep: null
+      },
+      {
+        title: 'Ladda upp recept',
+        description: 'Ladda upp en bild eller PDF av ditt recept (PNG, JPG eller PDF).',
+        imageSrc: '/images/LaddaUppRecept.png',
+        nextStep: null,
+        opensUpload: true
       }
     ]
   },

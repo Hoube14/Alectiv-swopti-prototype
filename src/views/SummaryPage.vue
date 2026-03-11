@@ -279,7 +279,7 @@ async function proceedToCheckout() {
                 </div>
 
                 <div v-if="selections.prescription">
-                  <div>Recept: {{ selections.prescription.title }}</div>
+                  <div>Recept: {{ selections.prescription.title }}{{ selections.prescription.fileName ? ` (${selections.prescription.fileName})` : '' }}</div>
                 </div>
 
                 <div v-if="selections.lensBrand">

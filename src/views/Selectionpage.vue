@@ -5,6 +5,7 @@ import Card from '@/components/Card.vue';
 import ProgressBar from '@/components/ProgressBar.vue';
 import ShoppingCart from '@/components/ShoppingCart.vue';
 import PrescriptionForm from '@/components/PrescriptionForm.vue';
+import PrescriptionUpload from '@/components/PrescriptionUpload.vue';
 import { useOrderStore } from '@/stores/orderStore';
 
 // Props to make page dynamic
@@ -26,6 +27,7 @@ const {
 const { updateOrder, navigateTo } = orderStore;
 
 const showPrescriptionManualForm = ref(false);
+const showPrescriptionUpload = ref(false);
 
 // Get the image source; append build-time query to bust cache after deploys
 function getImageSrc(src) {
@@ -139,6 +141,10 @@ function handleSelection(option, index) {
       showPrescriptionManualForm.value = true;
       return;
     }
+    if (option.opensUpload) {
+      showPrescriptionUpload.value = true;
+      return;
+    }
     navigateTo(getNextStepAfterPrescription());
     return;
   }
@@ -173,10 +179,24 @@ function onPrescriptionFormCancel() {
   showPrescriptionManualForm.value = false;
 }
 
+function onPrescriptionUploadSubmit(payload) {
+  updateOrder('prescription', payload);
+  showPrescriptionUpload.value = false;
+  navigateTo(getNextStepAfterPrescription());
+}
+
+function onPrescriptionUploadCancel() {
+  showPrescriptionUpload.value = false;
+}
+
 function goBack() {
-  // When manual prescription form is open, back should close it and show the two prescription options
+  // When manual prescription form is open, back should close it and show prescription options
   if (props.step?.id === 'prescription' && showPrescriptionManualForm.value) {
     showPrescriptionManualForm.value = false;
+    return;
+  }
+  if (props.step?.id === 'prescription' && showPrescriptionUpload.value) {
+    showPrescriptionUpload.value = false;
     return;
   }
   // Get the last step from history
@@ -212,11 +232,17 @@ function goBack() {
         <div></div>
       </div>
 
-      <!-- Prescription step: show manual form or two options -->
+      <!-- Prescription step: show manual form, upload, or card options -->
       <template v-if="step && step.id === 'prescription' && showPrescriptionManualForm">
         <PrescriptionForm
           @submit="onPrescriptionFormSubmit"
           @cancel="onPrescriptionFormCancel"
+        />
+      </template>
+      <template v-else-if="step && step.id === 'prescription' && showPrescriptionUpload">
+        <PrescriptionUpload
+          @submit="onPrescriptionUploadSubmit"
+          @cancel="onPrescriptionUploadCancel"
         />
       </template>
       <template v-else>
