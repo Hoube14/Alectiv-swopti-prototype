@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import ProgressBar from '@/components/ProgressBar.vue';
 import { useOrderStore } from '@/stores/orderStore';
@@ -16,6 +16,13 @@ const {
   navigationHistory
 } = storeToRefs(orderStore);
 const { navigateTo, storeData } = orderStore;
+
+const customerName = ref('');
+const customerEmail = ref('');
+const customerPhone = ref('');
+const customerAddress1 = ref('');
+const customerPostcode = ref('');
+const customerCity = ref('');
 
 function goBack() {
   if (navigationHistory.value && navigationHistory.value.length > 0) {
@@ -48,6 +55,20 @@ const productDetails = computed(() => {
   return details;
 });
 
+function validateCustomerForm() {
+  if (
+    !customerName.value.trim() ||
+    !customerEmail.value.trim() ||
+    !customerAddress1.value.trim() ||
+    !customerPostcode.value.trim() ||
+    !customerCity.value.trim()
+  ) {
+    alert('Fyll i dina kund- och leveransuppgifter innan du går till betalning.');
+    return false;
+  }
+  return true;
+}
+
 function getCheckoutEndpoint() {
   // When embedded in WordPress (GlasOnline), URL is set via wp_localize_script
   if (typeof window !== 'undefined' && window.glasonlineProductSelector?.createCheckoutUrl) {
@@ -74,6 +95,9 @@ function buildOrderPayloadFromSelections() {
 
 // Checkout payload: amount, currency, redirect/cancel URLs, and draft (customer + order_payload_json) so backend can create WC order in webhook.
 async function proceedToCheckout() {
+  if (!validateCustomerForm()) {
+    return;
+  }
   try {
     const amount = Math.round(totalPrice.value * 100) / 100;
     const returnBase = typeof window !== 'undefined' ? window.location.origin + window.location.pathname : '';
@@ -86,8 +110,18 @@ async function proceedToCheckout() {
       redirectUrl: redirectUrlParam,
       cancelUrl: cancelUrlParam,
       draft: {
-        order_payload_json: buildOrderPayloadFromSelections()
-        // customer_name, customer_email, billing_* can be added when you have a customer form step
+        order_payload_json: buildOrderPayloadFromSelections(),
+        customer_name: customerName.value.trim(),
+        customer_email: customerEmail.value.trim(),
+        customer_phone: customerPhone.value.trim(),
+        billing_address_1: customerAddress1.value.trim(),
+        billing_postcode: customerPostcode.value.trim(),
+        billing_city: customerCity.value.trim(),
+        billing_country: 'SE',
+        shipping_address_1: customerAddress1.value.trim(),
+        shipping_postcode: customerPostcode.value.trim(),
+        shipping_city: customerCity.value.trim(),
+        shipping_country: 'SE'
       }
     };
     const response = await fetch(getCheckoutEndpoint(), {
@@ -196,7 +230,73 @@ async function proceedToCheckout() {
               </div>
             </div>
           </div>
-          
+
+          <div class="mt-8">
+            <h2 class="text-xl font-semibold mb-4" style="color: var(--color-heading)">Dina uppgifter</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="md:col-span-2">
+                <label class="block text-sm font-medium mb-1" style="color: var(--color-text)">Namn *</label>
+                <input
+                  v-model="customerName"
+                  type="text"
+                  class="w-full rounded-lg border px-3 py-2 text-sm"
+                  style="border-color: var(--color-border); color: var(--color-text); background-color: var(--color-background);"
+                  placeholder="För- och efternamn"
+                >
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1" style="color: var(--color-text)">E-post *</label>
+                <input
+                  v-model="customerEmail"
+                  type="email"
+                  class="w-full rounded-lg border px-3 py-2 text-sm"
+                  style="border-color: var(--color-border); color: var(--color-text); background-color: var(--color-background);"
+                  placeholder="namn@exempel.se"
+                >
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1" style="color: var(--color-text)">Telefon</label>
+                <input
+                  v-model="customerPhone"
+                  type="tel"
+                  class="w-full rounded-lg border px-3 py-2 text-sm"
+                  style="border-color: var(--color-border); color: var(--color-text); background-color: var(--color-background);"
+                  placeholder="Mobilnummer"
+                >
+              </div>
+              <div class="md:col-span-2">
+                <label class="block text-sm font-medium mb-1" style="color: var(--color-text)">Adress *</label>
+                <input
+                  v-model="customerAddress1"
+                  type="text"
+                  class="w-full rounded-lg border px-3 py-2 text-sm"
+                  style="border-color: var(--color-border); color: var(--color-text); background-color: var(--color-background);"
+                  placeholder="Gatuadress och nummer"
+                >
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1" style="color: var(--color-text)">Postnummer *</label>
+                <input
+                  v-model="customerPostcode"
+                  type="text"
+                  class="w-full rounded-lg border px-3 py-2 text-sm"
+                  style="border-color: var(--color-border); color: var(--color-text); background-color: var(--color-background);"
+                  placeholder="t.ex. 123 45"
+                >
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1" style="color: var(--color-text)">Ort *</label>
+                <input
+                  v-model="customerCity"
+                  type="text"
+                  class="w-full rounded-lg border px-3 py-2 text-sm"
+                  style="border-color: var(--color-border); color: var(--color-text); background-color: var(--color-background);"
+                  placeholder="Stad/ort"
+                >
+              </div>
+            </div>
+          </div>
+
           <div class="flex justify-between py-2" style="color: var(--color-text)">
             <span>Frakt</span>
             <span>{{ storeData?.defaults?.shipping || 0 }} {{ currency }}</span>

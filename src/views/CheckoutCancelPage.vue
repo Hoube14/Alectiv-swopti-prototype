@@ -14,6 +14,7 @@ function clearUrlAndGo(stepId) {
   if (typeof window !== 'undefined' && window.history.replaceState) {
     const url = new URL(window.location.href);
     url.searchParams.delete('checkout');
+    url.searchParams.delete('draft_id');
     window.history.replaceState({}, '', url.pathname + (url.search || ''));
   }
 }

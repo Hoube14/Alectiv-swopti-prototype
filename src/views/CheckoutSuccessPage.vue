@@ -19,6 +19,7 @@ function startOver() {
     if (window.history.replaceState) {
       const url = new URL(window.location.href);
       url.searchParams.delete('checkout');
+      url.searchParams.delete('draft_id');
       window.history.replaceState({}, '', url.pathname + (url.search || ''));
     }
   }
