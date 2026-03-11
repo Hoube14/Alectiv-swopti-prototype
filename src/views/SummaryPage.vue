@@ -56,22 +56,44 @@ function getCheckoutEndpoint() {
   return ''; // When not embedded, set glasonlineProductSelector.createCheckoutUrl to your Mollie create-payment URL.
 }
 
-// Checkout payload: amount (order total from store: selections + tax + shipping), currency (SEK).
-// Payload for Mollie create-payment (amount, currency, redirectUrl, cancelUrl).
+// Build order line items for draft.order_payload_json (used by backend to create WC order in webhook).
+function buildOrderPayloadFromSelections() {
+  const sel = order.value?.selections ?? {};
+  const shipping = storeData?.defaults?.shipping ?? 0;
+  const total = totalPrice.value ?? 0;
+  const productSubtotal = total - shipping;
+  const productTitle = sel.glassType?.title
+    ? `${sel.glassType.title}${sel.tintSelection?.title ? ` - ${sel.tintSelection.title}` : ' - ofärgade'}`
+    : 'Glasögon';
+  const lines = [{ name: productTitle, qty: 1, price: Math.round(productSubtotal * 100) / 100 }];
+  if (shipping > 0) {
+    lines.push({ name: 'Frakt', qty: 1, price: Math.round(shipping * 100) / 100 });
+  }
+  return lines;
+}
+
+// Checkout payload: amount, currency, redirect/cancel URLs, and draft (customer + order_payload_json) so backend can create WC order in webhook.
 async function proceedToCheckout() {
   try {
     const amount = Math.round(totalPrice.value * 100) / 100;
     const returnBase = typeof window !== 'undefined' ? window.location.origin + window.location.pathname : '';
     const q = returnBase && (returnBase.includes('?') ? '&' : '?');
+    const redirectUrlParam = returnBase ? `${returnBase}${q}checkout=success` : undefined;
+    const cancelUrlParam = returnBase ? `${returnBase}${q}checkout=cancel` : undefined;
+    const payload = {
+      amount,
+      currency,
+      redirectUrl: redirectUrlParam,
+      cancelUrl: cancelUrlParam,
+      draft: {
+        order_payload_json: buildOrderPayloadFromSelections()
+        // customer_name, customer_email, billing_* can be added when you have a customer form step
+      }
+    };
     const response = await fetch(getCheckoutEndpoint(), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        amount,
-        currency,
-        redirectUrl: returnBase ? `${returnBase}${q}checkout=success` : undefined,
-        cancelUrl: returnBase ? `${returnBase}${q}checkout=cancel` : undefined
-      })
+      body: JSON.stringify(payload)
     });
     
     if (!response.ok) {
