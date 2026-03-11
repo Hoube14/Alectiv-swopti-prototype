@@ -121,7 +121,18 @@ function getOptionPrice(option) {
 }
 
 function handleSelection(option, index) {
+  // When selecting a glass type that requires prescription, clear any previous "Utan styrkor" prescription
+  if (props.step.id === 'glassType' && option.nextStep === 'prescription') {
+    updateOrder('prescription', null);
+  }
+
   updateOrder(props.step.id, option);
+
+  if (props.step.id === 'glassType' && option.skipsPrescription) {
+    updateOrder('prescription', option);
+    navigateTo(option.nextStep);
+    return;
+  }
 
   if (props.step.id === 'prescription') {
     if (option.opensManualForm) {

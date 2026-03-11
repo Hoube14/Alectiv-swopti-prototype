@@ -25,6 +25,13 @@ export default [
         imageSrc: "/images/Terminal.png",
         priceKey: 'glass_terminal',
         nextStep: 'prescription'
+      },
+      {
+        title: 'Utan styrkor',
+        description: 'Jag behöver inte styrkor – t.ex. solglas utan styrka.',
+        imageSrc: '/images/UtanStyrkor.png',
+        nextStep: 'lensBrand',
+        skipsPrescription: true
       }
     ]
   },
@@ -45,12 +52,6 @@ export default [
         title: 'Maila in senare',
         description: 'Skicka in ditt recept via e-post när du är redo.',
         imageSrc: '/images/MailaSenare.png',
-        nextStep: null
-      },
-      {
-        title: 'Utan styrkor',
-        description: 'Jag behöver inte styrkor – t.ex. solglas utan styrka eller tomma bågar.',
-        imageSrc: '/images/UtanStyrkor.png',
         nextStep: null
       }
     ]
