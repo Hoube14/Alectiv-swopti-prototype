@@ -6,18 +6,18 @@ const emit = defineEmits(['submit', 'cancel']);
 // Sphere: minus first, plus last (common prescription order). 0 ends up in the middle.
 const sphereOptions = (() => {
   const opts = [{ value: '', label: 'Välj' }];
-  for (let i = -20; i <= 20; i += 0.25) {
+  for (let i = -6; i <= 6; i += 0.25) {
     const v = i.toFixed(2);
     opts.push({ value: v, label: i >= 0 ? `+${v}` : v });
   }
   return opts;
 })();
 
-// Cylinder: 0 first so list opens at 0 (then -0.25 down to -6)
+// Cylinder: 0 first so list opens at 0 (then -0.25 down to -2)
 const cylinderOptions = (() => {
   const opts = [{ value: '', label: 'Välj' }];
   opts.push({ value: '0.00', label: '0.00' });
-  for (let i = -0.25; i >= -6; i -= 0.25) {
+  for (let i = -0.25; i >= -2; i -= 0.25) {
     const v = i.toFixed(2);
     opts.push({ value: v, label: v });
   }
