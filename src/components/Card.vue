@@ -31,7 +31,7 @@ defineEmits(['click']);
       <img v-else :src="imageSrc" :alt="title" class="h-24 object-contain">
     </div>
     <h3 class="font-semibold text-lg mb-2 text-center flex-shrink-0" style="color: var(--color-heading)">{{ title }}</h3>
-    <p v-if="recommended" class="text-xs font-medium mb-1 flex-shrink-0" style="color: var(--color-primary)">Rekommenderas för dina styrkor</p>
+    <p v-if="recommended" class="text-xs font-bold mb-1 flex-shrink-0" style="color: var(--color-recommended)">Rekommenderas för dina styrkor</p>
     <p class="text-sm text-center flex-1 min-h-0 leading-relaxed" style="color: var(--color-text)">{{ description }}</p>
 
     <!-- Display price if available -->
