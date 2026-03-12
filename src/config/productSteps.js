@@ -317,7 +317,7 @@ export default [
     options: [
       {
         title: "Grå",
-        imageSrc: "/images/Enkelslipad.png",
+        imageSrc: "/images/Gra.png",
         nextStep: 'usage',
       },
       {
