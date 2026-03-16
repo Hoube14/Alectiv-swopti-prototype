@@ -106,11 +106,6 @@ function getProperTitle(option) {
     return option.title.replace("Enkelslipade", "Progressiva");
   }
   
-  // For Terminalglas
-  if (initialGlassType.value === "Terminalglas" && option.title.includes("Enkelslipade")) {
-    return option.title.replace("Enkelslipade", "Terminal");
-  }
-  
   return option.title;
 }
 

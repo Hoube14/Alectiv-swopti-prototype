@@ -18,14 +18,7 @@ export default [
         imageSrc: "/images/Progressiva.png",
         priceKey: 'glass_progressive',
         nextStep: 'prescription'
-      },
-      {
-        title: "Terminalglas",
-        description: "Enkelslipade glas avsedda för jobb framför datorn. Ger extra läs-styrka.",
-        imageSrc: "/images/Terminal.png",
-        priceKey: 'glass_terminal',
-        nextStep: 'prescription'
-      }    
+      }
     ]
   },
   {
