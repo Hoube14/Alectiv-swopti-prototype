@@ -45,6 +45,9 @@ const isDistanceOrAllround = computed(
   () => order.value.selections?.usage?.title === 'Avstånd / Allround'
 );
 
+// Only progressive lenses require segment/fitting height (in mm)
+const requiresHeight = computed(() => initialGlassType.value === 'Progressiva glas');
+
 // Max absolute sphere from prescription (for lens recommendation). Null if no manual prescription.
 const maxSphereFromPrescription = computed(() => {
   const manual = order.value.selections?.prescription?.manual;
@@ -267,6 +270,7 @@ function goBack() {
       <template v-if="step && step.id === 'prescription' && showPrescriptionManualForm">
         <PrescriptionForm
           :is-distance-or-allround="isDistanceOrAllround"
+          :requires-height="requiresHeight"
           @submit="onPrescriptionFormSubmit"
           @cancel="onPrescriptionFormCancel"
         />

@@ -6,6 +6,11 @@ const props = defineProps({
   isDistanceOrAllround: {
     type: Boolean,
     default: false
+  },
+  /** When true (Progressiva glas), segment/fitting height in mm is required. */
+  requiresHeight: {
+    type: Boolean,
+    default: false
   }
 });
 
@@ -53,6 +58,13 @@ const pdOptions = (() => {
   return opts;
 })();
 
+// Segment/fitting height for progressive lenses (mm)
+const heightMmOptions = (() => {
+  const opts = [{ value: '', label: 'Välj' }];
+  for (let i = 15; i <= 35; i += 1) opts.push({ value: String(i), label: `${i} mm` });
+  return opts;
+})();
+
 // Sphere and cylinder default 0.00 so lists open with 0 visible
 const form = ref({
   right: { sphere: '0.00', cylinder: '0.00', axis: '', add: '' },
@@ -64,7 +76,9 @@ const form = ref({
   hasPrism: false,
   // Prism fields – extend with actual options (e.g. amount, base direction) later
   prism: { right: {}, left: {} },
-  receiptNotOlderThanOneYear: false
+  receiptNotOlderThanOneYear: false,
+  /** Segment/fitting height in mm (required for progressive lenses only) */
+  heightMm: ''
 });
 
 const canSubmit = computed(() => {
@@ -74,7 +88,8 @@ const canSubmit = computed(() => {
   const hasPd = form.value.separatePd
     ? (form.value.pdRight !== '' && form.value.pdLeft !== '')
     : form.value.pd !== '';
-  return hasSphere && hasPd && form.value.receiptNotOlderThanOneYear;
+  const heightOk = !props.requiresHeight || form.value.heightMm !== '';
+  return hasSphere && hasPd && form.value.receiptNotOlderThanOneYear && heightOk;
 });
 
 // Reading power = Sphere + ADD (only relevant when not distance/allround)
@@ -115,6 +130,9 @@ function getPayload() {
     pd: form.value.separatePd ? { right: form.value.pdRight, left: form.value.pdLeft } : form.value.pd,
     receiptNotOlderThanOneYear: form.value.receiptNotOlderThanOneYear
   };
+  if (props.requiresHeight && form.value.heightMm !== '') {
+    manual.heightMm = form.value.heightMm;
+  }
   if (form.value.hasPrism) {
     manual.prism = { ...form.value.prism };
   }
@@ -234,6 +252,19 @@ function cancel() {
           <span class="text-gray-500">Vänster öga (OS):</span>
           <span class="ml-2 font-medium text-gray-900">{{ readingPower.left ?? '—' }}</span>
         </div>
+      </div>
+    </div>
+
+    <!-- Segment/fitting height: required for progressive lenses only -->
+    <div v-if="requiresHeight" class="mb-6">
+      <label class="mb-2 block text-sm font-medium text-gray-700">Höjd (mm) *</label>
+      <p class="mb-2 text-xs text-gray-500">
+        Monteringshöjd för progressiva glas.
+      </p>
+      <div class="grid grid-cols-1 gap-4 max-w-xs">
+        <select v-model="form.heightMm" class="rounded border border-gray-300 px-3 py-2 text-gray-900">
+          <option v-for="opt in heightMmOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+        </select>
       </div>
     </div>
 
