@@ -428,7 +428,7 @@ function cancel() {
         class="mt-1 h-4 w-4 rounded border-gray-300"
       />
       <label for="receipt-age" class="text-sm text-gray-700">
-        Jag intygar att mitt recept inte är äldre än ett år.
+        jag intygar att jag skrivit in rätt styrkor
       </label>
     </div>
 
