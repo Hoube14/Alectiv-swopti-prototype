@@ -73,9 +73,6 @@ const form = ref({
   pdRight: '',
   pdLeft: '',
   separatePd: false,
-  hasPrism: false,
-  // Prism fields – extend with actual options (e.g. amount, base direction) later
-  prism: { right: {}, left: {} },
   receiptNotOlderThanOneYear: false,
   /** Segment/fitting height in mm (required for progressive lenses only) */
   heightMm: '',
@@ -146,9 +143,6 @@ function getPayload() {
   };
   if (props.requiresHeight && form.value.heightMm !== '') {
     manual.heightMm = form.value.heightMm;
-  }
-  if (form.value.hasPrism) {
-    manual.prism = { ...form.value.prism };
   }
   return {
     title: 'Manuellt',
@@ -386,40 +380,7 @@ function cancel() {
       </div>
     </div>
 
-    <!-- Prism: show extra options only when user checks the box -->
-    <div class="mb-6">
-      <div class="flex items-center gap-2">
-        <input
-          id="has-prism"
-          v-model="form.hasPrism"
-          type="checkbox"
-          class="h-4 w-4 rounded border-gray-300"
-        />
-        <label for="has-prism" class="text-sm font-medium text-gray-700">Jag har prisma på mitt recept</label>
-      </div>
-      <div v-if="form.hasPrism" class="mt-4 rounded-lg border border-gray-200 bg-gray-50 p-4">
-        <p class="mb-3 text-sm font-medium text-gray-700">Prisma – höger och vänster öga</p>
-        <p class="mb-4 text-xs text-gray-500">
-          Fält för prisma kommer att läggas till här (t.ex. styrka och basriktning).
-        </p>
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label class="mb-1 block text-xs text-gray-600">Höger öga (OD)</label>
-            <div class="rounded border border-dashed border-gray-300 bg-white px-3 py-2 text-sm text-gray-400">
-              Placeholder – lägg till prisma-fält senare
-            </div>
-          </div>
-          <div>
-            <label class="mb-1 block text-xs text-gray-600">Vänster öga (OS)</label>
-            <div class="rounded border border-dashed border-gray-300 bg-white px-3 py-2 text-sm text-gray-400">
-              Placeholder – lägg till prisma-fält senare
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Guarantee that the receipt is not older than one year -->
+    <!-- Attestation: correct strengths entered -->
     <div class="mb-6 flex items-start gap-3">
       <input
         id="receipt-age"
