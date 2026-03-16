@@ -72,10 +72,22 @@ const recommendedLensIndex = computed(() => {
   return idx >= 0 ? idx : null;
 });
 
-// Options to display: use filtered list for lensRecommendation, otherwise step.options
+// Options to display: use filtered list for lensRecommendation, otherwise step.options.
+// Hide "Utan styrkor" in prescription step when initial glass type is progressive.
 const displayOptions = computed(() => {
-  if (props.step?.id === 'lensRecommendation') return lensRecommendationOptions.value;
-  return props.step?.options ?? [];
+  if (!props.step) return [];
+
+  if (props.step.id === 'lensRecommendation') {
+    return lensRecommendationOptions.value;
+  }
+
+  let options = props.step.options ?? [];
+
+  if (props.step.id === 'prescription' && initialGlassType.value === 'Progressiva glas') {
+    options = options.filter((opt) => opt.title !== 'Utan styrkor');
+  }
+
+  return options;
 });
 
 function getNextStepAfterPrescription() {
