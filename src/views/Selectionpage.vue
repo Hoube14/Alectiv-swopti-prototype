@@ -137,6 +137,10 @@ function handleSelection(option, index) {
   }
 
   if (props.step.id === 'prescription') {
+    if (option.skipsPrescription) {
+      navigateTo(getNextStepAfterPrescription());
+      return;
+    }
     if (option.opensManualForm) {
       showPrescriptionManualForm.value = true;
       return;

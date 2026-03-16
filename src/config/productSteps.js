@@ -6,7 +6,7 @@ export default [
     backStep: null,
     options: [
       {
-        title: "Enkelslipade glas",
+        title: "Enkelslipade glas / glas utan styrka",
         description: "Glas som korrigerar ett synfel - avstånd eller nära.",
         imageSrc: "/images/Enkelslipad.png",
         priceKey: 'glass_single',
@@ -25,14 +25,7 @@ export default [
         imageSrc: "/images/Terminal.png",
         priceKey: 'glass_terminal',
         nextStep: 'prescription'
-      },
-      {
-        title: 'Utan styrkor',
-        description: 'Jag behöver inte styrkor – t.ex. solglas utan styrka.',
-        imageSrc: '/images/UtanStyrkor.png',
-        nextStep: 'lensBrand',
-        skipsPrescription: true
-      }
+      }    
     ]
   },
   {
@@ -41,6 +34,13 @@ export default [
     showBackButton: true,
     backStep: null,
     options: [
+      {
+        title: 'Utan styrkor',
+        description: 'Jag behöver inte styrkor – t.ex. solglas utan styrka.',
+        imageSrc: '/images/UtanStyrkor.png',
+        nextStep: 'lensBrand',
+        skipsPrescription: true
+      },
       {
         title: 'Lägg till manuellt',
         description: 'Fyll i dina styrkor från receptet nedan.',
