@@ -78,8 +78,19 @@ const form = ref({
   prism: { right: {}, left: {} },
   receiptNotOlderThanOneYear: false,
   /** Segment/fitting height in mm (required for progressive lenses only) */
-  heightMm: ''
+  heightMm: '',
+  /** User has followed the height measuring instructions (required if they opened the guide) */
+  heightInstructionsConfirmed: false
 });
+
+// Height guide: once opened, user must confirm they followed instructions to submit
+const showHeightGuide = ref(false);
+const hasOpenedHeightGuide = ref(false);
+
+function openHeightGuide() {
+  showHeightGuide.value = true;
+  hasOpenedHeightGuide.value = true;
+}
 
 const canSubmit = computed(() => {
   const r = form.value.right;
@@ -88,7 +99,10 @@ const canSubmit = computed(() => {
   const hasPd = form.value.separatePd
     ? (form.value.pdRight !== '' && form.value.pdLeft !== '')
     : form.value.pd !== '';
-  const heightOk = !props.requiresHeight || form.value.heightMm !== '';
+  const heightOk =
+    !props.requiresHeight ||
+    (form.value.heightMm !== '' &&
+      (!hasOpenedHeightGuide.value || form.value.heightInstructionsConfirmed));
   return hasSphere && hasPd && form.value.receiptNotOlderThanOneYear && heightOk;
 });
 
@@ -265,6 +279,44 @@ function cancel() {
         <select v-model="form.heightMm" class="rounded border border-gray-300 px-3 py-2 text-gray-900">
           <option v-for="opt in heightMmOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
         </select>
+      </div>
+
+      <!-- "I don't have a height – how do I measure?" expandable guide -->
+      <button
+        type="button"
+        class="mt-3 flex w-full max-w-md items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-left text-sm text-gray-700 transition hover:bg-gray-100 hover:border-gray-300"
+        @click="openHeightGuide"
+      >
+        <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded border border-gray-300 bg-white text-gray-500">?</span>
+        <span>Jag har ingen höjd – hur mäter jag det?</span>
+      </button>
+
+      <!-- Step-by-step height measuring guide -->
+      <div
+        v-if="showHeightGuide"
+        class="mt-4 max-w-md rounded-lg border border-gray-200 bg-gray-50 p-4"
+      >
+        <p class="mb-3 font-medium text-gray-800">Så mäter du monteringshöjden</p>
+        <ol class="list-decimal space-y-2 pl-4 text-sm text-gray-700">
+          <li>Ta på dig bågen (utan glas) och sätt dig framför en spegel.</li>
+          <li>Titta rakt fram med huvudet i naturlig ställning.</li>
+          <li>Mät med en linjal från nederkanten av linsöppningen (eller bågens inre kant) upp till mitt av pupillen – i millimeter.</li>
+          <li>Upprepa för andra ögat och notera värdet (ofta samma för båda). Avrunda till närmaste heltal.</li>
+        </ol>
+        <p class="mt-3 text-xs text-gray-500">
+          Har du redan ett recept med monteringshöjd angiven, använd det värdet.
+        </p>
+        <div class="mt-4 flex items-start gap-3 rounded border border-gray-200 bg-white p-3">
+          <input
+            id="height-instructions-confirmed"
+            v-model="form.heightInstructionsConfirmed"
+            type="checkbox"
+            class="mt-1 h-4 w-4 rounded border-gray-300"
+          />
+          <label for="height-instructions-confirmed" class="text-sm text-gray-700">
+            Jag har följt instruktionerna och mätt höjden (eller använt värdet från receptet).
+          </label>
+        </div>
       </div>
     </div>
 
