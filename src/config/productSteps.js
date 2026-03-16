@@ -28,13 +28,6 @@ export default [
     backStep: null,
     options: [
       {
-        title: 'Utan styrkor',
-        description: 'Jag behöver inte styrkor – t.ex. solglas utan styrka.',
-        imageSrc: '/images/UtanStyrkor.png',
-        nextStep: 'lensBrand',
-        skipsPrescription: true
-      },
-      {
         title: 'Lägg till manuellt',
         description: 'Fyll i dina styrkor från receptet nedan.',
         imageSrc: '/images/Manuellt.png',
@@ -347,9 +340,11 @@ export default [
         nextStep: null
       },
       {
-        title: "Vet ej",
-        description: "välj detta om du är osäker. Vi kollar på ditt recept och återkopplar till dig",
-        nextStep: null
+        title: 'Utan styrkor',
+        description: 'Jag behöver inte styrkor – t.ex. solglas utan styrka.',
+        imageSrc: '/images/UtanStyrkor.png',
+        nextStep: 'lensBrand',
+        skipsPrescription: true
       }
     ]
   },
