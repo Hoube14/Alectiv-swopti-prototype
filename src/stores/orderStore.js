@@ -34,6 +34,12 @@ export const useOrderStore = defineStore('order', () => {
     let max = 0;
     for (const opt of step.options) {
       let next = opt.nextStep;
+
+      // Special case: usage always leads to prescription in our current flow.
+      if (!next && stepId === 'usage') {
+        next = 'prescription';
+      }
+
       if (!next && stepId === 'prescription') next = 'lensBrand';
       if (!next) next = 'summary';
       max = Math.max(max, 1 + maxStepsToSummary(next));
@@ -41,7 +47,7 @@ export const useOrderStore = defineStore('order', () => {
     return max;
   }
 
-  // Dynamic progress: total = completed + remaining (so bar doesn't jump when path is shorter than max)
+  // Dynamic progress: total = completed + remaining along the current path
   const progressBarTotalSteps = computed(() => {
     const remaining = maxStepsToSummary(currentStepId.value);
     return visitedSteps.value + remaining;

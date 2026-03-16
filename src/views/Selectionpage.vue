@@ -160,6 +160,15 @@ function handleSelection(option, index) {
     return;
   }
 
+  // After choosing usage for single vision / no-power glasses, go to prescription step instead of summary
+  if (
+    props.step.id === 'usage' &&
+    initialGlassType.value === 'Enkelslipade glas / glas utan styrka'
+  ) {
+    navigateTo('prescription');
+    return;
+  }
+
   if (props.step.id === 'lensBrand') {
     navigateTo(getNextStepAfterLensBrand());
     return;

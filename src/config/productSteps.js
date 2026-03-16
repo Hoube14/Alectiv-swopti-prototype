@@ -10,7 +10,7 @@ export default [
         description: "Glas som korrigerar ett synfel - avstånd eller nära.",
         imageSrc: "/images/Enkelslipad.png",
         priceKey: 'glass_single',
-        nextStep: 'prescription'
+        nextStep: 'usage'
       },
       {
         title: "Progressiva glas",
@@ -147,7 +147,7 @@ export default [
         description: "I nästa steg kan du lägga till blåljusfilter som tillval.",
         imageSrc: "/images/Enkelslipad.png",
         priceKey: 'tint_none',
-        nextStep: 'usage'
+        nextStep: 'summary'
       },
       {
         title: "Solglas",
@@ -273,7 +273,7 @@ export default [
         description: "Klara inomhus - mörknar i solen.",
         imageSrc: "/images/Fargskiftande-light.png",
         imageSrcDark: "/images/Fargskiftande-svart.png",
-        nextStep: 'usage',
+        nextStep: 'summary',
         priceKey: 'photochromic_black'
       },
       {
@@ -281,7 +281,7 @@ export default [
         description: "Klara inomhus - mörknar i solen.",
         imageSrc: "/images/Fargskiftande-light.png",
         imageSrcDark: "/images/Fargskiftande-gron.png",
-        nextStep: 'usage',
+        nextStep: 'summary',
         priceKey: 'photochromic_green'
       },
       {
@@ -289,7 +289,7 @@ export default [
         description: "Klara inomhus - mörknar i solen.",
         imageSrc: "/images/Fargskiftande-light.png",
         imageSrcDark: "/images/Fargskiftande-brun.png",
-        nextStep: 'usage',
+        nextStep: 'summary',
         priceKey: 'photochromic_brown'
       },
       {
@@ -297,7 +297,7 @@ export default [
         description: "Klara inomhus - mörknar i solen.",
         imageSrc: "/images/Fargskiftande-light.png",
         imageSrcDark: "/images/Fargskiftande-bla.png",
-        nextStep: 'usage',
+        nextStep: 'summary',
         priceKey: 'photochromic_blue'
       }
     ]
@@ -311,22 +311,22 @@ export default [
       {
         title: "Grå",
         imageSrc: "/images/Gra.png",
-        nextStep: 'usage',
+        nextStep: 'summary',
       },
       {
         title: "Grön",
         imageSrc: "/images/Gron.png",
-        nextStep: 'usage',
+        nextStep: 'summary',
       },
       {
         title: "Brun",
         imageSrc: "/images/Brun.png",
-        nextStep: 'usage',
+        nextStep: 'summary',
       },
       {
         title: "Blå",
         imageSrc: "/images/Bla.png",
-        nextStep: 'usage',
+        nextStep: 'summary',
       }
     ]
   },
@@ -339,17 +339,17 @@ export default [
       {
         title: "Avstånd / Allround",
         description: "Bra i vardagen (t.ex. bilkörning, tv). Välj detta för glasögon som används hela dagen.",
-        nextStep: 'summary'
+        nextStep: null
       },
       {
         title: "Läsavstånd",
         description: "Endast nära håll (t.ex. läsa en bok). Kräver en ADD (närstyrka) i ditt recept",
-        nextStep: 'summary'
+        nextStep: null
       },
       {
         title: "Vet ej",
         description: "välj detta om du är osäker. Vi kollar på ditt recept och återkopplar till dig",
-        nextStep: 'summary'
+        nextStep: null
       }
     ]
   },
