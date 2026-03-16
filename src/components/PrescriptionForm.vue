@@ -171,9 +171,42 @@ function cancel() {
     <h3 class="mb-4 text-center text-lg font-semibold text-gray-900">
       Lägg till dina styrkor manuellt
     </h3>
-    <p class="mb-6 text-center text-sm text-gray-600">
+    <p class="mb-4 text-center text-sm text-gray-600">
       Fyll i ditt glasögonrecept. Det är inte alla recept som har cylinder och axel – lämna dessa tomma om de inte finns.
     </p>
+
+    <!-- Glasses diagram: front view so Höger/Vänster match form columns (viewer perspective) -->
+    <div class="mb-6 flex flex-col items-center gap-2">
+      <p class="text-xs text-gray-500 text-center">
+        Receptet anges som man ser dig framifrån – därför står höger till vänster i formuläret.
+      </p>
+      <div class="flex items-center justify-center" aria-hidden="true">
+        <svg
+          viewBox="0 0 200 80"
+          class="h-20 w-auto max-w-[200px] text-gray-400"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <!-- Left lens (wearer's right = Höger) -->
+          <ellipse cx="60" cy="40" rx="32" ry="28" stroke-width="2" />
+          <text x="60" y="44" text-anchor="middle" font-size="22" font-weight="600" fill="#4b5563" font-family="system-ui, sans-serif">H</text>
+          <!-- Right lens (wearer's left = Vänster) -->
+          <ellipse cx="140" cy="40" rx="32" ry="28" stroke-width="2" />
+          <text x="140" y="44" text-anchor="middle" font-size="22" font-weight="600" fill="#4b5563" font-family="system-ui, sans-serif">V</text>
+          <!-- Bridge -->
+          <path d="M92 32 L108 32" stroke-linecap="round" />
+          <!-- Left temple -->
+          <path d="M28 40 L8 40" stroke-linecap="round" />
+          <!-- Right temple -->
+          <path d="M172 40 L192 40" stroke-linecap="round" />
+        </svg>
+      </div>
+      <p class="text-xs text-gray-500 text-center">
+        <span class="font-medium text-gray-600">H</span> = Höger öga (OD) &nbsp;·&nbsp; <span class="font-medium text-gray-600">V</span> = Vänster öga (OS)
+      </p>
+    </div>
 
     <!-- Column headers -->
     <div class="mb-3 grid grid-cols-2 gap-4 text-sm font-medium text-gray-700 md:grid-cols-4">
