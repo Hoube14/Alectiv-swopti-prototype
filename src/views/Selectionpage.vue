@@ -40,6 +40,11 @@ function getImageSrc(src) {
 // Get the initial glass type selection
 const initialGlassType = computed(() => order.value.selections?.glassType?.title || null);
 
+// Distance/allround usage: only sphere matters; ADD and reading power are not relevant
+const isDistanceOrAllround = computed(
+  () => order.value.selections?.usage?.title === 'Avstånd / Allround'
+);
+
 // Max absolute sphere from prescription (for lens recommendation). Null if no manual prescription.
 const maxSphereFromPrescription = computed(() => {
   const manual = order.value.selections?.prescription?.manual;
@@ -261,6 +266,7 @@ function goBack() {
       <!-- Prescription step: show manual form, upload, or card options -->
       <template v-if="step && step.id === 'prescription' && showPrescriptionManualForm">
         <PrescriptionForm
+          :is-distance-or-allround="isDistanceOrAllround"
           @submit="onPrescriptionFormSubmit"
           @cancel="onPrescriptionFormCancel"
         />

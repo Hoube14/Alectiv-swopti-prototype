@@ -1,6 +1,14 @@
 <script setup>
 import { ref, computed, watch } from 'vue';
 
+const props = defineProps({
+  /** When true (Avstånd/Allround), ADD and reading power are hidden – only sphere is relevant. */
+  isDistanceOrAllround: {
+    type: Boolean,
+    default: false
+  }
+});
+
 const emit = defineEmits(['submit', 'cancel']);
 
 // Sphere: minus first, plus last (common prescription order). 0 ends up in the middle.
@@ -69,8 +77,9 @@ const canSubmit = computed(() => {
   return hasSphere && hasPd && form.value.receiptNotOlderThanOneYear;
 });
 
-// Reading power = Sphere + ADD (calculated, for reference)
+// Reading power = Sphere + ADD (only relevant when not distance/allround)
 const readingPower = computed(() => {
+  if (props.isDistanceOrAllround) return { right: null, left: null };
   const r = form.value.right;
   const l = form.value.left;
   const calc = (sphere, add) => {
@@ -93,9 +102,16 @@ watch(
 );
 
 function getPayload() {
+  const right = { ...form.value.right };
+  const left = { ...form.value.left };
+  // For distance/allround, only sphere (and cylinder/axis) matter; do not include ADD
+  if (props.isDistanceOrAllround) {
+    delete right.add;
+    delete left.add;
+  }
   const manual = {
-    right: { ...form.value.right },
-    left: { ...form.value.left },
+    right,
+    left,
     pd: form.value.separatePd ? { right: form.value.pdRight, left: form.value.pdLeft } : form.value.pd,
     receiptNotOlderThanOneYear: form.value.receiptNotOlderThanOneYear
   };
@@ -190,8 +206,8 @@ function cancel() {
       </div>
     </div>
 
-    <!-- Addition -->
-    <div class="mb-4">
+    <!-- Addition: only for near/reading use (hidden for Avstånd/Allround) -->
+    <div v-if="!isDistanceOrAllround" class="mb-4">
       <label class="mb-2 block text-sm font-medium text-gray-700">Addition (ADD)</label>
       <div class="grid grid-cols-2 gap-4">
         <select v-model="form.right.add" class="rounded border border-gray-300 px-3 py-2 text-gray-900">
@@ -203,8 +219,8 @@ function cancel() {
       </div>
     </div>
 
-    <!-- Reading power (Sphere + ADD), calculated -->
-    <div class="mb-4 rounded-lg border border-gray-200 bg-gray-50 p-3">
+    <!-- Reading power (Sphere + ADD): only relevant for near/reading; hidden for Avstånd/Allround -->
+    <div v-if="!isDistanceOrAllround" class="mb-4 rounded-lg border border-gray-200 bg-gray-50 p-3">
       <p class="mb-2 text-sm font-medium text-gray-700">Lässtyrka (beräknad)</p>
       <p class="mb-2 text-xs text-gray-500">
         Sfär + Addition = styrka för närbild. Visas endast som information.
