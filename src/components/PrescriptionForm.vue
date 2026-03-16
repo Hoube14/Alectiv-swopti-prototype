@@ -52,9 +52,17 @@ const addOptions = (() => {
   return opts;
 })();
 
-const pdOptions = (() => {
+// Per-eye PD (monocular): 25–35 mm
+const pdOptionsPerEye = (() => {
   const opts = [{ value: '', label: 'Välj' }];
-  for (let i = 21; i <= 45; i += 1) opts.push({ value: String(i), label: `${i} mm` });
+  for (let i = 25; i <= 35; i += 1) opts.push({ value: String(i), label: `${i} mm` });
+  return opts;
+})();
+
+// Binocular PD (same for both eyes): 55–80 mm
+const pdOptionsBinocular = (() => {
+  const opts = [{ value: '', label: 'Välj' }];
+  for (let i = 55; i <= 80; i += 1) opts.push({ value: String(i), label: `${i} mm` });
   return opts;
 })();
 
@@ -72,7 +80,8 @@ const form = ref({
   pd: '',
   pdRight: '',
   pdLeft: '',
-  separatePd: false,
+  /** When true, one PD value for both eyes; when false, separate right/left (default) */
+  samePd: false,
   receiptNotOlderThanOneYear: false,
   /** Segment/fitting height in mm (required for progressive lenses only) */
   heightMm: '',
@@ -93,9 +102,9 @@ const canSubmit = computed(() => {
   const r = form.value.right;
   const l = form.value.left;
   const hasSphere = r.sphere !== '' || l.sphere !== '';
-  const hasPd = form.value.separatePd
-    ? (form.value.pdRight !== '' && form.value.pdLeft !== '')
-    : form.value.pd !== '';
+  const hasPd = form.value.samePd
+    ? form.value.pd !== ''
+    : (form.value.pdRight !== '' && form.value.pdLeft !== '');
   const heightOk =
     !props.requiresHeight ||
     (form.value.heightMm !== '' &&
@@ -138,7 +147,7 @@ function getPayload() {
   const manual = {
     right,
     left,
-    pd: form.value.separatePd ? { right: form.value.pdRight, left: form.value.pdLeft } : form.value.pd,
+    pd: form.value.samePd ? form.value.pd : { right: form.value.pdRight, left: form.value.pdLeft },
     receiptNotOlderThanOneYear: form.value.receiptNotOlderThanOneYear
   };
   if (props.requiresHeight && form.value.heightMm !== '') {
@@ -347,36 +356,36 @@ function cancel() {
       </div>
     </div>
 
-    <!-- Pupillary distance (PD) -->
+    <!-- Pupillary distance (PD): default separate right/left; checkbox for same both eyes -->
     <div class="mb-6">
       <label class="mb-2 block text-sm font-medium text-gray-700">Pupillavstånd (PD) *</label>
-      <div class="mb-3 flex items-center gap-2">
+      <div v-if="!form.samePd" class="mb-3 grid grid-cols-2 gap-4">
+        <div>
+          <label class="mb-1 block text-xs text-gray-500">Höger öga (OD)</label>
+          <select v-model="form.pdRight" class="w-full rounded border border-gray-300 px-3 py-2 text-gray-900">
+            <option v-for="opt in pdOptionsPerEye" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+          </select>
+        </div>
+        <div>
+          <label class="mb-1 block text-xs text-gray-500">Vänster öga (OS)</label>
+          <select v-model="form.pdLeft" class="w-full rounded border border-gray-300 px-3 py-2 text-gray-900">
+            <option v-for="opt in pdOptionsPerEye" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+          </select>
+        </div>
+      </div>
+      <div v-else class="mb-3 grid grid-cols-1 gap-4 max-w-xs">
+        <select v-model="form.pd" class="rounded border border-gray-300 px-3 py-2 text-gray-900">
+          <option v-for="opt in pdOptionsBinocular" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+        </select>
+      </div>
+      <div class="flex items-center gap-2">
         <input
-          id="separate-pd"
-          v-model="form.separatePd"
+          id="same-pd"
+          v-model="form.samePd"
           type="checkbox"
           class="h-4 w-4 rounded border-gray-300"
         />
-        <label for="separate-pd" class="text-sm text-gray-700">Jag har olika PD höger/vänster</label>
-      </div>
-      <div v-if="!form.separatePd" class="grid grid-cols-1 gap-4">
-        <select v-model="form.pd" class="rounded border border-gray-300 px-3 py-2 text-gray-900">
-          <option v-for="opt in pdOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
-        </select>
-      </div>
-      <div v-else class="grid grid-cols-2 gap-4">
-        <div>
-          <label class="mb-1 block text-xs text-gray-500">Höger</label>
-          <select v-model="form.pdRight" class="w-full rounded border border-gray-300 px-3 py-2 text-gray-900">
-            <option v-for="opt in pdOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
-          </select>
-        </div>
-        <div>
-          <label class="mb-1 block text-xs text-gray-500">Vänster</label>
-          <select v-model="form.pdLeft" class="w-full rounded border border-gray-300 px-3 py-2 text-gray-900">
-            <option v-for="opt in pdOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
-          </select>
-        </div>
+        <label for="same-pd" class="text-sm text-gray-700">Jag har samma PD för höger och vänster</label>
       </div>
     </div>
 
