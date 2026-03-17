@@ -118,10 +118,30 @@ function getProperTitle(option) {
 
 const currency = 'SEK';
 
+const includedTreatmentSelection = {
+  title: 'Fullständig behandling (ingår)',
+  priceKey: 'treatment_standard'
+};
+
 // Calculate the price for an option based on its priceKey
 function getOptionPrice(option) {
   if (!option.priceKey) return undefined;
   return priceModifiers.value?.[option.priceKey] || 0;
+}
+
+function getOptionPriceLabel(option) {
+  if (props.step?.id !== 'treatment') return undefined;
+  if (option.priceKey === 'treatment_standard') return 'Ingår';
+  return undefined;
+}
+
+function isOptionDisabled(option) {
+  return props.step?.id === 'treatment' && option.priceKey === 'treatment_standard';
+}
+
+function continueWithoutBlueLight() {
+  updateOrder('treatment', includedTreatmentSelection);
+  navigateTo(getNextStepAfterTreatment());
 }
 
 function handleSelection(option, index) {
@@ -177,6 +197,10 @@ function handleSelection(option, index) {
   }
 
   if (props.step.id === 'treatment') {
+    if (option.priceKey === 'treatment_standard') {
+      updateOrder('treatment', includedTreatmentSelection);
+      return;
+    }
     navigateTo(getNextStepAfterTreatment());
     return;
   }
@@ -243,6 +267,45 @@ function goBack() {
           @submit="onPrescriptionFormSubmit"
           @cancel="onPrescriptionFormCancel"
         />
+      </template>
+      <template v-else-if="step && step.id === 'treatment'">
+        <div class="mb-6 rounded-xl border p-4 md:p-5" style="border-color: rgba(0,0,0,0.08); background: rgba(0,0,0,0.02);">
+          <div class="text-base font-semibold" style="color: var(--color-heading)">Fullständig behandling ingår</div>
+          <div class="mt-1 text-sm" style="color: var(--color-text-muted, rgba(0,0,0,0.7))">
+            Anti-reflex, repskydd och antistatisk behandling ingår i alla glas. Du kan lägga till blåljusfilter som tillval.
+          </div>
+        </div>
+
+        <div class="grid gap-4 justify-center" style="grid-template-columns: repeat(auto-fit, minmax(280px, 280px));">
+          <div
+            v-for="(option, index) in displayOptions"
+            :key="option.title"
+            class="h-full"
+          >
+            <Card
+              :title="getProperTitle(option)"
+              :description="option.description"
+              :imageSrc="getImageSrc(option.imageSrc)"
+              :imageSrcDark="option.imageSrcDark ? getImageSrc(option.imageSrcDark) : undefined"
+              :price="getOptionPrice(option)"
+              :priceLabel="getOptionPriceLabel(option)"
+              :currency="currency"
+              :disabled="isOptionDisabled(option)"
+              @click="handleSelection(option, index)"
+            />
+          </div>
+        </div>
+
+        <div class="mt-6 flex justify-center">
+          <button
+            type="button"
+            @click="continueWithoutBlueLight"
+            class="px-5 py-3 rounded-xl text-sm font-semibold transition hover:opacity-90"
+            style="background: var(--color-primary); color: white;"
+          >
+            Fortsätt utan blåljusfilter
+          </button>
+        </div>
       </template>
       <template v-else>
         <div class="grid gap-4 justify-center" style="grid-template-columns: repeat(auto-fit, minmax(280px, 280px));">

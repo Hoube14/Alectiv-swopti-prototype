@@ -7,8 +7,10 @@ defineProps({
   /** When set with imageSrc, renders a light-to-dark crossfade animation (e.g. färgskiftande glas) */
   imageSrcDark: String,
   price: Number,
+  priceLabel: String,
   currency: String,
-  recommended: Boolean
+  recommended: Boolean,
+  disabled: Boolean
 });
 
 defineEmits(['click']);
@@ -17,8 +19,9 @@ defineEmits(['click']);
 
 <template>
   <div
-    @click="$emit('click')"
-    class="h-full rounded-2xl border p-6 flex flex-col items-center cursor-pointer shadow-sm transition-all duration-200 ease-out hover:scale-[1.03] hover:shadow-md"
+    @click="disabled ? undefined : $emit('click')"
+    class="h-full rounded-2xl border p-6 flex flex-col items-center shadow-sm transition-all duration-200 ease-out"
+    :class="disabled ? 'cursor-default opacity-95' : 'cursor-pointer hover:scale-[1.03] hover:shadow-md'"
     style="background-color: var(--color-card); border-color: var(--color-border)"
   >
     <!-- Only render image if imageSrc exists -->
@@ -34,8 +37,11 @@ defineEmits(['click']);
     <p v-if="recommended" class="text-xs font-bold mb-1 flex-shrink-0" style="color: var(--color-recommended)">Rekommenderas för dina styrkor</p>
     <p class="text-sm text-center flex-1 min-h-0 leading-relaxed" style="color: var(--color-text)">{{ description }}</p>
 
-    <!-- Display price if available -->
-    <div v-if="price !== undefined" class="mt-2 font-semibold flex-shrink-0" style="color: var(--color-heading)">
+    <!-- Display price label (e.g. included) or price if available -->
+    <div v-if="priceLabel" class="mt-2 font-semibold flex-shrink-0" style="color: var(--color-heading)">
+      {{ priceLabel }}
+    </div>
+    <div v-else-if="price !== undefined" class="mt-2 font-semibold flex-shrink-0" style="color: var(--color-heading)">
       {{ price }} {{ currency }}
     </div>
   </div>

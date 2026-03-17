@@ -23,7 +23,7 @@
       "photochromic_blue": 500,
       "lens_1_6": 200,
       "lens_1_67": 400,
-      "treatment_standard": 600,
+      "treatment_standard": 0,
       "treatment_blue_light": 500
     }
   },

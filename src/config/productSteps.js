@@ -95,15 +95,15 @@ export default [
     backStep: null,
     options: [
       {
-        title: 'Standardbehandling',
-        description: 'Anti-reflex, respkydd och antistatisk behandling.',
+        title: 'Fullständig behandling',
+        description: 'Anti-reflex, repskydd och antistatisk behandling ingår i alla glas.',
         imageSrc: '/images/Standardbehandling.png',
-        nextStep: 'tintSelection',
+        nextStep: null,
         priceKey: 'treatment_standard'
       },
       {
-        title: 'Standardbehandling + blåljusfilter',
-        description: 'Anti-reflex, respkydd, antistatisk behandling samt blåljusfilter som skärmar mot blått ljus.',
+        title: 'Blåljusfilter',
+        description: 'Skärmar mot blått ljus. Fullständig behandling ingår alltid — med blåljusfilter får glaset en blå restreflex.',
         imageSrc: '/images/Blaljusfilter.png',
         nextStep: 'tintSelection',
         priceKey: 'treatment_blue_light'
