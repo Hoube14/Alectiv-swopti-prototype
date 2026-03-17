@@ -16,6 +16,10 @@ const props = defineProps({
 
 const emit = defineEmits(['submit', 'cancel']);
 
+const ACCEPT = '.png,.jpg,.jpeg,.pdf';
+const MAX_SIZE_MB = 10;
+const acceptedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'application/pdf'];
+
 // Sphere: minus first, plus last (common prescription order). 0 ends up in the middle.
 const sphereOptions = (() => {
   const opts = [{ value: '', label: 'Välj' }];
@@ -86,7 +90,12 @@ const form = ref({
   /** Segment/fitting height in mm (required for progressive lenses only) */
   heightMm: '',
   /** User has followed the height measuring instructions (required if they opened the guide) */
-  heightInstructionsConfirmed: false
+  heightInstructionsConfirmed: false,
+  attachReceipt: false,
+  receiptFileName: '',
+  receiptFileSize: 0,
+  receiptMimeType: '',
+  receiptDataUrl: ''
 });
 
 // Height guide: once opened, user must confirm they followed instructions to submit
@@ -98,6 +107,52 @@ function openHeightGuide() {
   hasOpenedHeightGuide.value = true;
 }
 
+const receiptError = ref('');
+
+function clearReceipt() {
+  form.value.receiptFileName = '';
+  form.value.receiptFileSize = 0;
+  form.value.receiptMimeType = '';
+  form.value.receiptDataUrl = '';
+  receiptError.value = '';
+}
+
+function onReceiptFileChange(event) {
+  receiptError.value = '';
+  const file = event.target?.files?.[0];
+  if (!file) return;
+
+  if (!acceptedTypes.includes(file.type)) {
+    receiptError.value = 'Endast PNG, JPG och PDF är tillåtna.';
+    event.target.value = '';
+    clearReceipt();
+    return;
+  }
+  if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+    receiptError.value = `Filen får max vara ${MAX_SIZE_MB} MB.`;
+    event.target.value = '';
+    clearReceipt();
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    form.value.receiptFileName = file.name;
+    form.value.receiptFileSize = file.size;
+    form.value.receiptMimeType = file.type;
+    form.value.receiptDataUrl = reader.result;
+  };
+  reader.readAsDataURL(file);
+  event.target.value = '';
+}
+
+watch(
+  () => form.value.attachReceipt,
+  (attach) => {
+    if (!attach) clearReceipt();
+  }
+);
+
 const formTouched = ref(false);
 const formErrors = ref({
   pdRight: '',
@@ -105,7 +160,8 @@ const formErrors = ref({
   pd: '',
   heightMm: '',
   heightInstructionsConfirmed: '',
-  receiptNotOlderThanOneYear: ''
+  receiptNotOlderThanOneYear: '',
+  receiptAttachment: ''
 });
 
 function validateManualForm() {
@@ -115,25 +171,35 @@ function validateManualForm() {
     pd: '',
     heightMm: '',
     heightInstructionsConfirmed: '',
-    receiptNotOlderThanOneYear: ''
+    receiptNotOlderThanOneYear: '',
+    receiptAttachment: ''
   };
 
-  if (form.value.samePd) {
-    if (!form.value.pd) err.pd = 'Välj PD';
-  } else {
-    if (!form.value.pdRight) err.pdRight = 'Välj PD för höger öga';
-    if (!form.value.pdLeft) err.pdLeft = 'Välj PD för vänster öga';
-  }
+  const hasReceipt = form.value.attachReceipt && !!form.value.receiptDataUrl;
 
-  if (props.requiresHeight && !form.value.heightMm) {
-    err.heightMm = 'Välj höjd (mm)';
-  }
-  if (props.requiresHeight && hasOpenedHeightGuide.value && !form.value.heightInstructionsConfirmed) {
-    err.heightInstructionsConfirmed = 'Bekräfta att du har följt instruktionerna';
+  // If the user attaches a receipt, manual values are optional (optician can verify from the receipt).
+  if (!hasReceipt) {
+    if (form.value.samePd) {
+      if (!form.value.pd) err.pd = 'Välj PD';
+    } else {
+      if (!form.value.pdRight) err.pdRight = 'Välj PD för höger öga';
+      if (!form.value.pdLeft) err.pdLeft = 'Välj PD för vänster öga';
+    }
+
+    if (props.requiresHeight && !form.value.heightMm) {
+      err.heightMm = 'Välj höjd (mm)';
+    }
+    if (props.requiresHeight && hasOpenedHeightGuide.value && !form.value.heightInstructionsConfirmed) {
+      err.heightInstructionsConfirmed = 'Bekräfta att du har följt instruktionerna';
+    }
   }
 
   if (!form.value.receiptNotOlderThanOneYear) {
     err.receiptNotOlderThanOneYear = 'Du måste intyga att du skrivit in rätt styrkor';
+  }
+
+  if (form.value.attachReceipt && !form.value.receiptDataUrl) {
+    err.receiptAttachment = 'Bifoga en fil eller avmarkera valet';
   }
 
   formErrors.value = err;
@@ -162,7 +228,9 @@ const canSubmit = computed(() => {
     !props.requiresHeight ||
     (form.value.heightMm !== '' &&
       (!hasOpenedHeightGuide.value || form.value.heightInstructionsConfirmed));
-  return hasSphere && hasPd && form.value.receiptNotOlderThanOneYear && heightOk;
+  const hasReceipt = form.value.attachReceipt && !!form.value.receiptDataUrl;
+  const manualOk = hasSphere && hasPd && heightOk;
+  return (hasReceipt || manualOk) && form.value.receiptNotOlderThanOneYear;
 });
 
 // Reading power = Sphere + ADD (only relevant when not distance/allround)
@@ -206,10 +274,14 @@ function getPayload() {
   if (props.requiresHeight && form.value.heightMm !== '') {
     manual.heightMm = form.value.heightMm;
   }
-  return {
-    title: 'Manuellt',
-    manual
-  };
+  const payload = { title: 'Manuellt', type: 'manual', manual };
+  if (form.value.attachReceipt && form.value.receiptDataUrl) {
+    payload.fileName = form.value.receiptFileName;
+    payload.fileSize = form.value.receiptFileSize;
+    payload.mimeType = form.value.receiptMimeType;
+    payload.dataUrl = form.value.receiptDataUrl;
+  }
+  return payload;
 }
 
 function submit() {
@@ -510,6 +582,49 @@ function cancel() {
     >
       {{ formErrors.receiptNotOlderThanOneYear }}
     </p>
+
+    <!-- Optional: attach receipt to manual entry -->
+    <div class="mb-6">
+      <div class="flex items-center gap-2">
+        <input
+          id="attach-receipt"
+          v-model="form.attachReceipt"
+          type="checkbox"
+          class="h-4 w-4 rounded border-gray-300"
+        />
+        <label for="attach-receipt" class="text-sm font-medium text-gray-700">Jag har ett recept att bifoga</label>
+      </div>
+
+      <div v-if="form.attachReceipt" class="mt-3 max-w-md rounded-lg border border-gray-200 bg-gray-50 p-4">
+        <p class="mb-3 text-sm text-gray-700">
+          Bifoga en bild (PNG/JPG) eller PDF av ditt recept (max {{ MAX_SIZE_MB }} MB).
+        </p>
+
+        <input
+          type="file"
+          :accept="ACCEPT"
+          class="block w-full text-sm text-gray-700 file:mr-3 file:rounded-lg file:border file:border-gray-300 file:bg-white file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-gray-700 hover:file:bg-gray-50"
+          @change="onReceiptFileChange"
+        />
+
+        <div v-if="form.receiptDataUrl" class="mt-3 flex items-center justify-between rounded-lg border border-gray-200 bg-white px-3 py-2">
+          <div class="min-w-0">
+            <p class="truncate text-sm font-medium text-gray-900">{{ form.receiptFileName }}</p>
+            <p class="text-xs text-gray-500">{{ Math.round((form.receiptFileSize / (1024 * 1024)) * 10) / 10 }} MB</p>
+          </div>
+          <button
+            type="button"
+            class="ml-3 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            @click="clearReceipt"
+          >
+            Ta bort
+          </button>
+        </div>
+
+        <p v-if="receiptError" class="mt-3 text-sm text-red-600">{{ receiptError }}</p>
+        <p v-if="formTouched && formErrors.receiptAttachment" class="mt-2 text-sm text-red-600">{{ formErrors.receiptAttachment }}</p>
+      </div>
+    </div>
 
     <div class="flex flex-wrap gap-3">
       <button

@@ -28,8 +28,8 @@ export default [
     backStep: null,
     options: [
       {
-        title: 'Lägg till manuellt',
-        description: 'Fyll i dina styrkor från receptet nedan.',
+        title: 'Lägg till manuellt / bifoga recept',
+        description: 'Fyll i dina styrkor från receptet nedan, eller bifoga ett recept.',
         imageSrc: '/images/Manuellt.png',
         nextStep: null,
         opensManualForm: true
@@ -39,13 +39,6 @@ export default [
         description: 'Skicka in ditt recept via e-post när du är redo.',
         imageSrc: '/images/MailaSenare.png',
         nextStep: null
-      },
-      {
-        title: 'Ladda upp recept',
-        description: 'Ladda upp en bild eller PDF av ditt recept (PNG, JPG eller PDF).',
-        imageSrc: '/images/LaddaUppRecept.png',
-        nextStep: null,
-        opensUpload: true
       }
     ]
   },
