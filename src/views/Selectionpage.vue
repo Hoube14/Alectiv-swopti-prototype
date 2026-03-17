@@ -55,22 +55,11 @@ const maxSphereFromPrescription = computed(() => {
   return Math.max(right, left);
 });
 
-// For lensRecommendation step: only show options the customer is eligible for (1.74 only when strength >= 6).
-const lensRecommendationOptions = computed(() => {
-  if (props.step?.id !== 'lensRecommendation' || !props.step.options) return [];
-  const maxSphere = maxSphereFromPrescription.value;
-  return props.step.options.filter((opt) => {
-    const minShow = opt.minSphereToShow ?? 0;
-    if (maxSphere === null) return minShow === 0;
-    return maxSphere >= minShow;
-  });
-});
-
 // Which option index (within visible options) is recommended based on sphere strength.
 const recommendedLensIndex = computed(() => {
   const maxSphere = maxSphereFromPrescription.value;
   if (maxSphere === null) return null;
-  const opts = lensRecommendationOptions.value;
+  const opts = props.step?.options ?? [];
   const idx = opts.findIndex(
     (opt) =>
       maxSphere >= (opt.recommendMinSphere ?? 0) && maxSphere < (opt.recommendMaxSphere ?? Infinity)
@@ -84,7 +73,7 @@ const displayOptions = computed(() => {
   if (!props.step) return [];
 
   if (props.step.id === 'lensRecommendation') {
-    return lensRecommendationOptions.value;
+    return props.step.options ?? [];
   }
 
   let options = props.step.options ?? [];

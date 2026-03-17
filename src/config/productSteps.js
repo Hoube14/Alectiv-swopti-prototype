@@ -74,7 +74,6 @@ export default [
         imageSrc: '/images/Glas16.png',
         priceKey: 'lens_1_6',
         nextStep: 'treatment',
-        minSphereToShow: 0,
         recommendMinSphere: 2,
         recommendMaxSphere: 4
       },
@@ -84,19 +83,8 @@ export default [
         imageSrc: '/images/Glas167.png',
         priceKey: 'lens_1_67',
         nextStep: 'treatment',
-        minSphereToShow: 0,
         recommendMinSphere: 4,
         recommendMaxSphere: 6
-      },
-      {
-        title: 'Glas 1.74',
-        description: 'Tunnaste glasen vid höga styrkor. Rekommenderas för styrkor över 6.',
-        imageSrc: '/images/Glas174.png',
-        priceKey: 'lens_1_74',
-        nextStep: 'treatment',
-        minSphereToShow: 6,
-        recommendMinSphere: 6,
-        recommendMaxSphere: Infinity
       }
     ]
   },
