@@ -148,8 +148,7 @@ export default [
         title: "Helfärg",
         description: "Enhetlig färg över hela glaset. Välj färg i nästa steg.",
         imageSrc: "/images/Heltonade.png",
-        nextStep: 'colorSelection',
-        priceKey: 'tint_gradient'
+        nextStep: 'colorSelection'
       },
       {
         title: "Gradal",
@@ -159,7 +158,7 @@ export default [
       },
       {
         title: "Heltoning",
-        description: "Välj toningsstyrka i nästa steg: 12%, 20% eller 65%.",
+        description: "Enhetlig toning. Välj 12%, 20% eller 65% i nästa steg.",
         imageSrc: "/images/Heltonade.png",
         nextStep: 'solidTintSelection'
       },
@@ -208,21 +207,21 @@ export default [
     backStep: null,
     options: [
       {
-        title: "Gradal 25-10",
+        title: "Gradal toning 25-10",
         description: "25% tonat upptill, 10% nedtill.",
         imageSrc: "/images/Gradaltonade.png",
         nextStep: 'colorSelection',
         priceKey: 'tint_gradient_25_10'
       },
       {
-        title: "Gradal 75-10",
+        title: "Gradal toning 75-10",
         description: "75% tonat upptill, 10% nedtill.",
         imageSrc: "/images/Gradaltonade.png",
         nextStep: 'colorSelection',
         priceKey: 'tint_gradient_75_10'
       },
       {
-        title: "Gradal 85-40",
+        title: "Gradal toning 85-40",
         description: "85% tonat upptill, 40% nedtill.",
         imageSrc: "/images/Gradaltonade.png",
         nextStep: 'colorSelection',
@@ -295,6 +294,49 @@ export default [
         title: "Blå",
         imageSrc: "/images/Bla.png",
         nextStep: 'summary',
+      }
+    ]
+  },
+  {
+    id: 'darknessSelection',
+    title: 'Välj mörkhet',
+    showBackButton: true,
+    backStep: null,
+    options: [
+      {
+        title: "12% mörkhet",
+        description: "Lätt toning.",
+        imageSrc: "/images/Heltonade.png",
+        nextStep: 'summary',
+        priceKey: 'tint_12percent'
+      },
+      {
+        title: "20% mörkhet",
+        description: "Mellanmörk toning.",
+        imageSrc: "/images/Heltonade.png",
+        nextStep: 'summary',
+        priceKey: 'tint_20percent'
+      },
+      {
+        title: "65% mörkhet",
+        description: "Kraftig toning.",
+        imageSrc: "/images/Heltonade.png",
+        nextStep: 'summary',
+        priceKey: 'tint_65percent'
+      },
+      {
+        title: "75% mörkhet",
+        description: "Mycket mörk toning.",
+        imageSrc: "/images/Gradaltonade.png",
+        nextStep: 'summary',
+        priceKey: 'tint_75percent'
+      },
+      {
+        title: "85% mörkhet",
+        description: "Standard för solglas (rekommenderas).",
+        imageSrc: "/images/Gradaltonade.png",
+        nextStep: 'summary',
+        priceKey: 'tint_85percent'
       }
     ]
   },

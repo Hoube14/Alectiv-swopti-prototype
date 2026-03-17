@@ -221,6 +221,15 @@ function handleSelection(option, index) {
     return;
   }
 
+  // Only "Helfärg" should ask for darkness after selecting a color
+  if (props.step.id === 'colorSelection') {
+    const coloredType = order.value.selections?.coloredGlassType;
+    if (coloredType?.title === 'Helfärg') {
+      navigateTo('darknessSelection');
+      return;
+    }
+  }
+
   if (option.nextStep) {
     navigateTo(option.nextStep);
   }

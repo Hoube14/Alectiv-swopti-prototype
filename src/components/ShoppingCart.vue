@@ -38,6 +38,7 @@ const stepLabels = {
   coloredGlassType: 'Färgade glas',
   solidTintSelection: 'Heltoning',
   gradientTintSelection: 'Gradal',
+  darknessSelection: 'Mörkhet',
   photochromicColorSelection: 'Färgskiftande',
   colorSelection: 'Färg',
   usage: 'Användning',
