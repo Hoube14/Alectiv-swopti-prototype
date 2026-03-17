@@ -10,7 +10,9 @@ defineProps({
   priceLabel: String,
   currency: String,
   recommended: Boolean,
-  disabled: Boolean
+  disabled: Boolean,
+  /** Shown when disabled is true, e.g. reason why option is not available */
+  disabledReason: String
 });
 
 defineEmits(['click']);
@@ -44,6 +46,9 @@ defineEmits(['click']);
     <div v-else-if="price !== undefined" class="mt-2 font-semibold flex-shrink-0" style="color: var(--color-heading)">
       {{ price }} {{ currency }}
     </div>
+    <p v-if="disabled && disabledReason" class="mt-2 text-xs text-center flex-shrink-0 opacity-80" style="color: var(--color-text)">
+      {{ disabledReason }}
+    </p>
   </div>
 </template>
 

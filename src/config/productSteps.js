@@ -124,23 +124,10 @@ export default [
         nextStep: 'summary'
       },
       {
-        title: "Solglas",
-        description: "Välj färg och om du vill ha polariserade glas i nästa steg.",
+        title: "Färgade glas",
+        description: "Välj typ av toning – helfärg, gradal, heltoning eller polariserad – och sedan färg.",
         imageSrc: "/images/Solglas.png",
-        nextStep: 'sunglassType'
-      },
-      {
-        title: "Heltonade glas",
-        description: "Välj mellan 12-65% toning i nästa steg.",
-        imageSrc: "/images/Heltonade.png",
-        nextStep: "solidTintSelection"
-      },
-      {
-        title: "Gradalttonade glas",
-        description: "Tonas successivt - Mörkare upptill, ljusare nedtill.",
-        imageSrc: "/images/Gradaltonade.png",
-        priceKey: 'tint_gradient',
-        nextStep: 'gradientTintSelection'
+        nextStep: 'coloredGlassType'
       },
       {
         title: "Färgskiftande glas",
@@ -152,83 +139,90 @@ export default [
     ]
   },
   {
-    id: 'sunglassType',
-    title: 'Välj solglas typ',
+    id: 'coloredGlassType',
+    title: 'Välj typ av färgade glas',
     showBackButton: true,
     backStep: null,
     options: [
       {
-        title: "Enkelslipade solglas - ej polariserade",
-        description: "Standard solglas utan polarisering.",
-        imageSrc: "/images/Solglas.png",
+        title: "Helfärg",
+        description: "Enhetlig färg över hela glaset. Välj färg i nästa steg.",
+        imageSrc: "/images/Heltonade.png",
         nextStep: 'colorSelection',
-        priceKey: 'sunglass_basic',
-        prevStep: 'sunglassType'
+        priceKey: 'tint_gradient'
       },
       {
-        title: "Enkelslipade solglas - polariserade",
-        description: "Polariserade glas som reducerar reflexer och bländning.",
+        title: "Gradal",
+        description: "Tonas successivt – mörkare upptill, ljusare nedtill.",
+        imageSrc: "/images/Gradaltonade.png",
+        nextStep: 'gradientTintSelection'
+      },
+      {
+        title: "Heltoning",
+        description: "Välj toningsstyrka i nästa steg: 12%, 20% eller 65%.",
+        imageSrc: "/images/Heltonade.png",
+        nextStep: 'solidTintSelection'
+      },
+      {
+        title: "Polariserad",
+        description: "Reducerar reflexer och bländning. Välj färg i nästa steg.",
         imageSrc: "/images/Solglas.png",
         nextStep: 'colorSelection',
-        priceKey: 'sunglass_polarized',
-        prevStep: 'sunglassType'
+        priceKey: 'sunglass_polarized'
       }
     ]
   },
   {
     id: 'solidTintSelection',
-    title: 'Välj toning',
+    title: 'Välj heltoning',
     showBackButton: true,
     backStep: null,
     options: [
       {
-        title: "Enkelslipade glas - 12% heltoning",
+        title: "12% toning",
         description: "Lätt toning, passar för ljusare miljöer.",
         imageSrc: "/images/Heltonade.png",
         nextStep: 'colorSelection',
-        priceKey: 'tint_12percent',
-        prevStep: 'heltonadePercent'
+        priceKey: 'tint_12percent'
       },
       {
-        title: "Enkelslipade glas - 20% heltoning",
+        title: "20% toning",
         description: "Mellanmörk toning, balanserad för de flesta miljöer.",
         imageSrc: "/images/Heltonade.png",
         nextStep: 'colorSelection',
-        priceKey: 'tint_20percent',
-        prevStep: 'heltonadePercent'
+        priceKey: 'tint_20percent'
       },
       {
-        title: "Enkelslipade glas - 65% heltoning",
+        title: "65% toning",
         description: "Kraftig toning, för ljusstarka miljöer.",
         imageSrc: "/images/Heltonade.png",
         nextStep: 'colorSelection',
-        priceKey: 'tint_65percent',
-        prevStep: 'heltonadePercent'
+        priceKey: 'tint_65percent'
       }
     ]
   },
   {
     id: 'gradientTintSelection',
-    title: 'Välj gradienttoning',
+    title: 'Välj gradal toning',
     showBackButton: true,
     backStep: null,
     options: [
       {
-        title: "Enkelslipade glas - gradal toning 25-10",
+        title: "Gradal 25-10",
         description: "25% tonat upptill, 10% nedtill.",
         imageSrc: "/images/Gradaltonade.png",
         nextStep: 'colorSelection',
         priceKey: 'tint_gradient_25_10'
       },
       {
-        title: "Enkelslipade glas - gradal toning 75-10",
+        title: "Gradal 75-10",
         description: "75% tonat upptill, 10% nedtill.",
         imageSrc: "/images/Gradaltonade.png",
         nextStep: 'colorSelection',
         priceKey: 'tint_gradient_75_10'
       },
       {
-        title: "Enkelslipade glas - gradal toning 85-40",
+        title: "Gradal 85-40",
         description: "85% tonat upptill, 40% nedtill.",
         imageSrc: "/images/Gradaltonade.png",
         nextStep: 'colorSelection',

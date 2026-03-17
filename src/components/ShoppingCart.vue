@@ -35,9 +35,9 @@ const stepLabels = {
   lensRecommendation: 'Glasindex',
   treatment: 'Behandling',
   tintSelection: 'Toning',
-  sunglassType: 'Solglas',
-  solidTintSelection: 'Toning',
-  gradientTintSelection: 'Gradienttoning',
+  coloredGlassType: 'Färgade glas',
+  solidTintSelection: 'Heltoning',
+  gradientTintSelection: 'Gradal',
   photochromicColorSelection: 'Färgskiftande',
   colorSelection: 'Färg',
   usage: 'Användning',
@@ -90,8 +90,8 @@ const displayTotal = computed(() => {
   </div>
 
   <!-- Expanded view when expanded - modal panel -->
-  <div v-if="isExpanded" class="fixed inset-0 flex justify-center items-end bg-black/20 backdrop-blur-sm" @click.self="toggleExpand">
-    <div class="rounded-t-2xl shadow-2xl w-full max-w-md max-h-[85vh] flex flex-col" style="background-color: var(--color-card); border: 1px solid var(--color-border); border-bottom: none">
+  <div v-if="isExpanded" class="fixed inset-0 flex justify-center items-end bg-slate-900/30 backdrop-blur-sm" @click.self="toggleExpand">
+    <div class="bg-white border border-slate-200 rounded-t-2xl shadow-2xl w-full max-w-md max-h-[85vh] flex flex-col">
       <!-- Header with close button -->
       <div class="flex justify-between items-center p-4 flex-shrink-0">
         <h2 class="text-lg font-semibold text-gray-900">Nya glas i egen båge</h2>

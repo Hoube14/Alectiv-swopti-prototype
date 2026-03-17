@@ -136,7 +136,23 @@ function getOptionPriceLabel(option) {
 }
 
 function isOptionDisabled(option) {
-  return props.step?.id === 'treatment' && option.priceKey === 'treatment_standard';
+  if (props.step?.id === 'treatment' && option.priceKey === 'treatment_standard') return true;
+  // Polarised lenses cannot be combined with blue tint
+  if (props.step?.id === 'colorSelection' && option.title === 'Blå') {
+    const coloredType = order.value.selections?.coloredGlassType;
+    if (coloredType?.priceKey === 'sunglass_polarized') return true;
+  }
+  return false;
+}
+
+function getOptionDisabledReason(option) {
+  if (props.step?.id === 'colorSelection' && option.title === 'Blå') {
+    const coloredType = order.value.selections?.coloredGlassType;
+    if (coloredType?.priceKey === 'sunglass_polarized') {
+      return 'Går inte att kombinera med polariserade glas';
+    }
+  }
+  return undefined;
 }
 
 function continueWithoutBlueLight() {
@@ -320,8 +336,11 @@ function goBack() {
               :imageSrc="getImageSrc(option.imageSrc)"
               :imageSrcDark="option.imageSrcDark ? getImageSrc(option.imageSrcDark) : undefined"
               :price="getOptionPrice(option)"
+              :priceLabel="getOptionPriceLabel(option)"
               :currency="currency"
               :recommended="step?.id === 'lensRecommendation' && recommendedLensIndex === index"
+              :disabled="isOptionDisabled(option)"
+              :disabledReason="getOptionDisabledReason(option)"
               @click="handleSelection(option, index)"
             />
           </div>
