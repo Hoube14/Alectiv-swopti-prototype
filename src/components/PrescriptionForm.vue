@@ -98,6 +98,59 @@ function openHeightGuide() {
   hasOpenedHeightGuide.value = true;
 }
 
+const formTouched = ref(false);
+const formErrors = ref({
+  pdRight: '',
+  pdLeft: '',
+  pd: '',
+  heightMm: '',
+  heightInstructionsConfirmed: '',
+  receiptNotOlderThanOneYear: ''
+});
+
+function validateManualForm() {
+  const err = {
+    pdRight: '',
+    pdLeft: '',
+    pd: '',
+    heightMm: '',
+    heightInstructionsConfirmed: '',
+    receiptNotOlderThanOneYear: ''
+  };
+
+  if (form.value.samePd) {
+    if (!form.value.pd) err.pd = 'Välj PD';
+  } else {
+    if (!form.value.pdRight) err.pdRight = 'Välj PD för höger öga';
+    if (!form.value.pdLeft) err.pdLeft = 'Välj PD för vänster öga';
+  }
+
+  if (props.requiresHeight && !form.value.heightMm) {
+    err.heightMm = 'Välj höjd (mm)';
+  }
+  if (props.requiresHeight && hasOpenedHeightGuide.value && !form.value.heightInstructionsConfirmed) {
+    err.heightInstructionsConfirmed = 'Bekräfta att du har följt instruktionerna';
+  }
+
+  if (!form.value.receiptNotOlderThanOneYear) {
+    err.receiptNotOlderThanOneYear = 'Du måste intyga att du skrivit in rätt styrkor';
+  }
+
+  formErrors.value = err;
+  return !Object.values(err).some(Boolean);
+}
+
+// After the user tries to continue once, keep validation in sync
+// so errors disappear as soon as fields are corrected.
+watch(
+  [form, () => props.requiresHeight, hasOpenedHeightGuide],
+  () => {
+    if (!formTouched.value) return;
+    validateManualForm();
+  },
+  { deep: true }
+);
+
 const canSubmit = computed(() => {
   const r = form.value.right;
   const l = form.value.left;
@@ -160,6 +213,8 @@ function getPayload() {
 }
 
 function submit() {
+  formTouched.value = true;
+  if (!validateManualForm()) return;
   if (!canSubmit.value) return;
   emit('submit', getPayload());
 }
@@ -210,6 +265,14 @@ function cancel() {
         <span class="font-medium text-gray-600">H</span> = Höger öga (OD) &nbsp;·&nbsp; <span class="font-medium text-gray-600">V</span> = Vänster öga (OS)
       </p>
     </div>
+
+    <p
+      v-if="formTouched && Object.values(formErrors).some(Boolean)"
+      class="mb-4 rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700"
+      role="alert"
+    >
+      Kontrollera fälten markerade i rött för att kunna fortsätta.
+    </p>
 
     <!-- Column headers -->
     <div class="mb-3 grid grid-cols-2 gap-4 text-sm font-medium text-gray-700 md:grid-cols-4">
@@ -312,9 +375,16 @@ function cancel() {
         Monteringshöjd för progressiva glas.
       </p>
       <div class="grid grid-cols-1 gap-4 max-w-xs">
-        <select v-model="form.heightMm" class="rounded border border-gray-300 px-3 py-2 text-gray-900">
+        <select
+          v-model="form.heightMm"
+          class="rounded border border-gray-300 px-3 py-2 text-gray-900"
+          :aria-invalid="formTouched && !!formErrors.heightMm"
+          :aria-describedby="formTouched && formErrors.heightMm ? 'err-heightMm' : undefined"
+          :class="{ 'border-red-500': formTouched && formErrors.heightMm }"
+        >
           <option v-for="opt in heightMmOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
         </select>
+        <p v-if="formTouched && formErrors.heightMm" id="err-heightMm" class="mt-1 text-sm text-red-600">{{ formErrors.heightMm }}</p>
       </div>
 
       <!-- "I don't have a height – how do I measure?" expandable guide -->
@@ -348,11 +418,20 @@ function cancel() {
             v-model="form.heightInstructionsConfirmed"
             type="checkbox"
             class="mt-1 h-4 w-4 rounded border-gray-300"
+            :aria-invalid="formTouched && !!formErrors.heightInstructionsConfirmed"
+            :aria-describedby="formTouched && formErrors.heightInstructionsConfirmed ? 'err-heightInstructionsConfirmed' : undefined"
           />
           <label for="height-instructions-confirmed" class="text-sm text-gray-700">
             Jag har följt instruktionerna och mätt höjden (eller använt värdet från receptet).
           </label>
         </div>
+        <p
+          v-if="formTouched && formErrors.heightInstructionsConfirmed"
+          id="err-heightInstructionsConfirmed"
+          class="mt-2 text-sm text-red-600"
+        >
+          {{ formErrors.heightInstructionsConfirmed }}
+        </p>
       </div>
     </div>
 
@@ -362,21 +441,42 @@ function cancel() {
       <div v-if="!form.samePd" class="mb-3 grid grid-cols-2 gap-4">
         <div>
           <label class="mb-1 block text-xs text-gray-500">Höger öga (OD)</label>
-          <select v-model="form.pdRight" class="w-full rounded border border-gray-300 px-3 py-2 text-gray-900">
+          <select
+            v-model="form.pdRight"
+            class="w-full rounded border border-gray-300 px-3 py-2 text-gray-900"
+            :aria-invalid="formTouched && !!formErrors.pdRight"
+            :aria-describedby="formTouched && formErrors.pdRight ? 'err-pdRight' : undefined"
+            :class="{ 'border-red-500': formTouched && formErrors.pdRight }"
+          >
             <option v-for="opt in pdOptionsPerEye" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
           </select>
+          <p v-if="formTouched && formErrors.pdRight" id="err-pdRight" class="mt-1 text-sm text-red-600">{{ formErrors.pdRight }}</p>
         </div>
         <div>
           <label class="mb-1 block text-xs text-gray-500">Vänster öga (OS)</label>
-          <select v-model="form.pdLeft" class="w-full rounded border border-gray-300 px-3 py-2 text-gray-900">
+          <select
+            v-model="form.pdLeft"
+            class="w-full rounded border border-gray-300 px-3 py-2 text-gray-900"
+            :aria-invalid="formTouched && !!formErrors.pdLeft"
+            :aria-describedby="formTouched && formErrors.pdLeft ? 'err-pdLeft' : undefined"
+            :class="{ 'border-red-500': formTouched && formErrors.pdLeft }"
+          >
             <option v-for="opt in pdOptionsPerEye" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
           </select>
+          <p v-if="formTouched && formErrors.pdLeft" id="err-pdLeft" class="mt-1 text-sm text-red-600">{{ formErrors.pdLeft }}</p>
         </div>
       </div>
       <div v-else class="mb-3 grid grid-cols-1 gap-4 max-w-xs">
-        <select v-model="form.pd" class="rounded border border-gray-300 px-3 py-2 text-gray-900">
+        <select
+          v-model="form.pd"
+          class="rounded border border-gray-300 px-3 py-2 text-gray-900"
+          :aria-invalid="formTouched && !!formErrors.pd"
+          :aria-describedby="formTouched && formErrors.pd ? 'err-pd' : undefined"
+          :class="{ 'border-red-500': formTouched && formErrors.pd }"
+        >
           <option v-for="opt in pdOptionsBinocular" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
         </select>
+        <p v-if="formTouched && formErrors.pd" id="err-pd" class="mt-1 text-sm text-red-600">{{ formErrors.pd }}</p>
       </div>
       <div class="flex items-center gap-2">
         <input
@@ -396,17 +496,27 @@ function cancel() {
         v-model="form.receiptNotOlderThanOneYear"
         type="checkbox"
         class="mt-1 h-4 w-4 rounded border-gray-300"
+        :aria-invalid="formTouched && !!formErrors.receiptNotOlderThanOneYear"
+        :aria-describedby="formTouched && formErrors.receiptNotOlderThanOneYear ? 'err-receiptNotOlderThanOneYear' : undefined"
       />
       <label for="receipt-age" class="text-sm text-gray-700">
         jag intygar att jag skrivit in rätt styrkor
       </label>
     </div>
+    <p
+      v-if="formTouched && formErrors.receiptNotOlderThanOneYear"
+      id="err-receiptNotOlderThanOneYear"
+      class="-mt-4 mb-6 text-sm text-red-600"
+    >
+      {{ formErrors.receiptNotOlderThanOneYear }}
+    </p>
 
     <div class="flex flex-wrap gap-3">
       <button
         type="button"
-        :disabled="!canSubmit"
-        class="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+        :aria-disabled="!canSubmit"
+        class="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700"
+        :class="!canSubmit ? 'opacity-50 cursor-not-allowed hover:bg-blue-600' : ''"
         @click="submit"
       >
         Fortsätt
