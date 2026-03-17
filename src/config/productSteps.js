@@ -79,12 +79,12 @@ export default [
       },
       {
         title: 'Glas 1.67',
-        description: 'Tunnare glas vid medelhöga styrkor. Rekommenderas för styrkor cirka 4 till 6.',
+        description: 'Tunnare glas vid medelhöga och höga styrkor. Rekommenderas för styrkor från cirka 4 och uppåt.',
         imageSrc: '/images/Glas167.png',
         priceKey: 'lens_1_67',
         nextStep: 'treatment',
         recommendMinSphere: 4,
-        recommendMaxSphere: 6
+        recommendMaxSphere: Infinity
       }
     ]
   },
