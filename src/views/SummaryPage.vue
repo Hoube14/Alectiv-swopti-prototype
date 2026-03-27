@@ -159,6 +159,15 @@ function buildOrderPayloadFromSelections() {
   return lines;
 }
 
+function buildInternalTrackingData() {
+  const sel = order.value?.selections ?? {};
+  if (!sel?.darknessSelection?.internalColorId) return undefined;
+
+  return {
+    helfargId: sel.darknessSelection.internalColorId
+  };
+}
+
 // Checkout payload: amount, currency, redirect/cancel URLs, and draft (customer + order_payload_json) so backend can create WC order in webhook.
 async function proceedToCheckout() {
   if (!validateCustomerForm()) {
@@ -177,6 +186,7 @@ async function proceedToCheckout() {
       cancelUrl: cancelUrlParam,
       draft: {
         order_payload_json: buildOrderPayloadFromSelections(),
+        internal_tracking: buildInternalTrackingData(),
         customer_name: customerName.value.trim(),
         customer_email: customerEmail.value.trim(),
         customer_phone: customerPhone.value.trim(),

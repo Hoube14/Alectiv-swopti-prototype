@@ -308,35 +308,50 @@ export default [
         description: "Lätt toning.",
         imageSrc: "/images/Heltonade.png",
         nextStep: 'summary',
-        priceKey: 'tint_12percent'
+        priceKey: 'tint_12percent',
+        internalIdByColor: {
+          Brun: 'BR1'
+        }
       },
       {
         title: "20% mörkhet",
         description: "Mellanmörk toning.",
         imageSrc: "/images/Heltonade.png",
         nextStep: 'summary',
-        priceKey: 'tint_20percent'
+        priceKey: 'tint_20percent',
+        internalIdByColor: {
+          Brun: 'BR2'
+        }
       },
       {
         title: "65% mörkhet",
         description: "Kraftig toning.",
         imageSrc: "/images/Heltonade.png",
         nextStep: 'summary',
-        priceKey: 'tint_65percent'
+        priceKey: 'tint_65percent',
+        internalIdByColor: {
+          Brun: 'BR6'
+        }
       },
       {
         title: "75% mörkhet",
         description: "Mycket mörk toning.",
         imageSrc: "/images/Gradaltonade.png",
         nextStep: 'summary',
-        priceKey: 'tint_75percent'
+        priceKey: 'tint_75percent',
+        internalIdByColor: {
+          Brun: 'BR7'
+        }
       },
       {
         title: "85% mörkhet",
         description: "Standard för solglas (rekommenderas).",
         imageSrc: "/images/Gradaltonade.png",
         nextStep: 'summary',
-        priceKey: 'tint_85percent'
+        priceKey: 'tint_85percent',
+        internalIdByColor: {
+          Brun: 'BR8'
+        }
       }
     ]
   },

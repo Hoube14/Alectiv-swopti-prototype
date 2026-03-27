@@ -166,7 +166,21 @@ function handleSelection(option, index) {
     updateOrder('prescription', null);
   }
 
-  updateOrder(props.step.id, option);
+  let selectionToSave = option;
+  if (props.step.id === 'darknessSelection') {
+    const selectedColorTitle = order.value.selections?.colorSelection?.title;
+    const internalColorId = selectedColorTitle
+      ? option.internalIdByColor?.[selectedColorTitle]
+      : undefined;
+    if (internalColorId) {
+      selectionToSave = {
+        ...option,
+        internalColorId
+      };
+    }
+  }
+
+  updateOrder(props.step.id, selectionToSave);
 
   if (props.step.id === 'glassType' && option.skipsPrescription) {
     updateOrder('prescription', option);
