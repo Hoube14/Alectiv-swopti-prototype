@@ -161,11 +161,21 @@ function buildOrderPayloadFromSelections() {
 
 function buildInternalTrackingData() {
   const sel = order.value?.selections ?? {};
-  if (!sel?.darknessSelection?.internalColorId) return undefined;
+  const coloredGlassType = sel?.coloredGlassType?.title;
 
-  return {
-    helfargId: sel.darknessSelection.internalColorId
-  };
+  if (coloredGlassType === 'Helfärg' && sel?.darknessSelection?.internalColorId) {
+    return {
+      helfargId: sel.darknessSelection.internalColorId
+    };
+  }
+
+  if (coloredGlassType === 'Gradal' && sel?.colorSelection?.internalColorId) {
+    return {
+      gradalId: sel.colorSelection.internalColorId
+    };
+  }
+
+  return undefined;
 }
 
 // Checkout payload: amount, currency, redirect/cancel URLs, and draft (customer + order_payload_json) so backend can create WC order in webhook.

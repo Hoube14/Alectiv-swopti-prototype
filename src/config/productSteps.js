@@ -211,21 +211,39 @@ export default [
         description: "25% tonat upptill, 10% nedtill.",
         imageSrc: "/images/Gradaltonade.png",
         nextStep: 'colorSelection',
-        priceKey: 'tint_gradient_25_10'
+        priceKey: 'tint_gradient_25_10',
+        internalIdByColor: {
+          Brun: '2BR',
+          Grå: '2GR',
+          Grön: '2GN',
+          Blå: '2BL'
+        }
       },
       {
         title: "Gradal toning 75-10",
         description: "75% tonat upptill, 10% nedtill.",
         imageSrc: "/images/Gradaltonade.png",
         nextStep: 'colorSelection',
-        priceKey: 'tint_gradient_75_10'
+        priceKey: 'tint_gradient_75_10',
+        internalIdByColor: {
+          Brun: '7BR',
+          Grå: '7GR',
+          Grön: '7GN',
+          Blå: '7BL'
+        }
       },
       {
         title: "Gradal toning 85-40",
         description: "85% tonat upptill, 40% nedtill.",
         imageSrc: "/images/Gradaltonade.png",
         nextStep: 'colorSelection',
-        priceKey: 'tint_gradient_85_40'
+        priceKey: 'tint_gradient_85_40',
+        internalIdByColor: {
+          Brun: '8BR',
+          Grå: '8GR',
+          Grön: '8GN',
+          Blå: '8BL'
+        }
       }
     ]
   },

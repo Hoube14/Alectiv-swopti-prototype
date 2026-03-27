@@ -167,6 +167,22 @@ function handleSelection(option, index) {
   }
 
   let selectionToSave = option;
+  if (props.step.id === 'colorSelection') {
+    const coloredTypeTitle = order.value.selections?.coloredGlassType?.title;
+    if (coloredTypeTitle === 'Gradal') {
+      const selectedGradient = order.value.selections?.gradientTintSelection;
+      const internalColorId = option.title
+        ? selectedGradient?.internalIdByColor?.[option.title]
+        : undefined;
+      if (internalColorId) {
+        selectionToSave = {
+          ...option,
+          internalColorId
+        };
+      }
+    }
+  }
+
   if (props.step.id === 'darknessSelection') {
     const selectedColorTitle = order.value.selections?.colorSelection?.title;
     const internalColorId = selectedColorTitle
