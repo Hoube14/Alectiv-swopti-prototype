@@ -310,6 +310,9 @@ export default [
         nextStep: 'summary',
         priceKey: 'tint_12percent',
         internalIdByColor: {
+          Grå: 'GR1',
+          Grön: 'GN1',
+          Blå: 'BL1',
           Brun: 'BR1'
         }
       },
@@ -320,6 +323,9 @@ export default [
         nextStep: 'summary',
         priceKey: 'tint_20percent',
         internalIdByColor: {
+          Grå: 'GR2',
+          Grön: 'GN2',
+          Blå: 'BL2',
           Brun: 'BR2'
         }
       },
@@ -330,6 +336,9 @@ export default [
         nextStep: 'summary',
         priceKey: 'tint_65percent',
         internalIdByColor: {
+          Grå: 'GR6',
+          Grön: 'GN6',
+          Blå: 'BL6',
           Brun: 'BR6'
         }
       },
@@ -340,6 +349,9 @@ export default [
         nextStep: 'summary',
         priceKey: 'tint_75percent',
         internalIdByColor: {
+          Grå: 'GR7',
+          Grön: 'GN7',
+          Blå: 'BL7',
           Brun: 'BR7'
         }
       },
@@ -350,6 +362,9 @@ export default [
         nextStep: 'summary',
         priceKey: 'tint_85percent',
         internalIdByColor: {
+          Grå: 'GR8',
+          Grön: 'GN8',
+          Blå: 'BL8',
           Brun: 'BR8'
         }
       }
