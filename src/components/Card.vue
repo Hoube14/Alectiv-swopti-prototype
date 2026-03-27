@@ -23,8 +23,10 @@ defineEmits(['click']);
   <div
     @click="disabled ? undefined : $emit('click')"
     class="h-full rounded-2xl border p-6 flex flex-col items-center shadow-sm transition-all duration-200 ease-out"
-    :class="disabled ? 'cursor-default opacity-95' : 'cursor-pointer hover:scale-[1.03] hover:shadow-md'"
-    style="background-color: var(--color-card); border-color: var(--color-border)"
+    :class="disabled ? 'cursor-not-allowed opacity-60 grayscale' : 'cursor-pointer hover:scale-[1.03] hover:shadow-md'"
+    :style="disabled
+      ? 'background-color: var(--color-background); border-color: rgba(0,0,0,0.14)'
+      : 'background-color: var(--color-card); border-color: var(--color-border)'"
   >
     <!-- Only render image if imageSrc exists -->
     <div v-if="imageSrc" class="mb-4 flex-shrink-0 h-24 flex items-center justify-center relative w-full">

@@ -123,6 +123,10 @@ const includedTreatmentSelection = {
   priceKey: 'treatment_standard'
 };
 
+const hasBlueLightFilterSelected = computed(
+  () => order.value.selections?.treatment?.priceKey === 'treatment_blue_light'
+);
+
 // Calculate the price for an option based on its priceKey
 function getOptionPrice(option) {
   if (!option.priceKey) return undefined;
@@ -137,6 +141,13 @@ function getOptionPriceLabel(option) {
 
 function isOptionDisabled(option) {
   if (props.step?.id === 'treatment' && option.priceKey === 'treatment_standard') return true;
+  if (
+    props.step?.id === 'tintSelection' &&
+    hasBlueLightFilterSelected.value &&
+    (option.title === 'Färgade glas' || option.title === 'Färgskiftande glas')
+  ) {
+    return true;
+  }
   // Polarised lenses cannot be combined with blue tint
   if (props.step?.id === 'colorSelection' && option.title === 'Blå') {
     const coloredType = order.value.selections?.coloredGlassType;
@@ -146,6 +157,13 @@ function isOptionDisabled(option) {
 }
 
 function getOptionDisabledReason(option) {
+  if (
+    props.step?.id === 'tintSelection' &&
+    hasBlueLightFilterSelected.value &&
+    (option.title === 'Färgade glas' || option.title === 'Färgskiftande glas')
+  ) {
+    return 'Det går inte att kombinera blåljusfilter med färgade eller färgskiftande glas';
+  }
   if (props.step?.id === 'colorSelection' && option.title === 'Blå') {
     const coloredType = order.value.selections?.coloredGlassType;
     if (coloredType?.priceKey === 'sunglass_polarized') {
@@ -329,6 +347,9 @@ function goBack() {
           <div class="mt-1 text-sm" style="color: var(--color-text-muted, rgba(0,0,0,0.7))">
             Anti-reflex, repskydd och antistatisk behandling ingår i alla glas. Du kan lägga till blåljusfilter som tillval.
           </div>
+          <div class="mt-2 text-sm font-medium" style="color: var(--color-text-muted, rgba(0,0,0,0.75))">
+            Om du väljer blåljusfilter kan du inte välja färgade eller färgskiftande glas i nästa steg.
+          </div>
         </div>
 
         <div class="grid gap-4 justify-center" style="grid-template-columns: repeat(auto-fit, minmax(280px, 280px));">
@@ -346,6 +367,7 @@ function goBack() {
               :priceLabel="getOptionPriceLabel(option)"
               :currency="currency"
               :disabled="isOptionDisabled(option)"
+              :disabledReason="getOptionDisabledReason(option)"
               @click="handleSelection(option, index)"
             />
           </div>
