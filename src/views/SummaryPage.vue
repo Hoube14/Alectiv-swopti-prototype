@@ -181,6 +181,12 @@ function buildInternalTrackingData() {
     };
   }
 
+  if (coloredGlassType === 'Polariserad' && sel?.colorSelection?.internalColorId) {
+    return {
+      polariseradId: sel.colorSelection.internalColorId
+    };
+  }
+
   return undefined;
 }
 

@@ -123,6 +123,12 @@ const includedTreatmentSelection = {
   priceKey: 'treatment_standard'
 };
 
+const polarizedColorMetadata = {
+  Brun: { darknessLabel: '78% mörkhet', internalId: 'PB' },
+  Grå: { darknessLabel: '83% mörkhet', internalId: 'PG' },
+  Grön: { darknessLabel: '85% mörkhet', internalId: 'PN' }
+};
+
 const hasBlueLightFilterSelected = computed(
   () => order.value.selections?.treatment?.priceKey === 'treatment_blue_light'
 );
@@ -137,6 +143,16 @@ function getOptionPriceLabel(option) {
   if (props.step?.id !== 'treatment') return undefined;
   if (option.priceKey === 'treatment_standard') return 'Ingår';
   return undefined;
+}
+
+function getOptionDescription(option) {
+  if (props.step?.id === 'colorSelection') {
+    const coloredTypeTitle = order.value.selections?.coloredGlassType?.title;
+    if (coloredTypeTitle === 'Polariserad') {
+      return polarizedColorMetadata[option.title]?.darknessLabel || option.description;
+    }
+  }
+  return option.description;
 }
 
 function isOptionDisabled(option) {
@@ -204,6 +220,15 @@ function handleSelection(option, index) {
       const internalColorId = option.title
         ? selectedSolidTint?.internalIdByColor?.[option.title]
         : undefined;
+      if (internalColorId) {
+        selectionToSave = {
+          ...option,
+          internalColorId
+        };
+      }
+    }
+    if (coloredTypeTitle === 'Polariserad') {
+      const internalColorId = polarizedColorMetadata[option.title]?.internalId;
       if (internalColorId) {
         selectionToSave = {
           ...option,
@@ -372,7 +397,7 @@ function goBack() {
           >
             <Card
               :title="getProperTitle(option)"
-              :description="option.description"
+              :description="getOptionDescription(option)"
               :imageSrc="getImageSrc(option.imageSrc)"
               :imageSrcDark="option.imageSrcDark ? getImageSrc(option.imageSrcDark) : undefined"
               :price="getOptionPrice(option)"
@@ -405,7 +430,7 @@ function goBack() {
           >
             <Card
               :title="getProperTitle(option)"
-              :description="option.description"
+              :description="getOptionDescription(option)"
               :imageSrc="getImageSrc(option.imageSrc)"
               :imageSrcDark="option.imageSrcDark ? getImageSrc(option.imageSrcDark) : undefined"
               :price="getOptionPrice(option)"

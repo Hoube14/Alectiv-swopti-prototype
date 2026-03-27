@@ -312,6 +312,11 @@ export default [
     backStep: null,
     options: [
       {
+        title: "Brun",
+        imageSrc: "/images/Brun.png",
+        nextStep: 'summary',
+      },
+      {
         title: "Grå",
         imageSrc: "/images/Gra.png",
         nextStep: 'summary',
@@ -319,11 +324,6 @@ export default [
       {
         title: "Grön",
         imageSrc: "/images/Gron.png",
-        nextStep: 'summary',
-      },
-      {
-        title: "Brun",
-        imageSrc: "/images/Brun.png",
         nextStep: 'summary',
       },
       {
