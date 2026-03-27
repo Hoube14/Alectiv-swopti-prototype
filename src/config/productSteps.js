@@ -182,21 +182,39 @@ export default [
         description: "Lätt toning, passar för ljusare miljöer.",
         imageSrc: "/images/Heltonade.png",
         nextStep: 'colorSelection',
-        priceKey: 'tint_12percent'
+        priceKey: 'tint_12percent',
+        internalIdByColor: {
+          Brun: 'HT1BR',
+          Grå: 'HT1GR',
+          Grön: 'HT1GN',
+          Blå: 'HT1BL'
+        }
       },
       {
         title: "20% toning",
         description: "Mellanmörk toning, balanserad för de flesta miljöer.",
         imageSrc: "/images/Heltonade.png",
         nextStep: 'colorSelection',
-        priceKey: 'tint_20percent'
+        priceKey: 'tint_20percent',
+        internalIdByColor: {
+          Brun: 'HT2BR',
+          Grå: 'HT2GR',
+          Grön: 'HT2GN',
+          Blå: 'HT2BL'
+        }
       },
       {
         title: "65% toning",
         description: "Kraftig toning, för ljusstarka miljöer.",
         imageSrc: "/images/Heltonade.png",
         nextStep: 'colorSelection',
-        priceKey: 'tint_65percent'
+        priceKey: 'tint_65percent',
+        internalIdByColor: {
+          Brun: 'HT6BR',
+          Grå: 'HT6GR',
+          Grön: 'HT6GN',
+          Blå: 'HT6BL'
+        }
       }
     ]
   },

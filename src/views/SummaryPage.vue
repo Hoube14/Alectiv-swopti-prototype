@@ -175,6 +175,12 @@ function buildInternalTrackingData() {
     };
   }
 
+  if (coloredGlassType === 'Heltoning' && sel?.colorSelection?.internalColorId) {
+    return {
+      heltoningId: sel.colorSelection.internalColorId
+    };
+  }
+
   return undefined;
 }
 

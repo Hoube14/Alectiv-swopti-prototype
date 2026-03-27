@@ -199,6 +199,18 @@ function handleSelection(option, index) {
         };
       }
     }
+    if (coloredTypeTitle === 'Heltoning') {
+      const selectedSolidTint = order.value.selections?.solidTintSelection;
+      const internalColorId = option.title
+        ? selectedSolidTint?.internalIdByColor?.[option.title]
+        : undefined;
+      if (internalColorId) {
+        selectionToSave = {
+          ...option,
+          internalColorId
+        };
+      }
+    }
   }
 
   if (props.step.id === 'darknessSelection') {
