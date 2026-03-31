@@ -12,12 +12,15 @@ defineProps({
   recommended: Boolean,
   /** Optional override when recommended is true */
   recommendedLabel: String,
+  /** Optional "learn more" content shown in modal */
+  infoTitle: String,
+  infoText: String,
   disabled: Boolean,
   /** Shown when disabled is true, e.g. reason why option is not available */
   disabledReason: String
 });
 
-defineEmits(['click']);
+defineEmits(['click', 'info']);
 
 </script>
 
@@ -44,6 +47,15 @@ defineEmits(['click']);
       {{ recommendedLabel || 'Rekommenderas för dina styrkor' }}
     </p>
     <p class="text-sm text-center flex-1 min-h-0 leading-relaxed" style="color: var(--color-text)">{{ description }}</p>
+    <button
+      v-if="!disabled && infoText"
+      type="button"
+      class="mt-3 text-sm font-semibold underline underline-offset-4 opacity-90 transition hover:opacity-100"
+      style="color: var(--color-primary)"
+      @click.stop="$emit('info')"
+    >
+      Läs mer
+    </button>
 
     <!-- Display price label (e.g. included) or price if available -->
     <div v-if="priceLabel" class="mt-2 font-semibold flex-shrink-0" style="color: var(--color-heading)">

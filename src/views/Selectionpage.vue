@@ -27,6 +27,20 @@ const { updateOrder, navigateTo } = orderStore;
 
 const showPrescriptionManualForm = ref(false);
 
+const infoModalOpen = ref(false);
+const infoModalTitle = ref('');
+const infoModalText = ref('');
+
+function openInfoModal(title, text) {
+  infoModalTitle.value = title || 'Information';
+  infoModalText.value = text || '';
+  infoModalOpen.value = true;
+}
+
+function closeInfoModal() {
+  infoModalOpen.value = false;
+}
+
 // Get the image source; append build-time query to bust cache after deploys
 function getImageSrc(src) {
   if (!src) return '';
@@ -430,6 +444,37 @@ function goBack() {
     <div class="max-w-4xl mx-auto">
       <ProgressBar :current-step="currentStepIndex" :total-steps="totalSteps" />
 
+      <!-- Info modal (used for "Läs mer") -->
+      <div
+        v-if="infoModalOpen"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4"
+        role="dialog"
+        aria-modal="true"
+        @click.self="closeInfoModal"
+      >
+        <div class="absolute inset-0 bg-black/50"></div>
+        <div
+          class="relative w-full max-w-lg rounded-2xl border p-6 shadow-xl"
+          style="background: var(--color-card); border-color: var(--color-border)"
+        >
+          <div class="flex items-start justify-between gap-4">
+            <div class="text-lg font-semibold" style="color: var(--color-heading)">{{ infoModalTitle }}</div>
+            <button
+              type="button"
+              class="text-sm font-semibold transition hover:opacity-80"
+              style="color: var(--color-primary)"
+              @click="closeInfoModal"
+              aria-label="Stäng"
+            >
+              Stäng
+            </button>
+          </div>
+          <div class="mt-3 text-sm leading-relaxed" style="color: var(--color-text)">
+            {{ infoModalText }}
+          </div>
+        </div>
+      </div>
+
       <div class="grid grid-cols-[1fr_auto_1fr] items-center mb-8 gap-4">
         <div class="flex justify-start">
           <button
@@ -483,7 +528,10 @@ function goBack() {
               :currency="currency"
               :disabled="isOptionDisabled(option)"
               :disabledReason="getOptionDisabledReason(option)"
+              :infoTitle="option.infoTitle || step?.infoTitle"
+              :infoText="option.infoText || step?.infoText"
               @click="handleSelection(option, index)"
+              @info="openInfoModal(option.infoTitle || step?.infoTitle, option.infoText || step?.infoText)"
             />
           </div>
         </div>
@@ -538,7 +586,10 @@ function goBack() {
               :recommendedLabel="getRecommendedLabel(option)"
               :disabled="isOptionDisabled(option)"
               :disabledReason="getOptionDisabledReason(option)"
+              :infoTitle="option.infoTitle || step?.infoTitle"
+              :infoText="option.infoText || step?.infoText"
               @click="handleSelection(option, index)"
+              @info="openInfoModal(option.infoTitle || step?.infoTitle, option.infoText || step?.infoText)"
             />
           </div>
         </div>

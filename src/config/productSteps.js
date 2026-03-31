@@ -131,7 +131,10 @@ export default [
       },
       {
         title: "Färgskiftande glas",
-        description: "Klara inomhus - mörknar i solen.",
+        description: "Klara inomhus – mörknar i UV‑ljus.",
+        infoTitle: "Så fungerar färgskiftande glas",
+        infoText:
+          "Fotokromatiska glas är klara inomhus och mörknar av UV‑strålning. Mörkhet och hur snabbt de skiftar påverkas av temperatur – i kyla blir de oftast mörkare och i värme skiftar de ofta långsammare. Bakom vindruta (där mycket UV filtreras bort) kan effekten bli svagare.",
         imageSrc: "/images/Fargskiftande-light.png",
         imageSrcDark: "/images/Fargskiftande-dark.png",
         nextStep: 'photochromicColorSelection'
@@ -270,10 +273,13 @@ export default [
     title: 'Välj färg för färgskiftande glas',
     showBackButton: true,
     backStep: null,
+    infoTitle: "Så fungerar färgskiftande glas",
+    infoText:
+      "Fotokromatiska glas är klara inomhus och mörknar av UV‑strålning. Mörkhet och hur snabbt de skiftar påverkas av temperatur – i kyla blir de oftast mörkare och i värme skiftar de ofta långsammare. Bakom vindruta (där mycket UV filtreras bort) kan effekten bli svagare.",
     options: [
       {
         title: "Grå 8-88%",
-        description: "Klara inomhus - mörknar i solen.",
+        description: "Klara inomhus – mörknar i UV‑ljus.",
         imageSrc: "/images/Fargskiftande-light.png",
         imageSrcDark: "/images/Fargskiftande-svart.png",
         nextStep: 'summary',
@@ -282,7 +288,7 @@ export default [
       },
       {
         title: "Grön 8-88%",
-        description: "Klara inomhus - mörknar i solen.",
+        description: "Klara inomhus – mörknar i UV‑ljus.",
         imageSrc: "/images/Fargskiftande-light.png",
         imageSrcDark: "/images/Fargskiftande-gron.png",
         nextStep: 'summary',
@@ -291,7 +297,7 @@ export default [
       },
       {
         title: "Brun 8-88%",
-        description: "Klara inomhus - mörknar i solen.",
+        description: "Klara inomhus – mörknar i UV‑ljus.",
         imageSrc: "/images/Fargskiftande-light.png",
         imageSrcDark: "/images/Fargskiftande-brun.png",
         nextStep: 'summary',
@@ -300,7 +306,7 @@ export default [
       },
       {
         title: "Blå 8-88%",
-        description: "Klara inomhus - mörknar i solen.",
+        description: "Klara inomhus – mörknar i UV‑ljus.",
         imageSrc: "/images/Fargskiftande-light.png",
         imageSrcDark: "/images/Fargskiftande-bla.png",
         nextStep: 'summary',
