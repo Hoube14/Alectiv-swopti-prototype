@@ -133,6 +133,12 @@ const hasBlueLightFilterSelected = computed(
   () => order.value.selections?.treatment?.priceKey === 'treatment_blue_light'
 );
 
+const isOwnBrandWithIndex167 = computed(() => {
+  const brand = order.value.selections?.lensBrand?.title;
+  const lens = order.value.selections?.lensRecommendation?.title;
+  return brand === 'Våra egna glasmärken' && lens === 'Glas 1.67';
+});
+
 // Calculate the price for an option based on its priceKey
 function getOptionPrice(option) {
   if (!option.priceKey) return undefined;
@@ -164,6 +170,13 @@ function isOptionDisabled(option) {
   ) {
     return true;
   }
+  if (
+    props.step?.id === 'coloredGlassType' &&
+    option.title === 'Polariserad' &&
+    isOwnBrandWithIndex167.value
+  ) {
+    return true;
+  }
   // Polarised lenses cannot be combined with blue tint
   if (props.step?.id === 'colorSelection' && option.title === 'Blå') {
     const coloredType = order.value.selections?.coloredGlassType;
@@ -179,6 +192,13 @@ function getOptionDisabledReason(option) {
     (option.title === 'Färgade glas' || option.title === 'Färgskiftande glas')
   ) {
     return 'Det går inte att kombinera blåljusfilter med färgade eller färgskiftande glas';
+  }
+  if (
+    props.step?.id === 'coloredGlassType' &&
+    option.title === 'Polariserad' &&
+    isOwnBrandWithIndex167.value
+  ) {
+    return 'Det går inte att välja polariserat med Glas 1.67 från våra egna glasmärken';
   }
   if (props.step?.id === 'colorSelection' && option.title === 'Blå') {
     const coloredType = order.value.selections?.coloredGlassType;
@@ -422,6 +442,18 @@ function goBack() {
         </div>
       </template>
       <template v-else>
+        <div
+          v-if="step && step.id === 'coloredGlassType' && isOwnBrandWithIndex167"
+          class="mb-6 rounded-xl border p-4 md:p-5"
+          style="border-color: rgba(0,0,0,0.08); background: rgba(0,0,0,0.02);"
+          role="note"
+        >
+          <div class="text-base font-semibold" style="color: var(--color-heading)">Polariserat är inte tillgängligt</div>
+          <div class="mt-1 text-sm" style="color: var(--color-text-muted, rgba(0,0,0,0.7))">
+            Glas 1.67 går inte att kombinera med polariserat när du väljer våra egna glasmärken.
+          </div>
+        </div>
+
         <div class="grid gap-4 justify-center" style="grid-template-columns: repeat(auto-fit, minmax(280px, 280px));">
           <div
             v-for="(option, index) in displayOptions"
