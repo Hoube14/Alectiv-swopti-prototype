@@ -6,6 +6,8 @@ defineProps({
   imageSrc: String,
   /** When set with imageSrc, renders a light-to-dark crossfade animation (e.g. färgskiftande glas) */
   imageSrcDark: String,
+  /** Optional badge shown on card (e.g. "Nyhet") */
+  badgeText: String,
   price: Number,
   priceLabel: String,
   currency: String,
@@ -33,6 +35,13 @@ defineEmits(['click', 'info']);
       ? 'background-color: var(--color-background); border-color: rgba(0,0,0,0.14)'
       : 'background-color: var(--color-card); border-color: var(--color-border)'"
   >
+    <div
+      v-if="badgeText"
+      class="self-end -mt-2 -mr-2 mb-2 rounded-full px-2.5 py-1 text-xs font-semibold"
+      style="background: rgba(0,0,0,0.06); color: var(--color-heading)"
+    >
+      {{ badgeText }}
+    </div>
     <!-- Only render image if imageSrc exists -->
     <div v-if="imageSrc" class="mb-4 flex-shrink-0 h-24 flex items-center justify-center relative w-full">
       <!-- Animated pair: light ↔ dark crossfade -->

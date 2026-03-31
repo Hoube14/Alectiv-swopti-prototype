@@ -189,6 +189,7 @@ export default [
       {
         title: 'Modefärger',
         description: 'Välj mellan säsongens nyheter.',
+        badgeText: 'Nyhet',
         imageSrc: '/images/Solglas.png',
         nextStep: 'fashionColorSelection'
       }
