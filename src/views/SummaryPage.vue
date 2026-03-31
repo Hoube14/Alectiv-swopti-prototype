@@ -169,6 +169,12 @@ function buildInternalTrackingData() {
     };
   }
 
+  if (coloredGlassType === 'Helfärg' && sel?.fashionColorSelection?.internalColorId) {
+    return {
+      helfargModeId: sel.fashionColorSelection.internalColorId
+    };
+  }
+
   if (coloredGlassType === 'Helfärg' && sel?.darknessSelection?.internalColorId) {
     return {
       helfargId: sel.darknessSelection.internalColorId
@@ -306,6 +312,9 @@ async function proceedToCheckout() {
 
                 <div v-if="selections.colorSelection">
                   <div>Färg: {{ selections.colorSelection.title }}</div>
+                </div>
+                <div v-else-if="selections.fashionColorSelection">
+                  <div>Färg: {{ selections.fashionColorSelection.title }}</div>
                 </div>
 
                 <div v-if="selections.usage">

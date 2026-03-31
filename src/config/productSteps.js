@@ -151,7 +151,7 @@ export default [
         title: "Helfärg",
         description: "Enhetlig färg över hela glaset. Välj färg i nästa steg.",
         imageSrc: "/images/Heltonade.png",
-        nextStep: 'colorSelection'
+        nextStep: 'solidColorCategory'
       },
       {
         title: "Gradal",
@@ -172,6 +172,43 @@ export default [
         nextStep: 'colorSelection',
         priceKey: 'sunglass_polarized'
       }
+    ]
+  },
+  {
+    id: 'solidColorCategory',
+    title: 'Välj färgkategori',
+    showBackButton: true,
+    backStep: null,
+    options: [
+      {
+        title: 'Standardfärger',
+        description: 'Välj mellan våra vanligaste färger.',
+        imageSrc: '/images/Heltonade.png',
+        nextStep: 'colorSelection'
+      },
+      {
+        title: 'Modefärger',
+        description: 'Välj mellan säsongens nyheter.',
+        imageSrc: '/images/Solglas.png',
+        nextStep: 'fashionColorSelection'
+      }
+    ]
+  },
+  {
+    id: 'fashionColorSelection',
+    title: 'Välj modefärg',
+    showBackButton: true,
+    backStep: null,
+    options: [
+      { title: 'Lagoon 70%', imageSrc: '/images/Heltonade.png', nextStep: 'summary', internalColorId: 'F72' },
+      { title: 'Oak 70%', imageSrc: '/images/Heltonade.png', nextStep: 'summary', internalColorId: 'F71' },
+      { title: 'Grape 70%', imageSrc: '/images/Heltonade.png', nextStep: 'summary', internalColorId: 'F70' },
+      { title: 'Ocean 73%', imageSrc: '/images/Heltonade.png', nextStep: 'summary', internalColorId: 'F78' },
+      { title: 'Berry 55%', imageSrc: '/images/Heltonade.png', nextStep: 'summary', internalColorId: 'F79' },
+      { title: 'Rose 30%', imageSrc: '/images/Heltonade.png', nextStep: 'summary', internalColorId: 'F93' },
+      { title: 'Peach 30%', imageSrc: '/images/Heltonade.png', nextStep: 'summary', internalColorId: 'F81' },
+      { title: 'Sky 25%', imageSrc: '/images/Heltonade.png', nextStep: 'summary', internalColorId: 'F80' },
+      { title: 'Lime 37%', imageSrc: '/images/Heltonade.png', nextStep: 'summary', internalColorId: 'F97' }
     ]
   },
   {
