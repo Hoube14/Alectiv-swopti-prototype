@@ -187,6 +187,12 @@ function buildInternalTrackingData() {
     };
   }
 
+  if (coloredGlassType === 'Gradal' && sel?.gradientFashionSelection?.internalColorId) {
+    return {
+      gradalModeId: sel.gradientFashionSelection.internalColorId
+    };
+  }
+
   if (coloredGlassType === 'Heltoning' && sel?.colorSelection?.internalColorId) {
     return {
       heltoningId: sel.colorSelection.internalColorId
@@ -315,6 +321,9 @@ async function proceedToCheckout() {
                 </div>
                 <div v-else-if="selections.fashionColorSelection">
                   <div>Färg: {{ selections.fashionColorSelection.title }}</div>
+                </div>
+                <div v-else-if="selections.gradientFashionSelection">
+                  <div>Färg: {{ selections.gradientFashionSelection.title }}</div>
                 </div>
 
                 <div v-if="selections.usage">
