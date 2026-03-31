@@ -157,7 +157,7 @@ export default [
         title: "Gradal",
         description: "Tonas successivt – mörkare upptill, ljusare nedtill.",
         imageSrc: "/images/Gradaltonade.png",
-        nextStep: 'gradientTintSelection'
+        nextStep: 'gradientColorCategory'
       },
       {
         title: "Heltoning",
@@ -171,6 +171,77 @@ export default [
         imageSrc: "/images/Solglas.png",
         nextStep: 'colorSelection',
         priceKey: 'sunglass_polarized'
+      }
+    ]
+  },
+  {
+    id: 'gradientColorCategory',
+    title: 'Välj färgkategori',
+    showBackButton: true,
+    backStep: null,
+    options: [
+      {
+        title: 'Standardfärger',
+        description: 'Välj mellan våra vanligaste färger.',
+        imageSrc: '/images/Gradaltonade.png',
+        nextStep: 'gradientTintSelection'
+      },
+      {
+        title: 'Modefärger',
+        description: 'Välj mellan säsongens nyheter.',
+        badgeText: 'Nyhet',
+        imageSrc: '/images/Solglas.png',
+        nextStep: 'gradientFashionSelection'
+      }
+    ]
+  },
+  {
+    id: 'gradientFashionSelection',
+    title: 'Välj modefärg',
+    showBackButton: true,
+    backStep: null,
+    options: [
+      {
+        title: 'Lagoon 80-10%',
+        description: '80% tonat upptill och 10% nedtill.',
+        imageSrc: '/images/Gradaltonade.png',
+        nextStep: 'summary',
+        internalColorId: 'G72'
+      },
+      {
+        title: 'Oak 80-10%',
+        description: '80% tonat upptill och 10% nedtill.',
+        imageSrc: '/images/Gradaltonade.png',
+        nextStep: 'summary',
+        internalColorId: 'G71'
+      },
+      {
+        title: 'Grape 80-10%',
+        description: '80% tonat upptill och 10% nedtill.',
+        imageSrc: '/images/Gradaltonade.png',
+        nextStep: 'summary',
+        internalColorId: 'G70'
+      },
+      {
+        title: 'Beach 45-20%',
+        description: '45% tonat upptill och 20% nedtill.',
+        imageSrc: '/images/Gradaltonade.png',
+        nextStep: 'summary',
+        internalColorId: 'G73'
+      },
+      {
+        title: 'Violet 65-20%',
+        description: '65% tonat upptill och 20% nedtill.',
+        imageSrc: '/images/Gradaltonade.png',
+        nextStep: 'summary',
+        internalColorId: 'G74'
+      },
+      {
+        title: 'Cherry 85-30%',
+        description: '85% tonat upptill och 30% nedtill.',
+        imageSrc: '/images/Gradaltonade.png',
+        nextStep: 'summary',
+        internalColorId: 'G75'
       }
     ]
   },
