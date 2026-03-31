@@ -55,8 +55,27 @@ const maxSphereFromPrescription = computed(() => {
   return Math.max(right, left);
 });
 
+const wantsPolarizedInOwnBrandHighStrengthFlow = computed(() => {
+  const pref = order.value.selections?.internalPreferences;
+  return !!pref?.preferPolarizedForOwnBrandHighStrength;
+});
+
+const shouldRecommend16ForPolarized = computed(
+  () => wantsPolarizedInOwnBrandHighStrengthFlow.value && isOwnBrand.value && isStrengthAbove4.value
+);
+
 // Which option index (within visible options) is recommended based on sphere strength.
 const recommendedLensIndex = computed(() => {
+  if (props.step?.id === 'lensRecommendation') {
+    if (
+      shouldRecommend16ForPolarized.value
+    ) {
+      const opts = props.step?.options ?? [];
+      const idx = opts.findIndex((opt) => opt.title === 'Glas 1.6');
+      return idx >= 0 ? idx : null;
+    }
+  }
+
   const maxSphere = maxSphereFromPrescription.value;
   if (maxSphere === null) return null;
   const opts = props.step?.options ?? [];
@@ -66,6 +85,13 @@ const recommendedLensIndex = computed(() => {
   );
   return idx >= 0 ? idx : null;
 });
+
+function getRecommendedLabel(option) {
+  if (props.step?.id === 'lensRecommendation' && shouldRecommend16ForPolarized.value) {
+    if (option?.title === 'Glas 1.6') return 'Rekommenderas för polariserat glas';
+  }
+  return undefined;
+}
 
 // Options to display: use filtered list for lensRecommendation, otherwise step.options.
 // Hide "Utan styrkor" in prescription step when initial glass type is progressive.
@@ -133,11 +159,23 @@ const hasBlueLightFilterSelected = computed(
   () => order.value.selections?.treatment?.priceKey === 'treatment_blue_light'
 );
 
+const isStrengthAbove4 = computed(() => {
+  const maxSphere = maxSphereFromPrescription.value;
+  if (maxSphere === null) return false;
+  return maxSphere > 4;
+});
+
+const isOwnBrand = computed(() => order.value.selections?.lensBrand?.title === 'Våra egna glasmärken');
+
 const isOwnBrandWithIndex167 = computed(() => {
   const brand = order.value.selections?.lensBrand?.title;
   const lens = order.value.selections?.lensRecommendation?.title;
   return brand === 'Våra egna glasmärken' && lens === 'Glas 1.67';
 });
+
+const isOwnBrand167PolarizedBlocked = computed(
+  () => isOwnBrandWithIndex167.value && isStrengthAbove4.value
+);
 
 // Calculate the price for an option based on its priceKey
 function getOptionPrice(option) {
@@ -173,7 +211,7 @@ function isOptionDisabled(option) {
   if (
     props.step?.id === 'coloredGlassType' &&
     option.title === 'Polariserad' &&
-    isOwnBrandWithIndex167.value
+    isOwnBrand167PolarizedBlocked.value
   ) {
     return true;
   }
@@ -196,9 +234,9 @@ function getOptionDisabledReason(option) {
   if (
     props.step?.id === 'coloredGlassType' &&
     option.title === 'Polariserad' &&
-    isOwnBrandWithIndex167.value
+    isOwnBrand167PolarizedBlocked.value
   ) {
-    return 'Det går inte att välja polariserat med Glas 1.67 från våra egna glasmärken';
+    return 'Polariserat finns inte för Glas 1.67 i våra egna glasmärken (välj 1.6 istället)';
   }
   if (props.step?.id === 'colorSelection' && option.title === 'Blå') {
     const coloredType = order.value.selections?.coloredGlassType;
@@ -212,6 +250,26 @@ function getOptionDisabledReason(option) {
 function continueWithoutBlueLight() {
   updateOrder('treatment', includedTreatmentSelection);
   navigateTo(getNextStepAfterTreatment());
+}
+
+function changeLensToEnablePolarized() {
+  updateOrder('internalPreferences', {
+    ...(order.value.selections?.internalPreferences || {}),
+    preferPolarizedForOwnBrandHighStrength: true
+  });
+
+  // Clear downstream selections so the user can re-pick lens index cleanly
+  updateOrder('coloredGlassType', null);
+  updateOrder('gradientTintSelection', null);
+  updateOrder('solidTintSelection', null);
+  updateOrder('colorSelection', null);
+  updateOrder('darknessSelection', null);
+  updateOrder('photochromicColorSelection', null);
+  updateOrder('tintSelection', null);
+  updateOrder('treatment', null);
+  updateOrder('lensRecommendation', null);
+
+  navigateTo('lensRecommendation');
 }
 
 function handleSelection(option, index) {
@@ -443,15 +501,23 @@ function goBack() {
       </template>
       <template v-else>
         <div
-          v-if="step && step.id === 'coloredGlassType' && isOwnBrandWithIndex167"
+          v-if="step && step.id === 'coloredGlassType' && isOwnBrand167PolarizedBlocked"
           class="mb-6 rounded-xl border p-4 md:p-5"
           style="border-color: rgba(0,0,0,0.08); background: rgba(0,0,0,0.02);"
           role="note"
         >
           <div class="text-base font-semibold" style="color: var(--color-heading)">Polariserat är inte tillgängligt</div>
           <div class="mt-1 text-sm" style="color: var(--color-text-muted, rgba(0,0,0,0.7))">
-            Glas 1.67 går inte att kombinera med polariserat när du väljer våra egna glasmärken.
+            Vid styrkor över ±4 finns inte polariserat för Glas 1.67 i våra egna glasmärken. Välj Glas 1.6 om du vill ha polariserat.
           </div>
+          <button
+            type="button"
+            class="mt-3 inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold transition hover:opacity-90"
+            style="background: var(--color-primary); color: white;"
+            @click="changeLensToEnablePolarized"
+          >
+            Ändra glastyp (1.6 / 1.67)
+          </button>
         </div>
 
         <div class="grid gap-4 justify-center" style="grid-template-columns: repeat(auto-fit, minmax(280px, 280px));">
@@ -469,6 +535,7 @@ function goBack() {
               :priceLabel="getOptionPriceLabel(option)"
               :currency="currency"
               :recommended="step?.id === 'lensRecommendation' && recommendedLensIndex === index"
+              :recommendedLabel="getRecommendedLabel(option)"
               :disabled="isOptionDisabled(option)"
               :disabledReason="getOptionDisabledReason(option)"
               @click="handleSelection(option, index)"
