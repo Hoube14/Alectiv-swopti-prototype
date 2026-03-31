@@ -163,6 +163,12 @@ function buildInternalTrackingData() {
   const sel = order.value?.selections ?? {};
   const coloredGlassType = sel?.coloredGlassType?.title;
 
+  if (sel?.photochromicColorSelection?.internalColorId) {
+    return {
+      photochromicId: sel.photochromicColorSelection.internalColorId
+    };
+  }
+
   if (coloredGlassType === 'Helfärg' && sel?.darknessSelection?.internalColorId) {
     return {
       helfargId: sel.darknessSelection.internalColorId

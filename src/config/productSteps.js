@@ -272,36 +272,40 @@ export default [
     backStep: null,
     options: [
       {
-        title: "Svarta",
+        title: "Grå 8-88%",
         description: "Klara inomhus - mörknar i solen.",
         imageSrc: "/images/Fargskiftande-light.png",
         imageSrcDark: "/images/Fargskiftande-svart.png",
         nextStep: 'summary',
-        priceKey: 'photochromic_black'
+        priceKey: 'photochromic_black',
+        internalColorId: 'Y3'
       },
       {
-        title: "Gröna",
+        title: "Grön 8-88%",
         description: "Klara inomhus - mörknar i solen.",
         imageSrc: "/images/Fargskiftande-light.png",
         imageSrcDark: "/images/Fargskiftande-gron.png",
         nextStep: 'summary',
-        priceKey: 'photochromic_green'
+        priceKey: 'photochromic_green',
+        internalColorId: 'N3'
       },
       {
-        title: "Bruna",
+        title: "Brun 8-88%",
         description: "Klara inomhus - mörknar i solen.",
         imageSrc: "/images/Fargskiftande-light.png",
         imageSrcDark: "/images/Fargskiftande-brun.png",
         nextStep: 'summary',
-        priceKey: 'photochromic_brown'
+        priceKey: 'photochromic_brown',
+        internalColorId: 'B3'
       },
       {
-        title: "Blåa",
+        title: "Blå 8-88%",
         description: "Klara inomhus - mörknar i solen.",
         imageSrc: "/images/Fargskiftande-light.png",
         imageSrcDark: "/images/Fargskiftande-bla.png",
         nextStep: 'summary',
-        priceKey: 'photochromic_blue'
+        priceKey: 'photochromic_blue',
+        internalColorId: 'L3'
       }
     ]
   },
