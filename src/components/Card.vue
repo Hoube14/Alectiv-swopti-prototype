@@ -29,7 +29,7 @@ defineEmits(['click', 'info']);
 <template>
   <div
     @click="disabled ? undefined : $emit('click')"
-    class="h-full rounded-2xl border p-6 flex flex-col items-center shadow-sm transition-all duration-200 ease-out"
+    class="relative h-full rounded-2xl border p-6 flex flex-col items-center shadow-sm transition-all duration-200 ease-out"
     :class="disabled ? 'cursor-not-allowed opacity-60 grayscale' : 'cursor-pointer hover:scale-[1.03] hover:shadow-md'"
     :style="disabled
       ? 'background-color: var(--color-background); border-color: rgba(0,0,0,0.14)'
@@ -37,7 +37,7 @@ defineEmits(['click', 'info']);
   >
     <div
       v-if="badgeText"
-      class="self-end -mt-2 -mr-2 mb-2 rounded-full px-2.5 py-1 text-xs font-semibold"
+      class="absolute right-4 top-4 rounded-full px-2.5 py-1 text-xs font-semibold"
       style="background: rgba(0,0,0,0.06); color: var(--color-heading)"
     >
       {{ badgeText }}
