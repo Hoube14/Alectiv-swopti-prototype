@@ -49,6 +49,15 @@ function getImageSrc(src) {
   return v ? `${path}?v=${v}` : path;
 }
 
+function getOptionImageSrc(option) {
+  const selectedColorTitle = order.value.selections?.colorSelection?.title;
+  const byColor = option?.imageSrcByColor;
+  if (selectedColorTitle && byColor && byColor[selectedColorTitle]) {
+    return byColor[selectedColorTitle];
+  }
+  return option?.imageSrc;
+}
+
 // Get the initial glass type selection
 const initialGlassType = computed(() => order.value.selections?.glassType?.title || null);
 
@@ -521,7 +530,7 @@ function goBack() {
             <Card
               :title="getProperTitle(option)"
               :description="getOptionDescription(option)"
-              :imageSrc="getImageSrc(option.imageSrc)"
+              :imageSrc="getImageSrc(getOptionImageSrc(option))"
               :imageSrcDark="option.imageSrcDark ? getImageSrc(option.imageSrcDark) : undefined"
               :badgeText="option.badgeText"
               :price="getOptionPrice(option)"
@@ -578,7 +587,7 @@ function goBack() {
             <Card
               :title="getProperTitle(option)"
               :description="getOptionDescription(option)"
-              :imageSrc="getImageSrc(option.imageSrc)"
+              :imageSrc="getImageSrc(getOptionImageSrc(option))"
               :imageSrcDark="option.imageSrcDark ? getImageSrc(option.imageSrcDark) : undefined"
               :badgeText="option.badgeText"
               :price="getOptionPrice(option)"

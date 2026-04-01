@@ -1,6 +1,6 @@
 <script setup>
 
-defineProps({
+const props = defineProps({
   title: String,
   description: String,
   imageSrc: String,
@@ -46,8 +46,15 @@ defineEmits(['click', 'info']);
     <div v-if="imageSrc" class="mb-4 flex-shrink-0 h-24 flex items-center justify-center relative w-full">
       <!-- Animated pair: light ↔ dark crossfade -->
       <template v-if="imageSrcDark">
-        <img :src="imageSrc" :alt="title" class="h-24 object-contain absolute inset-0 m-auto photochromic-light">
-        <img :src="imageSrcDark" :alt="title" class="h-24 object-contain absolute inset-0 m-auto photochromic-dark">
+        <div class="photochromic-clip" aria-hidden="true">
+          <img :src="imageSrc" :alt="title" class="photochromic-img photochromic-light">
+          <img
+            :src="imageSrcDark"
+            :alt="title"
+            class="photochromic-img photochromic-dark"
+            :class="props.imageSrcDark === props.imageSrc ? 'photochromic-dark--filter' : ''"
+          >
+        </div>
       </template>
       <img v-else :src="imageSrc" :alt="title" class="h-24 object-contain">
     </div>
@@ -93,5 +100,25 @@ defineEmits(['click', 'info']);
 }
 .photochromic-dark {
   animation: photochromic-dark 4s ease-in-out infinite;
+}
+.photochromic-clip {
+  width: 96px;
+  height: 96px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 9999px;
+  /* Clip a bit tighter to avoid showing any outer halo */
+  clip-path: circle(42% at 50% 50%);
+  background: transparent;
+}
+.photochromic-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  position: absolute;
+  inset: 0;
+}
+.photochromic-dark--filter {
+  filter: brightness(0.45) saturate(0.9) contrast(1.1);
 }
 </style>

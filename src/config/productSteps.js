@@ -8,14 +8,14 @@ export default [
       {
         title: "Enkelslipade glas / glas utan styrka",
         description: "Glas som korrigerar ett synfel - avstånd eller nära.",
-        imageSrc: "/images/Enkelslipad.png",
+        imageSrc: "/images/Enkelslipadeung.png",
         priceKey: 'glass_single',
         nextStep: 'usage'
       },
       {
         title: "Progressiva glas",
         description: "Glas med flera styrkor. Korrigerar synfel för avstånd och nära",
-        imageSrc: "/images/Progressiva.png",
+        imageSrc: "/images/Progressivaaldre.png",
         priceKey: 'glass_progressive',
         nextStep: 'prescription'
       }
@@ -51,7 +51,7 @@ export default [
       {
         title: 'Våra egna glasmärken',
         description: 'Välj från vårt eget sortiment av glas.',
-        imageSrc: '/images/VaraEgnaGlasmarken.png',
+        imageSrc: '/images/VaraEgnaGlasmarken.jpg',
         nextStep: 'lensRecommendation'
       },
       {
@@ -97,7 +97,7 @@ export default [
       {
         title: 'Fullständig behandling',
         description: 'Anti-reflex, repskydd och antistatisk behandling ingår i alla glas.',
-        imageSrc: '/images/Standardbehandling.png',
+        imageSrc: '/images/FullstandingBehandling.png',
         nextStep: null,
         priceKey: 'treatment_standard'
       },
@@ -119,14 +119,14 @@ export default [
       {
         title: "Ofärgade glas",
         description: "I nästa steg kan du lägga till blåljusfilter som tillval.",
-        imageSrc: "/images/Enkelslipad.png",
+        imageSrc: "/images/ofargadlens.png",
         priceKey: 'tint_none',
         nextStep: 'summary'
       },
       {
         title: "Färgade glas",
         description: "Välj typ av toning – helfärg, gradal, heltoning eller polariserad – och sedan färg.",
-        imageSrc: "/images/Solglas.png",
+        imageSrc: "/images/fargadlens.png",
         nextStep: 'coloredGlassType'
       },
       {
@@ -135,8 +135,8 @@ export default [
         infoTitle: "Så fungerar färgskiftande glas",
         infoText:
           "Fotokromatiska glas är klara inomhus och mörknar av UV‑strålning. Mörkhet och hur snabbt de skiftar påverkas av temperatur – i kyla blir de oftast mörkare och i värme skiftar de ofta långsammare. Bakom vindruta (där mycket UV filtreras bort) kan effekten bli svagare.",
-        imageSrc: "/images/Fargskiftande-light.png",
-        imageSrcDark: "/images/Fargskiftande-dark.png",
+        imageSrc: "/images/ofargadlens.png",
+        imageSrcDark: "/images/ofargadlens.png",
         nextStep: 'photochromicColorSelection'
       }
     ]
@@ -150,13 +150,13 @@ export default [
       {
         title: "Helfärg",
         description: "Enhetlig färg över hela glaset. Välj färg i nästa steg.",
-        imageSrc: "/images/Heltonade.png",
+        imageSrc: "/images/fargadlens.png",
         nextStep: 'solidColorCategory'
       },
       {
         title: "Gradal",
         description: "Tonas successivt – mörkare upptill, ljusare nedtill.",
-        imageSrc: "/images/Gradaltonade.png",
+        imageSrc: "/images/lens-brown-25-10.png",
         nextStep: 'gradientColorCategory'
       },
       {
@@ -183,7 +183,7 @@ export default [
       {
         title: 'Standardfärger',
         description: 'Välj mellan våra vanligaste färger.',
-        imageSrc: '/images/Gradaltonade.png',
+        imageSrc: '/images/lens-brown-85-40.png',
         nextStep: 'gradientTintSelection'
       },
       {
@@ -254,14 +254,14 @@ export default [
       {
         title: 'Standardfärger',
         description: 'Välj mellan våra vanligaste färger.',
-        imageSrc: '/images/Heltonade.png',
+        imageSrc: '/images/lens-solid-grey-85.png',
         nextStep: 'colorSelection'
       },
       {
         title: 'Modefärger',
         description: 'Välj mellan säsongens nyheter.',
         badgeText: 'Nyhet',
-        imageSrc: '/images/Solglas.png',
+        imageSrc: '/images/lens-fashion-lagoon-70.png',
         nextStep: 'fashionColorSelection'
       }
     ]
@@ -272,15 +272,15 @@ export default [
     showBackButton: true,
     backStep: null,
     options: [
-      { title: 'Lagoon 70%', imageSrc: '/images/Heltonade.png', nextStep: 'summary', internalColorId: 'F72' },
-      { title: 'Oak 70%', imageSrc: '/images/Heltonade.png', nextStep: 'summary', internalColorId: 'F71' },
-      { title: 'Grape 70%', imageSrc: '/images/Heltonade.png', nextStep: 'summary', internalColorId: 'F70' },
-      { title: 'Ocean 73%', imageSrc: '/images/Heltonade.png', nextStep: 'summary', internalColorId: 'F78' },
-      { title: 'Berry 55%', imageSrc: '/images/Heltonade.png', nextStep: 'summary', internalColorId: 'F79' },
-      { title: 'Rose 30%', imageSrc: '/images/Heltonade.png', nextStep: 'summary', internalColorId: 'F93' },
-      { title: 'Peach 30%', imageSrc: '/images/Heltonade.png', nextStep: 'summary', internalColorId: 'F81' },
-      { title: 'Sky 25%', imageSrc: '/images/Heltonade.png', nextStep: 'summary', internalColorId: 'F80' },
-      { title: 'Lime 37%', imageSrc: '/images/Heltonade.png', nextStep: 'summary', internalColorId: 'F97' }
+      { title: 'Lagoon 70%', imageSrc: '/images/lens-fashion-lagoon-70.png', nextStep: 'summary', internalColorId: 'F72' },
+      { title: 'Oak 70%', imageSrc: '/images/lens-fashion-oak-70.png', nextStep: 'summary', internalColorId: 'F71' },
+      { title: 'Grape 70%', imageSrc: '/images/lens-fashion-grape-70.png', nextStep: 'summary', internalColorId: 'F70' },
+      { title: 'Ocean 73%', imageSrc: '/images/lens-fashion-ocean-73.png', nextStep: 'summary', internalColorId: 'F78' },
+      { title: 'Berry 55%', imageSrc: '/images/lens-fashion-berry-55.png', nextStep: 'summary', internalColorId: 'F79' },
+      { title: 'Rose 30%', imageSrc: '/images/lens-fashion-rose-30.png', nextStep: 'summary', internalColorId: 'F93' },
+      { title: 'Peach 30%', imageSrc: '/images/lens-fashion-peach-30.png', nextStep: 'summary', internalColorId: 'F81' },
+      { title: 'Sky 25%', imageSrc: '/images/lens-fashion-sky-25.png', nextStep: 'summary', internalColorId: 'F80' },
+      { title: 'Lime 37%', imageSrc: '/images/lens-fashion-lime-37.png', nextStep: 'summary', internalColorId: 'F97' }
     ]
   },
   {
@@ -339,7 +339,7 @@ export default [
       {
         title: "Gradal toning 25-10",
         description: "25% tonat upptill, 10% nedtill.",
-        imageSrc: "/images/Gradaltonade.png",
+        imageSrc: "/images/lens-grey-25-10.png",
         nextStep: 'colorSelection',
         priceKey: 'tint_gradient_25_10',
         internalIdByColor: {
@@ -352,7 +352,7 @@ export default [
       {
         title: "Gradal toning 75-10",
         description: "75% tonat upptill, 10% nedtill.",
-        imageSrc: "/images/Gradaltonade.png",
+        imageSrc: "/images/lens-grey-75-10.png",
         nextStep: 'colorSelection',
         priceKey: 'tint_gradient_75_10',
         internalIdByColor: {
@@ -365,7 +365,7 @@ export default [
       {
         title: "Gradal toning 85-40",
         description: "85% tonat upptill, 40% nedtill.",
-        imageSrc: "/images/Gradaltonade.png",
+        imageSrc: "/images/lens-grey-85-40.png",
         nextStep: 'colorSelection',
         priceKey: 'tint_gradient_85_40',
         internalIdByColor: {
@@ -432,22 +432,22 @@ export default [
     options: [
       {
         title: "Brun",
-        imageSrc: "/images/Brun.png",
+        imageSrc: "/images/lens-solid-brown-85.png",
         nextStep: 'summary',
       },
       {
         title: "Grå",
-        imageSrc: "/images/Gra.png",
+        imageSrc: "/images/lens-solid-grey-85.png",
         nextStep: 'summary',
       },
       {
         title: "Grön",
-        imageSrc: "/images/Gron.png",
+        imageSrc: "/images/lens-solid-green-85.png",
         nextStep: 'summary',
       },
       {
         title: "Blå",
-        imageSrc: "/images/Bla.png",
+        imageSrc: "/images/lens-solid-blue-85.png",
         nextStep: 'summary',
       }
     ]
@@ -462,6 +462,12 @@ export default [
         title: "12% mörkhet",
         description: "Lätt toning.",
         imageSrc: "/images/Heltonade.png",
+        imageSrcByColor: {
+          Brun: "/images/lens-solid-brown-12.png",
+          Grå: "/images/lens-solid-grey-12.png",
+          Grön: "/images/lens-solid-green-12.png",
+          Blå: "/images/lens-solid-blue-12.png"
+        },
         nextStep: 'summary',
         priceKey: 'tint_12percent',
         internalIdByColor: {
@@ -475,6 +481,12 @@ export default [
         title: "20% mörkhet",
         description: "Mellanmörk toning.",
         imageSrc: "/images/Heltonade.png",
+        imageSrcByColor: {
+          Brun: "/images/lens-solid-brown-20.png",
+          Grå: "/images/lens-solid-grey-20.png",
+          Grön: "/images/lens-solid-green-20.png",
+          Blå: "/images/lens-solid-blue-20.png"
+        },
         nextStep: 'summary',
         priceKey: 'tint_20percent',
         internalIdByColor: {
@@ -488,6 +500,12 @@ export default [
         title: "65% mörkhet",
         description: "Kraftig toning.",
         imageSrc: "/images/Heltonade.png",
+        imageSrcByColor: {
+          Brun: "/images/lens-solid-brown-65.png",
+          Grå: "/images/lens-solid-grey-65.png",
+          Grön: "/images/lens-solid-green-65.png",
+          Blå: "/images/lens-solid-blue-65.png"
+        },
         nextStep: 'summary',
         priceKey: 'tint_65percent',
         internalIdByColor: {
@@ -500,7 +518,13 @@ export default [
       {
         title: "75% mörkhet",
         description: "Mycket mörk toning.",
-        imageSrc: "/images/Gradaltonade.png",
+        imageSrc: "/images/Heltonade.png",
+        imageSrcByColor: {
+          Brun: "/images/lens-solid-brown-75.png",
+          Grå: "/images/lens-solid-grey-75.png",
+          Grön: "/images/lens-solid-green-75.png",
+          Blå: "/images/lens-solid-blue-75.png"
+        },
         nextStep: 'summary',
         priceKey: 'tint_75percent',
         internalIdByColor: {
@@ -513,7 +537,13 @@ export default [
       {
         title: "85% mörkhet",
         description: "Standard för solglas (rekommenderas).",
-        imageSrc: "/images/Gradaltonade.png",
+        imageSrc: "/images/Heltonade.png",
+        imageSrcByColor: {
+          Brun: "/images/lens-solid-brown-85.png",
+          Grå: "/images/lens-solid-grey-85.png",
+          Grön: "/images/lens-solid-green-85.png",
+          Blå: "/images/lens-solid-blue-85.png"
+        },
         nextStep: 'summary',
         priceKey: 'tint_85percent',
         internalIdByColor: {
@@ -544,7 +574,7 @@ export default [
       {
         title: 'Utan styrkor',
         description: 'Jag behöver inte styrkor – t.ex. solglas utan styrka.',
-        imageSrc: '/images/UtanStyrkor.png',
+        imageSrc: '',
         nextStep: 'lensBrand',
         skipsPrescription: true
       }
