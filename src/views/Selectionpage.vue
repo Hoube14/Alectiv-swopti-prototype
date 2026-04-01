@@ -41,6 +41,53 @@ function closeInfoModal() {
   infoModalOpen.value = false;
 }
 
+const infoModalLines = computed(() => {
+  const text = infoModalText.value || '';
+  return text.split('\n');
+});
+
+const INFO_BOLD_HEADINGS = new Set([
+  'vad siffrorna betyder',
+  'tjocklek och estetik',
+  'vikt',
+  'bågens storlek spelar roll',
+  'plus vs minus',
+  'rekommendation som känns "smart"',
+  'smart rekommendation',
+  'transparens om begränsningar',
+  'begränsningar'
+]);
+
+function normalizeHeading(line) {
+  return (line || '').trim().toLowerCase().replace(/\s+/g, ' ');
+}
+
+function isInfoHeadingLine(line) {
+  const trimmed = (line || '').trim();
+  if (!trimmed) return false;
+  if (trimmed.startsWith('-')) return false;
+  return INFO_BOLD_HEADINGS.has(normalizeHeading(trimmed));
+}
+
+function splitHeadingPrefix(line) {
+  const raw = (line || '').trim();
+  if (!raw || raw.startsWith('-')) return null;
+
+  const idx = raw.indexOf(':');
+  if (idx <= 0) return null;
+
+  const prefix = raw.slice(0, idx).trim();
+  const rest = raw.slice(idx + 1).trim();
+
+  if (!INFO_BOLD_HEADINGS.has(normalizeHeading(prefix))) return null;
+
+  return { heading: prefix, rest };
+}
+
+function stripBullet(line) {
+  return (line || '').replace(/^\s*-\s*/, '');
+}
+
 // Get the image source; append build-time query to bust cache after deploys
 function getImageSrc(src) {
   if (!src) return '';
@@ -459,9 +506,8 @@ function goBack() {
         class="fixed inset-0 z-50 flex items-center justify-center p-4"
         role="dialog"
         aria-modal="true"
-        @click.self="closeInfoModal"
       >
-        <div class="absolute inset-0 bg-black/50"></div>
+        <div class="absolute inset-0 bg-black/50" @click="closeInfoModal"></div>
         <div
           class="relative w-full max-w-lg rounded-2xl border p-6 shadow-xl"
           style="background: var(--color-card); border-color: var(--color-border)"
@@ -479,7 +525,21 @@ function goBack() {
             </button>
           </div>
           <div class="mt-3 text-sm leading-relaxed" style="color: var(--color-text)">
-            {{ infoModalText }}
+            <template v-for="(line, idx) in infoModalLines" :key="idx">
+              <div v-if="!line.trim()" class="h-3"></div>
+              <div v-else-if="splitHeadingPrefix(line)" class="mt-2 first:mt-0">
+                <span class="font-semibold">{{ splitHeadingPrefix(line).heading }}</span><span>: {{ splitHeadingPrefix(line).rest }}</span>
+              </div>
+              <div v-else-if="isInfoHeadingLine(line)" class="font-semibold mt-2 first:mt-0">
+                {{ line.trim() }}
+              </div>
+              <div v-else-if="!line.trim().startsWith('-')" class="mt-1">
+                {{ line.trim() }}
+              </div>
+              <div v-else class="pl-4">
+                • {{ stripBullet(line).trim() }}
+              </div>
+            </template>
           </div>
         </div>
       </div>

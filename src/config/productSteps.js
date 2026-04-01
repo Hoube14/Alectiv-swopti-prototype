@@ -70,7 +70,10 @@ export default [
     options: [
       {
         title: 'Glas 1.6',
-        description: 'Tunnare och lättare glas. Rekommenderas för styrkor cirka 2 till 4.',
+        description: 'Tunnare och lättare glas.',
+        infoTitle: 'Glas 1.6 – bra att veta',
+        infoText:
+          "Vad siffrorna betyder\n- 1.6 = brytningsindex (hur mycket materialet böjer ljus)\n\nTjocklek och estetik\n- Bra standardval\n- 1.67 kan bli märkbart tunnare vid högre styrkor\n\nVikt\n- Beror mest på styrka och bågens storlek\n\nBågens storlek spelar roll\n- Större båge = tjockare glas\n- Mindre båge kan göra stor skillnad\n\nPlus vs minus\n- Minus: ofta tjockare kant\n- Plus: ofta tjockare i mitten\n\nSmart rekommendation\n- Välj 1.6 om du vill ha ett starkt pris/prestanda‑val vid lägre–medelhöga styrkor\n\nBegränsningar\n- Vissa tillval/kombinationer kan vara begränsade beroende på sortiment",
         imageSrc: '/images/Glas16.png',
         priceKey: 'lens_1_6',
         nextStep: 'treatment',
@@ -79,7 +82,10 @@ export default [
       },
       {
         title: 'Glas 1.67',
-        description: 'Tunnare glas vid medelhöga och höga styrkor. Rekommenderas för styrkor från cirka 4 och uppåt.',
+        description: 'Ännu tunnare och lättare glas.',
+        infoTitle: 'Glas 1.67 – bra att veta',
+        infoText:
+          "Vad siffrorna betyder\n- 1.67 = brytningsindex (högre index kan ge tunnare glas)\n\nTjocklek och estetik\n- Ofta valt för att minska synlig tjocklek (kant/centrum)\n\nVikt\n- Beror mest på styrka och bågens storlek\n- Tunnare glas kan upplevas smidigare\n\nBågens storlek spelar roll\n- Stor båge + hög styrka = mer tjocklek\n- 1.67 hjälper, men mindre båge kan hjälpa ännu mer\n\nPlus vs minus\n- Minus: ofta tjockare kant\n- Plus: ofta tjockare i mitten\n\nSmart rekommendation\n- Välj 1.67 om du vill prioritera tunnhet/estetik vid medelhöga–höga styrkor\n\nBegränsningar\n- Vissa tillval kan vara begränsade beroende på sortiment – vi guidar dig om något inte går att kombinera",
         imageSrc: '/images/Glas167.png',
         priceKey: 'lens_1_67',
         nextStep: 'treatment',
@@ -168,7 +174,7 @@ export default [
       {
         title: "Polariserad",
         description: "Reducerar reflexer och bländning. Välj färg i nästa steg.",
-        imageSrc: "/images/Solglas.png",
+        imageSrc: "/images/lens-solid-brown-85.png",
         nextStep: 'colorSelection',
         priceKey: 'sunglass_polarized'
       }
