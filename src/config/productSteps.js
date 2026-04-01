@@ -190,7 +190,7 @@ export default [
         title: 'Modefärger',
         description: 'Välj mellan säsongens nyheter.',
         badgeText: 'Nyhet',
-        imageSrc: '/images/Solglas.png',
+        imageSrc: '/images/lens-fashion-lagoon-80-10.png',
         nextStep: 'gradientFashionSelection'
       }
     ]
@@ -204,42 +204,42 @@ export default [
       {
         title: 'Lagoon 80-10%',
         description: '80% tonat upptill och 10% nedtill.',
-        imageSrc: '/images/Gradaltonade.png',
+        imageSrc: '/images/lens-fashion-lagoon-80-10.png',
         nextStep: 'summary',
         internalColorId: 'G72'
       },
       {
         title: 'Oak 80-10%',
         description: '80% tonat upptill och 10% nedtill.',
-        imageSrc: '/images/Gradaltonade.png',
+        imageSrc: '/images/lens-fashion-oak-80-10.png',
         nextStep: 'summary',
         internalColorId: 'G71'
       },
       {
         title: 'Grape 80-10%',
         description: '80% tonat upptill och 10% nedtill.',
-        imageSrc: '/images/Gradaltonade.png',
+        imageSrc: '/images/lens-fashion-grape-80-10.png',
         nextStep: 'summary',
         internalColorId: 'G70'
       },
       {
         title: 'Beach 45-20%',
         description: '45% tonat upptill och 20% nedtill.',
-        imageSrc: '/images/Gradaltonade.png',
+        imageSrc: '/images/lens-fashion-beach-45-20.png',
         nextStep: 'summary',
         internalColorId: 'G73'
       },
       {
         title: 'Violet 65-20%',
         description: '65% tonat upptill och 20% nedtill.',
-        imageSrc: '/images/Gradaltonade.png',
+        imageSrc: '/images/lens-fashion-violet-65-20.png',
         nextStep: 'summary',
         internalColorId: 'G74'
       },
       {
         title: 'Cherry 85-30%',
         description: '85% tonat upptill och 30% nedtill.',
-        imageSrc: '/images/Gradaltonade.png',
+        imageSrc: '/images/lens-fashion-cherry-85-30.png',
         nextStep: 'summary',
         internalColorId: 'G75'
       }
