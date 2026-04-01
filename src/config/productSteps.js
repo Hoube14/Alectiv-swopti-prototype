@@ -389,8 +389,8 @@ export default [
       {
         title: "Grå 8-88%",
         description: "Klara inomhus – mörknar i UV‑ljus.",
-        imageSrc: "/images/Fargskiftande-light.png",
-        imageSrcDark: "/images/Fargskiftande-svart.png",
+        imageSrc: "/images/ofargadlens.png",
+        imageSrcDark: "/images/lens-photochromic-smokey-grey-8-88.png",
         nextStep: 'summary',
         priceKey: 'photochromic_black',
         internalColorId: 'Y3'
@@ -398,8 +398,8 @@ export default [
       {
         title: "Grön 8-88%",
         description: "Klara inomhus – mörknar i UV‑ljus.",
-        imageSrc: "/images/Fargskiftande-light.png",
-        imageSrcDark: "/images/Fargskiftande-gron.png",
+        imageSrc: "/images/ofargadlens.png",
+        imageSrcDark: "/images/lens-photochromic-pilot-green-8-88.png",
         nextStep: 'summary',
         priceKey: 'photochromic_green',
         internalColorId: 'N3'
@@ -407,8 +407,8 @@ export default [
       {
         title: "Brun 8-88%",
         description: "Klara inomhus – mörknar i UV‑ljus.",
-        imageSrc: "/images/Fargskiftande-light.png",
-        imageSrcDark: "/images/Fargskiftande-brun.png",
+        imageSrc: "/images/ofargadlens.png",
+        imageSrcDark: "/images/lens-photochromic-chestnut-brown-8-88.png",
         nextStep: 'summary',
         priceKey: 'photochromic_brown',
         internalColorId: 'B3'
@@ -416,8 +416,8 @@ export default [
       {
         title: "Blå 8-88%",
         description: "Klara inomhus – mörknar i UV‑ljus.",
-        imageSrc: "/images/Fargskiftande-light.png",
-        imageSrcDark: "/images/Fargskiftande-bla.png",
+        imageSrc: "/images/ofargadlens.png",
+        imageSrcDark: "/images/lens-photochromic-steel-blue-8-88.png",
         nextStep: 'summary',
         priceKey: 'photochromic_blue',
         internalColorId: 'L3'
