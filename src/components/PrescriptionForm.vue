@@ -183,8 +183,9 @@ const form = ref({
   /** When true, one PD value for both eyes; when false, separate right/left (default) */
   samePd: false,
   receiptNotOlderThanOneYear: false,
-  /** Segment/fitting height in mm (required for progressive lenses only) */
-  heightMm: '',
+  /** Segment/fitting height in mm per eye (required for progressive lenses only) */
+  heightMmRight: '',
+  heightMmLeft: '',
   /** User has followed the height measuring instructions (required if they opened the guide) */
   heightInstructionsConfirmed: false,
   attachReceipt: false,
@@ -257,7 +258,8 @@ const formErrors = ref({
   pdRight: '',
   pdLeft: '',
   pd: '',
-  heightMm: '',
+  heightMmRight: '',
+  heightMmLeft: '',
   heightInstructionsConfirmed: '',
   receiptNotOlderThanOneYear: '',
   receiptAttachment: ''
@@ -270,7 +272,8 @@ function validateManualForm() {
     pdRight: '',
     pdLeft: '',
     pd: '',
-    heightMm: '',
+    heightMmRight: '',
+    heightMmLeft: '',
     heightInstructionsConfirmed: '',
     receiptNotOlderThanOneYear: '',
     receiptAttachment: ''
@@ -309,8 +312,11 @@ function validateManualForm() {
       }
     }
 
-    if (props.requiresHeight && !form.value.heightMm) {
-      err.heightMm = 'Välj höjd (mm)';
+    if (props.requiresHeight && !form.value.heightMmRight) {
+      err.heightMmRight = 'Välj monteringshöjd för höger öga (mm)';
+    }
+    if (props.requiresHeight && !form.value.heightMmLeft) {
+      err.heightMmLeft = 'Välj monteringshöjd för vänster öga (mm)';
     }
     if (props.requiresHeight && hasOpenedHeightGuide.value && !form.value.heightInstructionsConfirmed) {
       err.heightInstructionsConfirmed = 'Bekräfta att du har följt instruktionerna';
@@ -357,7 +363,8 @@ const canSubmit = computed(() => {
   const hasPd = form.value.samePd ? pdBinocularOk : pdSplitOk;
   const heightOk =
     !props.requiresHeight ||
-    (form.value.heightMm !== '' &&
+    (form.value.heightMmRight !== '' &&
+      form.value.heightMmLeft !== '' &&
       (!hasOpenedHeightGuide.value || form.value.heightInstructionsConfirmed));
   const hasReceipt = form.value.attachReceipt && !!form.value.receiptDataUrl;
   const manualOk = hasSphere && axisOk && hasPd && heightOk;
@@ -485,8 +492,12 @@ function getPayload() {
     pd: getPdForManualPayload(),
     receiptNotOlderThanOneYear: form.value.receiptNotOlderThanOneYear
   };
-  if (props.requiresHeight && form.value.heightMm !== '') {
-    manual.heightMm = form.value.heightMm;
+  if (
+    props.requiresHeight &&
+    form.value.heightMmRight !== '' &&
+    form.value.heightMmLeft !== ''
+  ) {
+    manual.heightMm = { right: form.value.heightMmRight, left: form.value.heightMmLeft };
   }
   const payload = { title: 'Manuellt', type: 'manual', manual };
   if (form.value.attachReceipt && form.value.receiptDataUrl) {
@@ -706,23 +717,43 @@ function cancel() {
       </div>
     </div>
 
-    <!-- Segment/fitting height: required for progressive lenses only -->
+    <!-- Segment/fitting height: required for progressive lenses only (per eye) -->
     <div v-if="requiresHeight" class="mb-6">
-      <label class="mb-2 block text-sm font-medium text-gray-700">Höjd (mm) *</label>
+      <label class="mb-2 block text-sm font-medium text-gray-700">Monteringshöjd (mm) *</label>
       <p class="mb-2 text-xs text-gray-500">
-        Monteringshöjd för progressiva glas.
+        Monteringshöjd för progressiva glas – ange per öga om receptet skiljer sig.
       </p>
-      <div class="grid grid-cols-1 gap-4 max-w-xs">
-        <select
-          v-model="form.heightMm"
-          class="rounded border border-gray-300 px-3 py-2 text-gray-900"
-          :aria-invalid="formTouched && !!formErrors.heightMm"
-          :aria-describedby="formTouched && formErrors.heightMm ? 'err-heightMm' : undefined"
-          :class="{ 'border-red-500': formTouched && formErrors.heightMm }"
-        >
-          <option v-for="opt in heightMmOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
-        </select>
-        <p v-if="formTouched && formErrors.heightMm" id="err-heightMm" class="mt-1 text-sm text-red-600">{{ formErrors.heightMm }}</p>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="mb-1 block text-xs text-gray-500">Höger öga (OD)</label>
+          <select
+            v-model="form.heightMmRight"
+            class="w-full rounded border border-gray-300 px-3 py-2 text-gray-900"
+            :aria-invalid="formTouched && !!formErrors.heightMmRight"
+            :aria-describedby="formTouched && formErrors.heightMmRight ? 'err-heightMmRight' : undefined"
+            :class="{ 'border-red-500': formTouched && formErrors.heightMmRight }"
+          >
+            <option v-for="opt in heightMmOptions" :key="`hr-${opt.value}`" :value="opt.value">{{ opt.label }}</option>
+          </select>
+          <p v-if="formTouched && formErrors.heightMmRight" id="err-heightMmRight" class="mt-1 text-sm text-red-600">
+            {{ formErrors.heightMmRight }}
+          </p>
+        </div>
+        <div>
+          <label class="mb-1 block text-xs text-gray-500">Vänster öga (OS)</label>
+          <select
+            v-model="form.heightMmLeft"
+            class="w-full rounded border border-gray-300 px-3 py-2 text-gray-900"
+            :aria-invalid="formTouched && !!formErrors.heightMmLeft"
+            :aria-describedby="formTouched && formErrors.heightMmLeft ? 'err-heightMmLeft' : undefined"
+            :class="{ 'border-red-500': formTouched && formErrors.heightMmLeft }"
+          >
+            <option v-for="opt in heightMmOptions" :key="`hl-${opt.value}`" :value="opt.value">{{ opt.label }}</option>
+          </select>
+          <p v-if="formTouched && formErrors.heightMmLeft" id="err-heightMmLeft" class="mt-1 text-sm text-red-600">
+            {{ formErrors.heightMmLeft }}
+          </p>
+        </div>
       </div>
 
       <!-- "I don't have a height – how do I measure?" expandable guide -->
