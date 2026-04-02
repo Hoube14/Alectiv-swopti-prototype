@@ -298,9 +298,6 @@ function cancel() {
 
 <template>
   <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-    <h3 class="mb-4 text-center text-lg font-semibold text-gray-900">
-      Lägg till dina styrkor manuellt
-    </h3>
     <p class="mb-4 text-center text-sm text-gray-600">
       Fyll i ditt glasögonrecept. Det är inte alla recept som har cylinder och axel – lämna dessa tomma om de inte finns.
     </p>
