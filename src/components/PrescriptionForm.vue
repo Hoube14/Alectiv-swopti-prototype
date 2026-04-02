@@ -56,19 +56,80 @@ const addOptions = (() => {
   return opts;
 })();
 
-// Per-eye PD (monocular): 25–35 mm
-const pdOptionsPerEye = (() => {
-  const opts = [{ value: '', label: 'Välj' }];
-  for (let i = 25; i <= 35; i += 1) opts.push({ value: String(i), label: `${i} mm` });
-  return opts;
-})();
+// PD limits (mm); values must be whole or half millimeters (step 0.5)
+const PD_PER_EYE_MIN = 25;
+const PD_PER_EYE_MAX = 35;
+const PD_BINOCULAR_MIN = 55;
+const PD_BINOCULAR_MAX = 80;
 
-// Binocular PD (same for both eyes): 55–80 mm
-const pdOptionsBinocular = (() => {
-  const opts = [{ value: '', label: 'Välj' }];
-  for (let i = 55; i <= 80; i += 1) opts.push({ value: String(i), label: `${i} mm` });
-  return opts;
-})();
+/** Strip unit, trim; first comma becomes decimal dot for parsing */
+function normalizePdInput(raw) {
+  if (raw == null) return '';
+  let s = String(raw).trim().replace(/\s*mm\s*$/i, '').trim();
+  const commaIdx = s.indexOf(',');
+  if (commaIdx !== -1) {
+    s = `${s.slice(0, commaIdx).replace(/\./g, '')}.${s.slice(commaIdx + 1).replace(/\./g, '')}`;
+  }
+  return s.trim();
+}
+
+/**
+ * Validate PD string: range and 0.5 mm steps only (e.g. 25 and 25,5 ok; 23,3 not ok).
+ */
+function validatePdMmString(input, min, max) {
+  const raw = String(input ?? '').trim();
+  if (!raw) {
+    return { ok: false, message: '' };
+  }
+  let s = normalizePdInput(raw);
+  if (/[.,]$/.test(s)) {
+    return { ok: false, message: 'Komplettera värdet (t.ex. 25 eller 25,5).' };
+  }
+  if (!/^\d+(\.\d+)?$/.test(s)) {
+    return { ok: false, message: 'Ogiltigt värde.' };
+  }
+  const num = Number(s);
+  if (!Number.isFinite(num)) {
+    return { ok: false, message: 'Ogiltigt värde.' };
+  }
+  if (num < min || num > max) {
+    return {
+      ok: false,
+      message: `Värdet ska vara mellan ${min} och ${max} mm.`
+    };
+  }
+  const doubled = num * 2;
+  if (Math.abs(doubled - Math.round(doubled)) > 1e-6) {
+    return {
+      ok: false,
+      message: 'Ange hel eller halv millimeter (t.ex. 25 eller 25,5).'
+    };
+  }
+  const value = Math.round(doubled) / 2;
+  return { ok: true, value };
+}
+
+function formatPdForForm(value) {
+  if (value % 1 === 0) return String(Math.round(value));
+  return String(value).replace('.', ',');
+}
+
+function onBlurPdPerEye(field) {
+  const r = validatePdMmString(form.value[field], PD_PER_EYE_MIN, PD_PER_EYE_MAX);
+  if (r.ok) form.value[field] = formatPdForForm(r.value);
+}
+
+function onBlurPdBinocular() {
+  const r = validatePdMmString(form.value.pd, PD_BINOCULAR_MIN, PD_BINOCULAR_MAX);
+  if (r.ok) form.value.pd = formatPdForForm(r.value);
+}
+
+/** Canonical PD string for payload (dot decimal); submit only runs when valid */
+function pdToPayload(raw, min, max) {
+  const r = validatePdMmString(raw, min, max);
+  if (r.ok) return String(r.value);
+  return normalizePdInput(raw);
+}
 
 // Segment/fitting height for progressive lenses (mm)
 const heightMmOptions = (() => {
@@ -193,10 +254,25 @@ function validateManualForm() {
     }
 
     if (form.value.samePd) {
-      if (!form.value.pd) err.pd = 'Välj PD';
+      if (!form.value.pd?.trim()) {
+        err.pd = 'Fyll i PD';
+      } else {
+        const r = validatePdMmString(form.value.pd, PD_BINOCULAR_MIN, PD_BINOCULAR_MAX);
+        if (!r.ok) err.pd = r.message || 'Ogiltigt PD-värde';
+      }
     } else {
-      if (!form.value.pdRight) err.pdRight = 'Välj PD för höger öga';
-      if (!form.value.pdLeft) err.pdLeft = 'Välj PD för vänster öga';
+      if (!form.value.pdRight?.trim()) {
+        err.pdRight = 'Fyll i PD för höger öga';
+      } else {
+        const rR = validatePdMmString(form.value.pdRight, PD_PER_EYE_MIN, PD_PER_EYE_MAX);
+        if (!rR.ok) err.pdRight = rR.message || 'Ogiltigt PD-värde';
+      }
+      if (!form.value.pdLeft?.trim()) {
+        err.pdLeft = 'Fyll i PD för vänster öga';
+      } else {
+        const rL = validatePdMmString(form.value.pdLeft, PD_PER_EYE_MIN, PD_PER_EYE_MAX);
+        if (!rL.ok) err.pdLeft = rL.message || 'Ogiltigt PD-värde';
+      }
     }
 
     if (props.requiresHeight && !form.value.heightMm) {
@@ -237,9 +313,14 @@ const canSubmit = computed(() => {
   const axisOk =
     (!r.cylinder || r.cylinder === '0.00' || r.axis !== '') &&
     (!l.cylinder || l.cylinder === '0.00' || l.axis !== '');
-  const hasPd = form.value.samePd
-    ? form.value.pd !== ''
-    : (form.value.pdRight !== '' && form.value.pdLeft !== '');
+  const pdBinocularOk =
+    form.value.samePd &&
+    validatePdMmString(form.value.pd, PD_BINOCULAR_MIN, PD_BINOCULAR_MAX).ok;
+  const pdSplitOk =
+    !form.value.samePd &&
+    validatePdMmString(form.value.pdRight, PD_PER_EYE_MIN, PD_PER_EYE_MAX).ok &&
+    validatePdMmString(form.value.pdLeft, PD_PER_EYE_MIN, PD_PER_EYE_MAX).ok;
+  const hasPd = form.value.samePd ? pdBinocularOk : pdSplitOk;
   const heightOk =
     !props.requiresHeight ||
     (form.value.heightMm !== '' &&
@@ -312,7 +393,12 @@ function getPayload() {
   const manual = {
     right,
     left,
-    pd: form.value.samePd ? form.value.pd : { right: form.value.pdRight, left: form.value.pdLeft },
+    pd: form.value.samePd
+      ? pdToPayload(form.value.pd, PD_BINOCULAR_MIN, PD_BINOCULAR_MAX)
+      : {
+          right: pdToPayload(form.value.pdRight, PD_PER_EYE_MIN, PD_PER_EYE_MAX),
+          left: pdToPayload(form.value.pdLeft, PD_PER_EYE_MIN, PD_PER_EYE_MAX)
+        },
     receiptNotOlderThanOneYear: form.value.receiptNotOlderThanOneYear
   };
   if (props.requiresHeight && form.value.heightMm !== '') {
@@ -606,45 +692,71 @@ function cancel() {
     <!-- Pupillary distance (PD): default separate right/left; checkbox for same both eyes -->
     <div class="mb-6">
       <label class="mb-2 block text-sm font-medium text-gray-700">Pupillavstånd (PD) *</label>
+      <p v-if="!form.samePd" class="mb-2 text-xs text-gray-500">
+        Ange per öga i millimeter: <span class="font-medium text-gray-700">{{ PD_PER_EYE_MIN }}–{{ PD_PER_EYE_MAX }} mm</span>.
+        Halv millimeter går bra (t.ex. 25,5). Värdet anges i mm; du behöver inte skriva enheten i fältet.
+      </p>
+      <p v-else class="mb-2 text-xs text-gray-500">
+        Ange totalt pupillavstånd i millimeter: <span class="font-medium text-gray-700">{{ PD_BINOCULAR_MIN }}–{{ PD_BINOCULAR_MAX }} mm</span>.
+        Halv millimeter går bra (t.ex. 62,5). Värdet anges i mm; du behöver inte skriva enheten i fältet.
+      </p>
       <div v-if="!form.samePd" class="mb-3 grid grid-cols-2 gap-4">
         <div>
           <label class="mb-1 block text-xs text-gray-500">Höger öga (OD)</label>
-          <select
-            v-model="form.pdRight"
-            class="w-full rounded border border-gray-300 px-3 py-2 text-gray-900"
-            :aria-invalid="formTouched && !!formErrors.pdRight"
-            :aria-describedby="formTouched && formErrors.pdRight ? 'err-pdRight' : undefined"
-            :class="{ 'border-red-500': formTouched && formErrors.pdRight }"
-          >
-            <option v-for="opt in pdOptionsPerEye" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
-          </select>
+          <div class="flex items-center gap-2">
+            <input
+              v-model="form.pdRight"
+              type="text"
+              inputmode="decimal"
+              autocomplete="off"
+              placeholder="t.ex. 32 eller 31,5"
+              class="min-w-0 flex-1 rounded border border-gray-300 px-3 py-2 text-gray-900"
+              :aria-invalid="formTouched && !!formErrors.pdRight"
+              :aria-describedby="formTouched && formErrors.pdRight ? 'err-pdRight' : undefined"
+              :class="{ 'border-red-500': formTouched && formErrors.pdRight }"
+              @blur="onBlurPdPerEye('pdRight')"
+            />
+            <span class="shrink-0 text-sm text-gray-500">mm</span>
+          </div>
           <p v-if="formTouched && formErrors.pdRight" id="err-pdRight" class="mt-1 text-sm text-red-600">{{ formErrors.pdRight }}</p>
         </div>
         <div>
           <label class="mb-1 block text-xs text-gray-500">Vänster öga (OS)</label>
-          <select
-            v-model="form.pdLeft"
-            class="w-full rounded border border-gray-300 px-3 py-2 text-gray-900"
-            :aria-invalid="formTouched && !!formErrors.pdLeft"
-            :aria-describedby="formTouched && formErrors.pdLeft ? 'err-pdLeft' : undefined"
-            :class="{ 'border-red-500': formTouched && formErrors.pdLeft }"
-          >
-            <option v-for="opt in pdOptionsPerEye" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
-          </select>
+          <div class="flex items-center gap-2">
+            <input
+              v-model="form.pdLeft"
+              type="text"
+              inputmode="decimal"
+              autocomplete="off"
+              placeholder="t.ex. 32 eller 31,5"
+              class="min-w-0 flex-1 rounded border border-gray-300 px-3 py-2 text-gray-900"
+              :aria-invalid="formTouched && !!formErrors.pdLeft"
+              :aria-describedby="formTouched && formErrors.pdLeft ? 'err-pdLeft' : undefined"
+              :class="{ 'border-red-500': formTouched && formErrors.pdLeft }"
+              @blur="onBlurPdPerEye('pdLeft')"
+            />
+            <span class="shrink-0 text-sm text-gray-500">mm</span>
+          </div>
           <p v-if="formTouched && formErrors.pdLeft" id="err-pdLeft" class="mt-1 text-sm text-red-600">{{ formErrors.pdLeft }}</p>
         </div>
       </div>
-      <div v-else class="mb-3 grid grid-cols-1 gap-4 max-w-xs">
-        <select
-          v-model="form.pd"
-          class="rounded border border-gray-300 px-3 py-2 text-gray-900"
-          :aria-invalid="formTouched && !!formErrors.pd"
-          :aria-describedby="formTouched && formErrors.pd ? 'err-pd' : undefined"
-          :class="{ 'border-red-500': formTouched && formErrors.pd }"
-        >
-          <option v-for="opt in pdOptionsBinocular" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
-        </select>
-        <p v-if="formTouched && formErrors.pd" id="err-pd" class="mt-1 text-sm text-red-600">{{ formErrors.pd }}</p>
+      <div v-else class="mb-3 flex max-w-xs flex-col gap-2">
+        <div class="flex items-center gap-2">
+          <input
+            v-model="form.pd"
+            type="text"
+            inputmode="decimal"
+            autocomplete="off"
+            placeholder="t.ex. 64 eller 63,5"
+            class="min-w-0 flex-1 rounded border border-gray-300 px-3 py-2 text-gray-900"
+            :aria-invalid="formTouched && !!formErrors.pd"
+            :aria-describedby="formTouched && formErrors.pd ? 'err-pd' : undefined"
+            :class="{ 'border-red-500': formTouched && formErrors.pd }"
+            @blur="onBlurPdBinocular()"
+          />
+          <span class="shrink-0 text-sm text-gray-500">mm</span>
+        </div>
+        <p v-if="formTouched && formErrors.pd" id="err-pd" class="text-sm text-red-600">{{ formErrors.pd }}</p>
       </div>
       <div class="flex items-center gap-2">
         <input
