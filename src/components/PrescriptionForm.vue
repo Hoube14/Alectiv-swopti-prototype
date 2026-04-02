@@ -305,29 +305,53 @@ function cancel() {
     <!-- Glasses diagram: front view so Höger/Vänster match form columns (viewer perspective) -->
     <div class="mb-6 flex flex-col items-center gap-2">
       <p class="text-xs text-gray-500 text-center">
-        Receptet anges som man ser dig framifrån – därför står höger till vänster i formuläret.
+        Receptet anges som om man ser dig framifrån – därför står höger till vänster i formuläret.
       </p>
       <div class="flex items-center justify-center" aria-hidden="true">
         <svg
-          viewBox="0 0 200 80"
-          class="h-20 w-auto max-w-[200px] text-gray-400"
+          viewBox="0 0 220 92"
+          class="h-24 w-auto max-w-[220px] text-slate-400"
           fill="none"
           stroke="currentColor"
           stroke-width="1.5"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <!-- Left lens (wearer's right = Höger) -->
-          <ellipse cx="60" cy="40" rx="32" ry="28" stroke-width="2" />
-          <text x="60" y="44" text-anchor="middle" font-size="22" font-weight="600" fill="#4b5563" font-family="system-ui, sans-serif">H</text>
-          <!-- Right lens (wearer's left = Vänster) -->
-          <ellipse cx="140" cy="40" rx="32" ry="28" stroke-width="2" />
-          <text x="140" y="44" text-anchor="middle" font-size="22" font-weight="600" fill="#4b5563" font-family="system-ui, sans-serif">V</text>
+          <defs>
+            <linearGradient id="lensFill" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
+              <stop offset="100%" stop-color="#e5edf8" stop-opacity="0.9" />
+            </linearGradient>
+          </defs>
           <!-- Bridge -->
-          <path d="M92 32 L108 32" stroke-linecap="round" />
-          <!-- Left temple -->
-          <path d="M28 40 L8 40" stroke-linecap="round" />
-          <!-- Right temple -->
-          <path d="M172 40 L192 40" stroke-linecap="round" />
+          <path d="M103 46 H117" stroke-linecap="round" />
+          <!-- Left lens (wearer's right = Höger) -->
+          <circle cx="75" cy="46" r="28" fill="url(#lensFill)" stroke-width="2" />
+          <text
+            x="75"
+            y="46"
+            text-anchor="middle"
+            dominant-baseline="middle"
+            font-size="22"
+            font-weight="700"
+            fill="#475569"
+            font-family="system-ui, sans-serif"
+          >
+            H
+          </text>
+          <!-- Right lens (wearer's left = Vänster) -->
+          <circle cx="145" cy="46" r="28" fill="url(#lensFill)" stroke-width="2" />
+          <text
+            x="145"
+            y="46"
+            text-anchor="middle"
+            dominant-baseline="middle"
+            font-size="22"
+            font-weight="700"
+            fill="#475569"
+            font-family="system-ui, sans-serif"
+          >
+            V
+          </text>
         </svg>
       </div>
       <p class="text-xs text-gray-500 text-center">
