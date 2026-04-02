@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 
 const props = defineProps({
   /** When true (Avstånd/Allround), ADD and reading power are hidden – only sphere is relevant. */
@@ -17,8 +17,29 @@ const props = defineProps({
 const emit = defineEmits(['submit', 'cancel']);
 
 const ACCEPT = '.png,.jpg,.jpeg,.pdf';
+/** Images only — used with capture hint so mobile can open the camera for the receipt */
+const ACCEPT_IMAGES_ONLY = 'image/png,image/jpeg,.png,.jpg,.jpeg';
 const MAX_SIZE_MB = 10;
 const acceptedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'application/pdf'];
+
+/** Touch-primary devices: `capture` usually opens the camera; on mouse-desktop it often becomes a file picker */
+const showReceiptCameraCapture = ref(false);
+let receiptCameraMql;
+
+function syncReceiptCameraVisibility() {
+  if (typeof window === 'undefined') return;
+  showReceiptCameraCapture.value = window.matchMedia('(pointer: coarse)').matches;
+}
+
+onMounted(() => {
+  syncReceiptCameraVisibility();
+  receiptCameraMql = window.matchMedia('(pointer: coarse)');
+  receiptCameraMql.addEventListener('change', syncReceiptCameraVisibility);
+});
+
+onUnmounted(() => {
+  receiptCameraMql?.removeEventListener('change', syncReceiptCameraVisibility);
+});
 
 // Sphere: minus first, plus last (common prescription order). 0 ends up in the middle.
 const sphereOptions = (() => {
@@ -511,7 +532,7 @@ function cancel() {
 
     <!-- Sphere -->
     <div class="mb-4">
-      <label class="mb-2 block text-sm font-medium text-gray-700">Sfär (SF) *</label>
+      <label class="mb-2 block text-sm font-medium text-gray-700">Sfär (SF)</label>
       <div class="grid grid-cols-2 gap-4">
         <select v-model="form.right.sphere" class="rounded border border-gray-300 px-3 py-2 text-gray-900">
           <option v-for="opt in sphereOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
@@ -807,13 +828,35 @@ function cancel() {
         <p class="mb-3 text-sm text-gray-700">
           Bifoga en bild (PNG/JPG) eller PDF av ditt recept (max {{ MAX_SIZE_MB }} MB).
         </p>
+        <p v-if="showReceiptCameraCapture" class="mb-3 text-xs text-gray-500">
+          Du kan fota receptet med kameran eller välja en bild från enheten.
+          PDF kan bara laddas upp via &quot;Välj fil&quot;.
+        </p>
+        <p v-else class="mb-3 text-xs text-gray-500">
+          Välj en bild eller PDF från din dator. På mobil och surfplatta visas också en knapp för att ta foto direkt med kameran.
+        </p>
 
-        <input
-          type="file"
-          :accept="ACCEPT"
-          class="block w-full text-sm text-gray-700 file:mr-3 file:rounded-lg file:border file:border-gray-300 file:bg-white file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-gray-700 hover:file:bg-gray-50"
-          @change="onReceiptFileChange"
-        />
+        <div class="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+          <label
+            class="inline-flex cursor-pointer items-center justify-center rounded-lg border border-gray-300 bg-white px-3 py-2 text-center text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+          >
+            <input type="file" class="sr-only" :accept="ACCEPT" @change="onReceiptFileChange" />
+            Välj fil (bild eller PDF)
+          </label>
+          <label
+            v-if="showReceiptCameraCapture"
+            class="inline-flex cursor-pointer items-center justify-center rounded-lg border border-gray-300 bg-white px-3 py-2 text-center text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+          >
+            <input
+              type="file"
+              class="sr-only"
+              :accept="ACCEPT_IMAGES_ONLY"
+              capture="environment"
+              @change="onReceiptFileChange"
+            />
+            Ta foto med kameran
+          </label>
+        </div>
 
         <div v-if="form.receiptDataUrl" class="mt-3 flex items-center justify-between rounded-lg border border-gray-200 bg-white px-3 py-2">
           <div class="min-w-0">
