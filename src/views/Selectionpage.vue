@@ -113,6 +113,11 @@ const isDistanceOrAllround = computed(
   () => order.value.selections?.usage?.title === 'Avstånd / Allround'
 );
 
+/** Reading-only usage: near PD deduction applies for läsglas */
+const isReadingDistance = computed(
+  () => order.value.selections?.usage?.title === 'Läsavstånd'
+);
+
 // Only progressive lenses require segment/fitting height (in mm)
 const requiresHeight = computed(() => initialGlassType.value === 'Progressiva glas');
 
@@ -565,6 +570,7 @@ function goBack() {
       <template v-if="step && step.id === 'prescription' && showPrescriptionManualForm">
         <PrescriptionForm
           :is-distance-or-allround="isDistanceOrAllround"
+          :is-reading-distance="isReadingDistance"
           :requires-height="requiresHeight"
           @submit="onPrescriptionFormSubmit"
           @cancel="onPrescriptionFormCancel"

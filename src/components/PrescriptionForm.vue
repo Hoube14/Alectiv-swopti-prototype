@@ -7,6 +7,11 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
+  /** When true (Läsavstånd), PD is adjusted toward near PD for ordering (optician rule). */
+  isReadingDistance: {
+    type: Boolean,
+    default: false
+  },
   /** When true (Progressiva glas), segment/fitting height in mm is required. */
   requiresHeight: {
     type: Boolean,
@@ -82,6 +87,14 @@ const PD_PER_EYE_MIN = 25;
 const PD_PER_EYE_MAX = 35;
 const PD_BINOCULAR_MIN = 55;
 const PD_BINOCULAR_MAX = 80;
+
+/** Near-PD correction for reading glasses (convergence); per optician */
+const NEAR_PD_DEDUCTION_PER_EYE_MM = 1.5;
+const NEAR_PD_DEDUCTION_BINOCULAR_MM = 3;
+
+function roundPdHalfStepMm(n) {
+  return Math.round(n * 2) / 2;
+}
 
 /** Strip unit, trim; first comma becomes decimal dot for parsing */
 function normalizePdInput(raw) {
@@ -383,6 +396,61 @@ const readingPower = computed(() => {
   return { right: calc(r.sphere, r.add), left: calc(l.sphere, l.add) };
 });
 
+// Near PD preview for läsavstånd (same deduction as in getPdForManualPayload)
+const readingNearPdPreview = computed(() => {
+  if (!props.isReadingDistance) return null;
+  if (form.value.samePd) {
+    const r = validatePdMmString(form.value.pd, PD_BINOCULAR_MIN, PD_BINOCULAR_MAX);
+    if (!r.ok) {
+      return { samePd: true, binoc: null, right: null, left: null };
+    }
+    const near = roundPdHalfStepMm(r.value - NEAR_PD_DEDUCTION_BINOCULAR_MM);
+    return { samePd: true, binoc: formatPdForForm(near), right: null, left: null };
+  }
+  const rR = validatePdMmString(form.value.pdRight, PD_PER_EYE_MIN, PD_PER_EYE_MAX);
+  const rL = validatePdMmString(form.value.pdLeft, PD_PER_EYE_MIN, PD_PER_EYE_MAX);
+  if (!rR.ok || !rL.ok) {
+    return { samePd: false, binoc: null, right: null, left: null };
+  }
+  return {
+    samePd: false,
+    binoc: null,
+    right: formatPdForForm(roundPdHalfStepMm(rR.value - NEAR_PD_DEDUCTION_PER_EYE_MM)),
+    left: formatPdForForm(roundPdHalfStepMm(rL.value - NEAR_PD_DEDUCTION_PER_EYE_MM))
+  };
+});
+
+function getPdForManualPayload() {
+  if (props.isReadingDistance) {
+    if (form.value.samePd) {
+      const r = validatePdMmString(form.value.pd, PD_BINOCULAR_MIN, PD_BINOCULAR_MAX);
+      if (!r.ok) {
+        return pdToPayload(form.value.pd, PD_BINOCULAR_MIN, PD_BINOCULAR_MAX);
+      }
+      return String(roundPdHalfStepMm(r.value - NEAR_PD_DEDUCTION_BINOCULAR_MM));
+    }
+    const rR = validatePdMmString(form.value.pdRight, PD_PER_EYE_MIN, PD_PER_EYE_MAX);
+    const rL = validatePdMmString(form.value.pdLeft, PD_PER_EYE_MIN, PD_PER_EYE_MAX);
+    if (!rR.ok || !rL.ok) {
+      return {
+        right: pdToPayload(form.value.pdRight, PD_PER_EYE_MIN, PD_PER_EYE_MAX),
+        left: pdToPayload(form.value.pdLeft, PD_PER_EYE_MIN, PD_PER_EYE_MAX)
+      };
+    }
+    return {
+      right: String(roundPdHalfStepMm(rR.value - NEAR_PD_DEDUCTION_PER_EYE_MM)),
+      left: String(roundPdHalfStepMm(rL.value - NEAR_PD_DEDUCTION_PER_EYE_MM))
+    };
+  }
+  if (form.value.samePd) {
+    return pdToPayload(form.value.pd, PD_BINOCULAR_MIN, PD_BINOCULAR_MAX);
+  }
+  return {
+    right: pdToPayload(form.value.pdRight, PD_PER_EYE_MIN, PD_PER_EYE_MAX),
+    left: pdToPayload(form.value.pdLeft, PD_PER_EYE_MIN, PD_PER_EYE_MAX)
+  };
+}
+
 // Clear axis when cylinder is removed or set to 0 (no astigmatism)
 watch(
   () => [form.value.right.cylinder, form.value.left.cylinder],
@@ -414,12 +482,7 @@ function getPayload() {
   const manual = {
     right,
     left,
-    pd: form.value.samePd
-      ? pdToPayload(form.value.pd, PD_BINOCULAR_MIN, PD_BINOCULAR_MAX)
-      : {
-          right: pdToPayload(form.value.pdRight, PD_PER_EYE_MIN, PD_PER_EYE_MAX),
-          left: pdToPayload(form.value.pdLeft, PD_PER_EYE_MIN, PD_PER_EYE_MAX)
-        },
+    pd: getPdForManualPayload(),
     receiptNotOlderThanOneYear: form.value.receiptNotOlderThanOneYear
   };
   if (props.requiresHeight && form.value.heightMm !== '') {
@@ -787,6 +850,46 @@ function cancel() {
           class="h-4 w-4 rounded border-gray-300"
         />
         <label for="same-pd" class="text-sm text-gray-700">Jag har samma PD för höger och vänster</label>
+      </div>
+
+      <!-- Near PD for läsavstånd: convergence correction (matches order payload) -->
+      <div
+        v-if="isReadingDistance"
+        class="mt-4 rounded-lg border border-gray-200 bg-gray-50 p-3"
+      >
+        <p class="mb-2 text-sm font-medium text-gray-700">När-PD (används för läsglas)</p>
+        <p class="mb-2 text-xs text-gray-500">
+          När du läser är pupillerna något närmre varandra (konvergens) än på långt håll. För läsglas
+          räknar vi därför om ditt PD till när-PD som används i beställningen:
+          <span v-if="form.samePd">vi drar av {{ String(NEAR_PD_DEDUCTION_BINOCULAR_MM).replace('.', ',') }}&nbsp;mm från det totala värdet du angett.</span>
+          <span v-else
+            >vi drar av {{ String(NEAR_PD_DEDUCTION_PER_EYE_MM).replace('.', ',') }}&nbsp;mm per öga.</span
+          >
+        </p>
+        <template v-if="readingNearPdPreview?.samePd">
+          <div class="text-sm">
+            <span class="text-gray-500">Totalt när-PD:</span>
+            <span class="ml-2 font-medium text-gray-900">
+              {{ readingNearPdPreview.binoc != null ? `${readingNearPdPreview.binoc} mm` : '—' }}
+            </span>
+          </div>
+        </template>
+        <template v-else>
+          <div class="grid grid-cols-2 gap-4 text-sm">
+            <div>
+              <span class="text-gray-500">Höger öga (OD):</span>
+              <span class="ml-2 font-medium text-gray-900">
+                {{ readingNearPdPreview?.right != null ? `${readingNearPdPreview.right} mm` : '—' }}
+              </span>
+            </div>
+            <div>
+              <span class="text-gray-500">Vänster öga (OS):</span>
+              <span class="ml-2 font-medium text-gray-900">
+                {{ readingNearPdPreview?.left != null ? `${readingNearPdPreview.left} mm` : '—' }}
+              </span>
+            </div>
+          </div>
+        </template>
       </div>
     </div>
 
