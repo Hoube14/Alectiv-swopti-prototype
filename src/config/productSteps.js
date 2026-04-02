@@ -568,7 +568,7 @@ export default [
     backStep: null,
     options: [
       {
-        title: "Avstånd / Allround",
+        title: "Avstånd",
         description: "Bra i vardagen (t.ex. bilkörning, tv). Välj detta för glasögon som används hela dagen.",
         nextStep: null
       },

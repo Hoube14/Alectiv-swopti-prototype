@@ -81,6 +81,7 @@ const heightMmOptions = (() => {
 const form = ref({
   right: { sphere: '0.00', cylinder: '0.00', axis: '', add: '' },
   left: { sphere: '0.00', cylinder: '0.00', axis: '', add: '' },
+  cannotSeeStrengths: false,
   pd: '',
   pdRight: '',
   pdLeft: '',
@@ -154,7 +155,10 @@ watch(
 );
 
 const formTouched = ref(false);
+const showStrengthLimitModal = ref(false);
 const formErrors = ref({
+  axisRight: '',
+  axisLeft: '',
   pdRight: '',
   pdLeft: '',
   pd: '',
@@ -166,6 +170,8 @@ const formErrors = ref({
 
 function validateManualForm() {
   const err = {
+    axisRight: '',
+    axisLeft: '',
     pdRight: '',
     pdLeft: '',
     pd: '',
@@ -179,6 +185,13 @@ function validateManualForm() {
 
   // If the user attaches a receipt, manual values are optional (optician can verify from the receipt).
   if (!hasReceipt) {
+    if (form.value.right.cylinder && form.value.right.cylinder !== '0.00' && !form.value.right.axis) {
+      err.axisRight = 'Fyll i axel för höger öga';
+    }
+    if (form.value.left.cylinder && form.value.left.cylinder !== '0.00' && !form.value.left.axis) {
+      err.axisLeft = 'Fyll i axel för vänster öga';
+    }
+
     if (form.value.samePd) {
       if (!form.value.pd) err.pd = 'Välj PD';
     } else {
@@ -221,6 +234,9 @@ const canSubmit = computed(() => {
   const r = form.value.right;
   const l = form.value.left;
   const hasSphere = r.sphere !== '' || l.sphere !== '';
+  const axisOk =
+    (!r.cylinder || r.cylinder === '0.00' || r.axis !== '') &&
+    (!l.cylinder || l.cylinder === '0.00' || l.axis !== '');
   const hasPd = form.value.samePd
     ? form.value.pd !== ''
     : (form.value.pdRight !== '' && form.value.pdLeft !== '');
@@ -229,8 +245,25 @@ const canSubmit = computed(() => {
     (form.value.heightMm !== '' &&
       (!hasOpenedHeightGuide.value || form.value.heightInstructionsConfirmed));
   const hasReceipt = form.value.attachReceipt && !!form.value.receiptDataUrl;
-  const manualOk = hasSphere && hasPd && heightOk;
+  const manualOk = hasSphere && axisOk && hasPd && heightOk;
   return (hasReceipt || manualOk) && form.value.receiptNotOlderThanOneYear;
+});
+
+function parsePrescriptionNumber(value) {
+  const parsed = parseFloat(value);
+  return Number.isNaN(parsed) ? 0 : parsed;
+}
+
+function getSphereCylinderTotal(eye) {
+  return parsePrescriptionNumber(eye?.sphere) + parsePrescriptionNumber(eye?.cylinder);
+}
+
+const exceedsSphereCylinderLimit = computed(() => {
+  return [form.value.right, form.value.left].some((eye) => Math.abs(getSphereCylinderTotal(eye)) > 6);
+});
+
+const shouldBlockPrescriptionFlow = computed(() => {
+  return form.value.cannotSeeStrengths || exceedsSphereCylinderLimit.value;
 });
 
 // Reading power = Sphere + ADD (only relevant when not distance/allround)
@@ -256,6 +289,17 @@ watch(
     if (!cylL || cylL === '0.00') form.value.left.axis = '';
   }
 );
+
+watch(shouldBlockPrescriptionFlow, (shouldBlock, wasBlocked) => {
+  if (shouldBlock && !wasBlocked) {
+    showStrengthLimitModal.value = true;
+    return;
+  }
+
+  if (!shouldBlock) {
+    showStrengthLimitModal.value = false;
+  }
+});
 
 function getPayload() {
   const right = { ...form.value.right };
@@ -288,6 +332,10 @@ function submit() {
   formTouched.value = true;
   if (!validateManualForm()) return;
   if (!canSubmit.value) return;
+  if (shouldBlockPrescriptionFlow.value) {
+    showStrengthLimitModal.value = true;
+    return;
+  }
   emit('submit', getPayload());
 }
 
@@ -402,6 +450,17 @@ function cancel() {
           <option v-for="opt in cylinderOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
         </select>
       </div>
+      <div class="mt-3 flex items-start gap-2">
+        <input
+          id="cannot-see-strengths"
+          v-model="form.cannotSeeStrengths"
+          type="checkbox"
+          class="mt-1 h-4 w-4 rounded border-gray-300"
+        />
+        <label for="cannot-see-strengths" class="text-sm text-gray-700">
+          Jag kan inte se mina styrkor
+        </label>
+      </div>
     </div>
 
     <!-- Axel – Only when cylinder is selected for each eye -->
@@ -411,22 +470,38 @@ function cancel() {
         Endast recept med värden i cylinderfälten har denna information. Välj cylinder först för att kunna fylla i axel.
       </p>
       <div class="grid grid-cols-2 gap-4">
-        <input
-          v-model="form.right.axis"
-          type="text"
-          placeholder="1–180"
-          class="rounded border border-gray-300 px-3 py-2 text-gray-900 disabled:cursor-not-allowed disabled:opacity-60 disabled:bg-gray-100"
-          maxlength="3"
-          :disabled="!form.right.cylinder || form.right.cylinder === '0.00'"
-        />
-        <input
-          v-model="form.left.axis"
-          type="text"
-          placeholder="1–180"
-          class="rounded border border-gray-300 px-3 py-2 text-gray-900 disabled:cursor-not-allowed disabled:opacity-60 disabled:bg-gray-100"
-          maxlength="3"
-          :disabled="!form.left.cylinder || form.left.cylinder === '0.00'"
-        />
+        <div>
+          <input
+            v-model="form.right.axis"
+            type="text"
+            placeholder="1–180"
+            class="w-full rounded border border-gray-300 px-3 py-2 text-gray-900 disabled:cursor-not-allowed disabled:opacity-60 disabled:bg-gray-100"
+            maxlength="3"
+            :disabled="!form.right.cylinder || form.right.cylinder === '0.00'"
+            :aria-invalid="formTouched && !!formErrors.axisRight"
+            :aria-describedby="formTouched && formErrors.axisRight ? 'err-axisRight' : undefined"
+            :class="{ 'border-red-500': formTouched && formErrors.axisRight }"
+          />
+          <p v-if="formTouched && formErrors.axisRight" id="err-axisRight" class="mt-1 text-sm text-red-600">
+            {{ formErrors.axisRight }}
+          </p>
+        </div>
+        <div>
+          <input
+            v-model="form.left.axis"
+            type="text"
+            placeholder="1–180"
+            class="w-full rounded border border-gray-300 px-3 py-2 text-gray-900 disabled:cursor-not-allowed disabled:opacity-60 disabled:bg-gray-100"
+            maxlength="3"
+            :disabled="!form.left.cylinder || form.left.cylinder === '0.00'"
+            :aria-invalid="formTouched && !!formErrors.axisLeft"
+            :aria-describedby="formTouched && formErrors.axisLeft ? 'err-axisLeft' : undefined"
+            :class="{ 'border-red-500': formTouched && formErrors.axisLeft }"
+          />
+          <p v-if="formTouched && formErrors.axisLeft" id="err-axisLeft" class="mt-1 text-sm text-red-600">
+            {{ formErrors.axisLeft }}
+          </p>
+        </div>
       </div>
     </div>
 
@@ -447,7 +522,7 @@ function cancel() {
     <div v-if="!isDistanceOrAllround" class="mb-4 rounded-lg border border-gray-200 bg-gray-50 p-3">
       <p class="mb-2 text-sm font-medium text-gray-700">Lässtyrka (beräknad)</p>
       <p class="mb-2 text-xs text-gray-500">
-        Sfär + Addition = styrka för närbild. Visas endast som information.
+        Sfär + Addition = styrka för närbild.
       </p>
       <div class="grid grid-cols-2 gap-4 text-sm">
         <div>
@@ -664,6 +739,34 @@ function cancel() {
       >
         Avbryt
       </button>
+    </div>
+
+    <div
+      v-if="showStrengthLimitModal"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 px-4 backdrop-blur-sm"
+      role="dialog"
+      aria-modal="true"
+      @click.self="showStrengthLimitModal = false"
+    >
+      <div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
+        <h3 class="text-lg font-semibold text-gray-900">Vi rekommenderar butikshjälp</h3>
+        <p class="mt-3 text-sm leading-6 text-gray-600">
+          Vi vill leverera så bra kvalitet som möjligt, men när styrkorna överstiger 6
+          krävs en noggrannhet som gör att vi tyvärr inte kan erbjuda detta online.
+        </p>
+        <p class="mt-3 text-sm leading-6 text-gray-600">
+          Vi rekommenderar att du i stället får hjälp hos din lokala optiker.
+        </p>
+        <div class="mt-5 flex justify-end">
+          <button
+            type="button"
+            class="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700"
+            @click="showStrengthLimitModal = false"
+          >
+            Okej
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
