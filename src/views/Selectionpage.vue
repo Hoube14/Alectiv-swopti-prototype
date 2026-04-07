@@ -108,9 +108,12 @@ function getOptionImageSrc(option) {
 // Get the initial glass type selection
 const initialGlassType = computed(() => order.value.selections?.glassType?.title || null);
 
-// Distance/allround usage: only sphere matters; ADD and reading power are not relevant
+// Distance usage: only sphere matters; ADD and reading power are not relevant
 const isDistanceOrAllround = computed(
-  () => order.value.selections?.usage?.title === 'Avstånd / Allround'
+  () => {
+    const t = order.value.selections?.usage?.title;
+    return t === 'Avstånd';
+  }
 );
 
 /** Reading-only usage: near PD deduction applies for läsglas */

@@ -89,8 +89,8 @@ const PD_BINOCULAR_MIN = 55;
 const PD_BINOCULAR_MAX = 80;
 
 /** Near-PD correction for reading glasses (convergence); per optician */
-const NEAR_PD_DEDUCTION_PER_EYE_MM = 1.5;
-const NEAR_PD_DEDUCTION_BINOCULAR_MM = 3;
+const NEAR_PD_DEDUCTION_PER_EYE_MM = 2;
+const NEAR_PD_DEDUCTION_BINOCULAR_MM = 4;
 
 function roundPdHalfStepMm(n) {
   return Math.round(n * 2) / 2;
@@ -416,7 +416,7 @@ const readingPower = computed(() => {
 
 // Near PD preview (same deduction as in getPdForManualPayload)
 const readingNearPdPreview = computed(() => {
-  if (!props.isReadingDistance && !props.requiresHeight) return null;
+  if (!props.isReadingDistance) return null;
   if (form.value.samePd) {
     const r = validatePdMmString(form.value.pd, PD_BINOCULAR_MIN, PD_BINOCULAR_MAX);
     if (!r.ok) {
@@ -439,7 +439,7 @@ const readingNearPdPreview = computed(() => {
 });
 
 function getPdForManualPayload() {
-  if (props.isReadingDistance || props.requiresHeight) {
+  if (props.isReadingDistance) {
     if (form.value.samePd) {
       const r = validatePdMmString(form.value.pd, PD_BINOCULAR_MIN, PD_BINOCULAR_MAX);
       if (!r.ok) {
@@ -539,7 +539,7 @@ function cancel() {
 <template>
   <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
     <p class="mb-4 text-center text-sm text-gray-600">
-      Fyll i ditt glasögonrecept. Det är inte alla recept som har cylinder och axel – lämna dessa tomma om de inte finns.
+      Fyll i ditt glasögonrecept. Det är inte alla recept som har cylinder och axel läge – lämna dessa tomma om de inte finns.
     </p>
 
     <!-- Glasses diagram: front view so Höger/Vänster match form columns (viewer perspective) -->
@@ -888,12 +888,12 @@ function cancel() {
           type="checkbox"
           class="h-4 w-4 rounded border-gray-300"
         />
-        <label for="same-pd" class="text-sm text-gray-700">Jag har ett sammanslaget PD</label>
+        <label for="same-pd" class="text-sm text-gray-700">Jag har ett sammanslaget PD (Bin)</label>
       </div>
 
       <!-- Near PD: convergence correction (matches order payload) -->
       <div
-        v-if="isReadingDistance || requiresHeight"
+        v-if="isReadingDistance"
         class="mt-4 rounded-lg border border-gray-200 bg-gray-50 p-3"
       >
         <p class="mb-2 text-sm font-medium text-gray-700">När-PD (beräknad)</p>
