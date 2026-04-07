@@ -176,7 +176,6 @@ const heightMmOptions = (() => {
 const form = ref({
   right: { sphere: '0.00', cylinder: '0.00', axis: '', add: '' },
   left: { sphere: '0.00', cylinder: '0.00', axis: '', add: '' },
-  cannotSeeStrengths: false,
   pd: '',
   pdRight: '',
   pdLeft: '',
@@ -385,7 +384,7 @@ const exceedsSphereCylinderLimit = computed(() => {
 });
 
 const shouldBlockPrescriptionFlow = computed(() => {
-  return form.value.cannotSeeStrengths || exceedsSphereCylinderLimit.value;
+  return exceedsSphereCylinderLimit.value;
 });
 
 // Reading power = Sphere + ADD (only relevant when not distance/allround)
@@ -533,9 +532,6 @@ function cancel() {
 
     <!-- Glasses diagram: front view so Höger/Vänster match form columns (viewer perspective) -->
     <div class="mb-6 flex flex-col items-center gap-2">
-      <p class="text-xs text-gray-500 text-center">
-        Receptet anges som om man ser dig framifrån – därför står höger till vänster i formuläret.
-      </p>
       <div class="flex items-center justify-center" aria-hidden="true">
         <svg
           viewBox="0 0 220 92"
@@ -583,9 +579,6 @@ function cancel() {
           </text>
         </svg>
       </div>
-      <p class="text-xs text-gray-500 text-center">
-        <span class="font-medium text-gray-600">H</span> = Höger öga (OD) &nbsp;·&nbsp; <span class="font-medium text-gray-600">V</span> = Vänster öga (OS)
-      </p>
     </div>
 
     <p
@@ -597,11 +590,9 @@ function cancel() {
     </p>
 
     <!-- Column headers -->
-    <div class="mb-3 grid grid-cols-2 gap-4 text-sm font-medium text-gray-700 md:grid-cols-4">
-      <div class="hidden md:block"></div>
-      <div>Höger öga (OD)</div>
-      <div>Vänster öga (OS)</div>
-      <div class="hidden md:block"></div>
+    <div class="mb-3 grid grid-cols-2 gap-4 text-sm font-medium text-gray-700">
+      <div class="justify-self-start">Höger öga (OD)</div>
+      <div class="justify-self-start">Vänster öga (OS)</div>
     </div>
 
     <!-- Sphere -->
@@ -620,9 +611,7 @@ function cancel() {
     <!-- Cylinder -->
     <div class="mb-4">
       <label class="mb-2 block text-sm font-medium text-gray-700">Cylinder (CYL)</label>
-      <p class="mb-2 text-xs text-gray-500">
-        Det är inte alla recept som har detta värde. Lämna fältet tomt om det inte finns på ditt recept.
-      </p>
+
       <div class="grid grid-cols-2 gap-4">
         <select v-model="form.right.cylinder" class="rounded border border-gray-300 px-3 py-2 text-gray-900">
           <option v-for="opt in cylinderOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
@@ -631,17 +620,19 @@ function cancel() {
           <option v-for="opt in cylinderOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
         </select>
       </div>
-      <div class="mt-3 flex items-start gap-2">
-        <input
-          id="cannot-see-strengths"
-          v-model="form.cannotSeeStrengths"
-          type="checkbox"
-          class="mt-1 h-4 w-4 rounded border-gray-300"
-        />
-        <label for="cannot-see-strengths" class="text-sm text-gray-700">
-          Jag kan inte se mina styrkor
-        </label>
-      </div>
+      <button
+        type="button"
+        class="mt-3 inline-flex cursor-pointer items-center gap-2 text-sm font-medium text-gray-700 opacity-90 transition hover:opacity-100"
+        @click="showStrengthLimitModal = true"
+      >
+        <span
+          class="inline-flex h-5 w-5 items-center justify-center rounded-full border border-gray-300 bg-white text-xs font-semibold text-gray-600"
+          aria-hidden="true"
+        >
+          i
+        </span>
+        Jag kan inte se mina styrkor
+      </button>
     </div>
 
     <!-- Axel – Only when cylinder is selected for each eye -->
@@ -707,12 +698,12 @@ function cancel() {
       </p>
       <div class="grid grid-cols-2 gap-4 text-sm">
         <div>
-          <span class="text-gray-500">Höger öga (OD):</span>
-          <span class="ml-2 font-medium text-gray-900">{{ readingPower.right ?? '—' }}</span>
+          <div class="text-gray-500">Höger öga (OD)</div>
+          <div class="font-medium text-gray-900">{{ readingPower.right ?? '—' }}</div>
         </div>
         <div>
-          <span class="text-gray-500">Vänster öga (OS):</span>
-          <span class="ml-2 font-medium text-gray-900">{{ readingPower.left ?? '—' }}</span>
+          <div class="text-gray-500">Vänster öga (OS)</div>
+          <div class="font-medium text-gray-900">{{ readingPower.left ?? '—' }}</div>
         </div>
       </div>
     </div>
