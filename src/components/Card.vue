@@ -101,7 +101,13 @@ const badgeStyle = computed(() =>
     <p v-if="recommended" class="text-xs font-bold mb-1 flex-shrink-0 text-center" :style="{ color: recommendedLineColor }">
       {{ recommendedLabel || 'Optikern rekommenderar detta glas för dina styrkor' }}
     </p>
-    <p class="text-sm text-center flex-1 min-h-0 leading-relaxed" :style="{ color: bodyTextColor }">{{ description }}</p>
+    <p
+      v-if="description"
+      class="text-sm text-center flex-1 min-h-0 leading-relaxed"
+      :style="{ color: bodyTextColor }"
+    >
+      {{ description }}
+    </p>
     <button
       v-if="!disabled && infoText"
       type="button"

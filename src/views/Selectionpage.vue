@@ -224,9 +224,9 @@ const includedTreatmentSelection = {
 };
 
 const polarizedColorMetadata = {
-  Brun: { darknessLabel: '78% mörkhet', internalId: 'PB' },
-  Grå: { darknessLabel: '83% mörkhet', internalId: 'PG' },
-  Grön: { darknessLabel: '85% mörkhet', internalId: 'PN' }
+  Brun: { internalId: 'PB' },
+  Grå: { internalId: 'PG' },
+  Grön: { internalId: 'PN' }
 };
 
 const hasBlueLightFilterSelected = computed(
@@ -265,16 +265,6 @@ function getOptionPricePrefix(option) {
 
 function getOptionPriceLabel(option) {
   return undefined;
-}
-
-function getOptionDescription(option) {
-  if (props.step?.id === 'colorSelection') {
-    const coloredTypeTitle = order.value.selections?.coloredGlassType?.title;
-    if (coloredTypeTitle === 'Polariserad') {
-      return polarizedColorMetadata[option.title]?.darknessLabel || option.description;
-    }
-  }
-  return option.description;
 }
 
 function isOptionDisabled(option) {
@@ -606,7 +596,7 @@ function goBack() {
           >
             <Card
               :title="getProperTitle(option)"
-              :description="getOptionDescription(option)"
+              :description="option.description"
               :imageSrc="getImageSrc(getOptionImageSrc(option))"
               :imageSrcDark="option.imageSrcDark ? getImageSrc(option.imageSrcDark) : undefined"
               :badgeText="option.badgeText"
