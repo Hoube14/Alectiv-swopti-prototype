@@ -81,7 +81,7 @@ export default [
         title: 'Tunna och lätta glas',
         description: 'Upp till 25% tunnare glas.',
         priceKey: 'lens_1_6',
-        nextStep: 'treatment',
+        nextStep: 'tintSelection',
         recommendMinSphere: 0,
         recommendMaxSphere: 4
       },
@@ -89,50 +89,28 @@ export default [
         title: 'Tunnare och lättare glas',
         description: 'Upp till 30% tunnare glas för dig med högre styrkor.',
         priceKey: 'lens_1_67',
-        nextStep: 'treatment',
+        nextStep: 'tintSelection',
         recommendMinSphere: 4,
         recommendMaxSphere: Infinity
       }
     ]
   },
   {
-    id: 'treatment',
-    title: 'Behandling',
-    showBackButton: true,
-    backStep: null,
-    options: [
-      {
-        title: 'Fullständig behandling',
-        description: 'Anti-reflex, repskydd och antistatisk behandling ingår i alla glas.',
-        imageSrc: '/images/FullstandingBehandling.png',
-        nextStep: null,
-        priceKey: 'treatment_standard'
-      },
-      {
-        title: 'Blåljusfilter',
-        description: 'Skärmar mot blått ljus. Fullständig behandling ingår alltid — med blåljusfilter får glaset en blå restreflex.',
-        imageSrc: '/images/Blaljusfilter.png',
-        nextStep: 'tintSelection',
-        priceKey: 'treatment_blue_light'
-      }
-    ]
-  },
-  {
     id: 'tintSelection',
-    title: 'Välj toning',
+    title: 'Toning + blåljusfilter',
     showBackButton: true,
     backStep: null,
     options: [
       {
         title: "Ofärgade glas",
-        description: "I nästa steg kan du lägga till blåljusfilter som tillval.",
+        description: "Transparanta glas",
         imageSrc: "/images/ofargadlens.png",
         priceKey: 'tint_none',
         nextStep: 'summary'
       },
       {
         title: "Färgade glas",
-        description: "Välj typ av toning – helfärg, gradal, heltoning eller polariserad – och sedan färg.",
+        description: "Välj typ av toning – helfärg, gradal eller polariserad – och sedan färg.",
         imageSrc: "/images/fargadlens.png",
         nextStep: 'coloredGlassType'
       },
@@ -145,6 +123,13 @@ export default [
         imageSrc: "/images/ofargadlens.png",
         imageSrcDark: "/images/ofargadlens.png",
         nextStep: 'photochromicColorSelection'
+      },
+      {
+        title: 'Blåljusfilter',
+        description: 'Skärmar mot blått ljus. För dig som sitter mycket framför skärmar — med blåljusfilter får glaset en blå restreflex.',
+        imageSrc: '',
+        nextStep: 'summary',
+        priceKey: 'treatment_blue_light'
       }
     ]
   },

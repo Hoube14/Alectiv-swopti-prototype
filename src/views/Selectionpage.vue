@@ -198,10 +198,6 @@ function getNextStepAfterLensBrand() {
 }
 
 function getNextStepAfterLensRecommendation() {
-  return 'treatment';
-}
-
-function getNextStepAfterTreatment() {
   return 'tintSelection';
 }
 
@@ -268,8 +264,6 @@ function getOptionPricePrefix(option) {
 }
 
 function getOptionPriceLabel(option) {
-  if (props.step?.id !== 'treatment') return undefined;
-  if (option.priceKey === 'treatment_standard') return 'Ingår';
   return undefined;
 }
 
@@ -284,14 +278,7 @@ function getOptionDescription(option) {
 }
 
 function isOptionDisabled(option) {
-  if (props.step?.id === 'treatment' && option.priceKey === 'treatment_standard') return true;
-  if (
-    props.step?.id === 'tintSelection' &&
-    hasBlueLightFilterSelected.value &&
-    (option.title === 'Färgade glas' || option.title === 'Färgskiftande glas')
-  ) {
-    return true;
-  }
+  // No option-level disables currently needed for tint + blue light selection.
   if (
     props.step?.id === 'coloredGlassType' &&
     option.title === 'Polariserad' &&
@@ -309,13 +296,6 @@ function isOptionDisabled(option) {
 
 function getOptionDisabledReason(option) {
   if (
-    props.step?.id === 'tintSelection' &&
-    hasBlueLightFilterSelected.value &&
-    (option.title === 'Färgade glas' || option.title === 'Färgskiftande glas')
-  ) {
-    return 'Det går inte att kombinera blåljusfilter med färgade eller färgskiftande glas';
-  }
-  if (
     props.step?.id === 'coloredGlassType' &&
     option.title === 'Polariserad' &&
     isOwnBrand167PolarizedBlocked.value
@@ -329,11 +309,6 @@ function getOptionDisabledReason(option) {
     }
   }
   return undefined;
-}
-
-function continueWithoutBlueLight() {
-  updateOrder('treatment', includedTreatmentSelection);
-  navigateTo(getNextStepAfterTreatment());
 }
 
 function changeLensToEnablePolarized() {
@@ -415,6 +390,16 @@ function handleSelection(option, index) {
 
   updateOrder(props.step.id, selectionToSave);
 
+  if (props.step.id === 'tintSelection') {
+    // Full treatment is always included; blue light filter is an optional upgrade.
+    if (option.priceKey === 'treatment_blue_light') {
+      updateOrder('treatment', { title: 'Blåljusfilter', priceKey: 'treatment_blue_light' });
+      navigateTo('summary');
+      return;
+    }
+    updateOrder('treatment', includedTreatmentSelection);
+  }
+
   if (props.step.id === 'glassType' && option.skipsPrescription) {
     updateOrder('prescription', option);
     navigateTo(option.nextStep);
@@ -456,15 +441,6 @@ function handleSelection(option, index) {
 
   if (props.step.id === 'lensRecommendation') {
     navigateTo(getNextStepAfterLensRecommendation());
-    return;
-  }
-
-  if (props.step.id === 'treatment') {
-    if (option.priceKey === 'treatment_standard') {
-      updateOrder('treatment', includedTreatmentSelection);
-      return;
-    }
-    navigateTo(getNextStepAfterTreatment());
     return;
   }
 
@@ -585,55 +561,19 @@ function goBack() {
           @cancel="onPrescriptionFormCancel"
         />
       </template>
-      <template v-else-if="step && step.id === 'treatment'">
-        <div class="mb-6 rounded-xl border p-4 md:p-5" style="border-color: rgba(0,0,0,0.08); background: rgba(0,0,0,0.02);">
+      <template v-else>
+        <div
+          v-if="step && step.id === 'lensRecommendation'"
+          class="mb-6 rounded-xl border p-4 md:p-5"
+          style="border-color: rgba(0,0,0,0.08); background: rgba(0,0,0,0.02);"
+          role="note"
+        >
           <div class="text-base font-semibold" style="color: var(--color-heading)">Fullständig behandling ingår</div>
           <div class="mt-1 text-sm" style="color: var(--color-text-muted, rgba(0,0,0,0.7))">
-            Anti-reflex, repskydd och antistatisk behandling ingår i alla glas. Du kan lägga till blåljusfilter som tillval.
-          </div>
-          <div class="mt-2 text-sm font-medium" style="color: var(--color-text-muted, rgba(0,0,0,0.75))">
-            Om du väljer blåljusfilter kan du inte välja färgade eller färgskiftande glas i nästa steg.
+            Anti-reflex, repskydd och antistatisk behandling ingår i alla glas. Du kan lägga till blåljusfilter som tillval i nästa steg.
           </div>
         </div>
 
-        <div class="grid gap-4 justify-center" style="grid-template-columns: repeat(auto-fit, minmax(280px, 280px));">
-          <div
-            v-for="(option, index) in displayOptions"
-            :key="option.title"
-            class="h-full"
-          >
-            <Card
-              :title="getProperTitle(option)"
-              :description="getOptionDescription(option)"
-              :imageSrc="getImageSrc(getOptionImageSrc(option))"
-              :imageSrcDark="option.imageSrcDark ? getImageSrc(option.imageSrcDark) : undefined"
-              :badgeText="option.badgeText"
-              :price="getOptionPrice(option)"
-              :pricePrefix="getOptionPricePrefix(option)"
-              :priceLabel="getOptionPriceLabel(option)"
-              :currency="currency"
-              :disabled="isOptionDisabled(option)"
-              :disabledReason="getOptionDisabledReason(option)"
-              :infoTitle="option.infoTitle || step?.infoTitle"
-              :infoText="option.infoText || step?.infoText"
-              @click="handleSelection(option, index)"
-              @info="openInfoModal(option.infoTitle || step?.infoTitle, option.infoText || step?.infoText)"
-            />
-          </div>
-        </div>
-
-        <div class="mt-6 flex justify-center">
-          <button
-            type="button"
-            @click="continueWithoutBlueLight"
-            class="px-5 py-3 rounded-xl text-sm font-semibold transition hover:opacity-90"
-            style="background: var(--color-primary); color: white;"
-          >
-            Fortsätt utan blåljusfilter
-          </button>
-        </div>
-      </template>
-      <template v-else>
         <div
           v-if="step && step.id === 'coloredGlassType' && isOwnBrand167PolarizedBlocked"
           class="mb-6 rounded-xl border p-4 md:p-5"
@@ -652,6 +592,23 @@ function goBack() {
           >
             Ändra glastyp (1.6 / 1.67)
           </button>
+        </div>
+
+        <div
+          v-if="step && step.id === 'tintSelection'"
+          class="mb-6 rounded-xl border p-4 md:p-5"
+          style="border-color: rgba(0,0,0,0.08); background: rgba(0,0,0,0.02);"
+          role="note"
+        >
+          <div class="text-base font-semibold" style="color: var(--color-heading)">Blåljusfilter och färgade glas</div>
+          <div class="mt-1 text-sm" style="color: var(--color-text-muted, rgba(0,0,0,0.7))">
+            <span class="font-medium" style="color: var(--color-heading)">Blåljusfilter (BF)</span>
+            är en behandling som minskar hur mycket blått ljus från skärmar som når ögat och kan ge en mer behaglig upplevelse vid mycket skärmtid.
+          </div>
+          <div class="mt-2 text-sm" style="color: var(--color-text-muted, rgba(0,0,0,0.7))">
+            BF går inte att kombinera med <span class="font-medium" style="color: var(--color-heading)">färgade</span> eller
+            <span class="font-medium" style="color: var(--color-heading)">färgskiftande</span> glas.
+          </div>
         </div>
 
         <div class="grid gap-4 justify-center" style="grid-template-columns: repeat(auto-fit, minmax(280px, 280px));">
