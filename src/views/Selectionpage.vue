@@ -163,7 +163,7 @@ const recommendedLensIndex = computed(() => {
 
 function getRecommendedLabel(option) {
   if (props.step?.id === 'lensRecommendation' && shouldRecommend16ForPolarized.value) {
-    if (option?.title === 'Glas 1.6') return 'Rekommenderas för polariserat glas';
+    if (option?.title === 'Glas 1.6') return 'Optikern rekommenderar för polariserat glas';
   }
   return undefined;
 }

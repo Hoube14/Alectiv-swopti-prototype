@@ -1,4 +1,5 @@
 <script setup>
+import { computed } from 'vue';
 
 const props = defineProps({
   title: String,
@@ -26,21 +27,65 @@ const props = defineProps({
 
 defineEmits(['click', 'info']);
 
+/** Full primary-green treatment when this option is recommended (e.g. lens index step). */
+const isRecommendedLook = computed(() => props.recommended && !props.disabled);
+
+const cardSurfaceStyle = computed(() => {
+  if (props.disabled) {
+    return {
+      backgroundColor: 'var(--color-background)',
+      borderColor: 'rgba(0,0,0,0.14)',
+    };
+  }
+  if (isRecommendedLook.value) {
+    return {
+      backgroundColor: 'var(--color-primary)',
+      borderColor: 'rgba(255,255,255,0.35)',
+    };
+  }
+  return {
+    backgroundColor: 'var(--color-card)',
+    borderColor: 'var(--color-border)',
+  };
+});
+
+const headingColor = computed(() =>
+  isRecommendedLook.value ? '#ffffff' : 'var(--color-heading)'
+);
+const bodyTextColor = computed(() =>
+  isRecommendedLook.value ? 'rgba(255,255,255,0.92)' : 'var(--color-text)'
+);
+const recommendedLineColor = computed(() =>
+  isRecommendedLook.value ? '#ffffff' : 'var(--color-recommended)'
+);
+const priceBlockColor = computed(() =>
+  isRecommendedLook.value ? '#ffffff' : 'var(--color-heading)'
+);
+const learnMoreColor = computed(() =>
+  isRecommendedLook.value ? '#ffffff' : 'var(--color-primary)'
+);
+const badgeStyle = computed(() =>
+  isRecommendedLook.value
+    ? { background: 'rgba(255,255,255,0.22)', color: '#ffffff' }
+    : { background: 'rgba(0,0,0,0.06)', color: 'var(--color-heading)' }
+);
+
 </script>
 
 <template>
   <div
     @click="disabled ? undefined : $emit('click')"
     class="relative h-full rounded-2xl border p-6 flex flex-col items-center shadow-sm transition-all duration-200 ease-out"
-    :class="disabled ? 'cursor-not-allowed opacity-60 grayscale' : 'cursor-pointer hover:scale-[1.03] hover:shadow-md'"
-    :style="disabled
-      ? 'background-color: var(--color-background); border-color: rgba(0,0,0,0.14)'
-      : 'background-color: var(--color-card); border-color: var(--color-border)'"
+    :class="[
+      disabled ? 'cursor-not-allowed opacity-60 grayscale' : 'cursor-pointer hover:scale-[1.03] hover:shadow-md',
+      isRecommendedLook && 'hover:brightness-[1.04] ring-2 ring-white/25',
+    ]"
+    :style="cardSurfaceStyle"
   >
     <div
       v-if="badgeText"
       class="absolute right-4 top-4 rounded-full px-2.5 py-1 text-xs font-semibold"
-      style="background: rgba(0,0,0,0.06); color: var(--color-heading)"
+      :style="badgeStyle"
     >
       {{ badgeText }}
     </div>
@@ -60,26 +105,26 @@ defineEmits(['click', 'info']);
       </template>
       <img v-else :src="imageSrc" :alt="title" class="h-24 object-contain">
     </div>
-    <h3 class="font-semibold text-lg mb-2 text-center flex-shrink-0" style="color: var(--color-heading)">{{ title }}</h3>
-    <p v-if="recommended" class="text-xs font-bold mb-1 flex-shrink-0" style="color: var(--color-recommended)">
-      {{ recommendedLabel || 'Rekommenderas för dina styrkor' }}
+    <h3 class="font-semibold text-lg mb-2 text-center flex-shrink-0" :style="{ color: headingColor }">{{ title }}</h3>
+    <p v-if="recommended" class="text-xs font-bold mb-1 flex-shrink-0 text-center" :style="{ color: recommendedLineColor }">
+      {{ recommendedLabel || 'Optikern rekommenderar för dina styrkor' }}
     </p>
-    <p class="text-sm text-center flex-1 min-h-0 leading-relaxed" style="color: var(--color-text)">{{ description }}</p>
+    <p class="text-sm text-center flex-1 min-h-0 leading-relaxed" :style="{ color: bodyTextColor }">{{ description }}</p>
     <button
       v-if="!disabled && infoText"
       type="button"
       class="mt-3 text-sm font-semibold underline underline-offset-4 opacity-90 transition hover:opacity-100"
-      style="color: var(--color-primary)"
+      :style="{ color: learnMoreColor }"
       @click.stop="$emit('info')"
     >
       Läs mer
     </button>
 
     <!-- Display price label (e.g. included) or price if available -->
-    <div v-if="priceLabel" class="mt-2 font-semibold flex-shrink-0" style="color: var(--color-heading)">
+    <div v-if="priceLabel" class="mt-2 font-semibold flex-shrink-0" :style="{ color: priceBlockColor }">
       {{ priceLabel }}
     </div>
-    <div v-else-if="price !== undefined" class="mt-2 font-semibold flex-shrink-0" style="color: var(--color-heading)">
+    <div v-else-if="price !== undefined" class="mt-2 font-semibold flex-shrink-0" :style="{ color: priceBlockColor }">
       {{ pricePrefix ? pricePrefix + ' ' : '' }}{{ price }} {{ currency }}
     </div>
     <p v-if="disabled && disabledReason" class="mt-2 text-xs text-center flex-shrink-0 opacity-80" style="color: var(--color-text)">
