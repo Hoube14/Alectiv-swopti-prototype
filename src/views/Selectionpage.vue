@@ -252,10 +252,16 @@ const isOwnBrand167PolarizedBlocked = computed(
   () => isOwnBrandWithIndex167.value && isStrengthAbove4.value
 );
 
-// Calculate the price for an option based on its priceKey
+// Calculate the price for an option based on its priceKey (amounts live in products.json)
 function getOptionPrice(option) {
   if (!option.priceKey) return undefined;
   return priceModifiers.value?.[option.priceKey] || 0;
+}
+
+/** Prefix for lens brand cards (“från” + amount from products.json via priceKey). */
+function getOptionPricePrefix(option) {
+  if (props.step?.id === 'lensBrand' && option.priceKey) return 'från';
+  return undefined;
 }
 
 function getOptionPriceLabel(option) {
@@ -600,6 +606,7 @@ function goBack() {
               :imageSrcDark="option.imageSrcDark ? getImageSrc(option.imageSrcDark) : undefined"
               :badgeText="option.badgeText"
               :price="getOptionPrice(option)"
+              :pricePrefix="getOptionPricePrefix(option)"
               :priceLabel="getOptionPriceLabel(option)"
               :currency="currency"
               :disabled="isOptionDisabled(option)"
@@ -657,6 +664,7 @@ function goBack() {
               :imageSrcDark="option.imageSrcDark ? getImageSrc(option.imageSrcDark) : undefined"
               :badgeText="option.badgeText"
               :price="getOptionPrice(option)"
+              :pricePrefix="getOptionPricePrefix(option)"
               :priceLabel="getOptionPriceLabel(option)"
               :currency="currency"
               :recommended="step?.id === 'lensRecommendation' && recommendedLensIndex === index"

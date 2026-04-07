@@ -9,6 +9,8 @@ const props = defineProps({
   /** Optional badge shown on card (e.g. "Nyhet") */
   badgeText: String,
   price: Number,
+  /** Shown before amount + currency (e.g. "från" → "från 995 SEK") */
+  pricePrefix: String,
   priceLabel: String,
   currency: String,
   recommended: Boolean,
@@ -78,7 +80,7 @@ defineEmits(['click', 'info']);
       {{ priceLabel }}
     </div>
     <div v-else-if="price !== undefined" class="mt-2 font-semibold flex-shrink-0" style="color: var(--color-heading)">
-      {{ price }} {{ currency }}
+      {{ pricePrefix ? pricePrefix + ' ' : '' }}{{ price }} {{ currency }}
     </div>
     <p v-if="disabled && disabledReason" class="mt-2 text-xs text-center flex-shrink-0 opacity-80" style="color: var(--color-text)">
       {{ disabledReason }}

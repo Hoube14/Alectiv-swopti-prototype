@@ -44,21 +44,30 @@ export default [
   },
   {
     id: 'lensBrand',
-    title: 'Välj glasmärke',
+    title: 'Välj produkt',
     showBackButton: true,
     backStep: null,
     options: [
       {
-        title: 'Våra egna glasmärken',
-        description: 'Välj från vårt eget sortiment av glas.',
+        title: 'Vårt egna glas',
+        description: 'Välj våra egna förstklassiga glas.',
         imageSrc: '/images/VaraEgnaGlasmarken.jpg',
-        nextStep: 'lensRecommendation'
+        nextStep: 'lensRecommendation',
+        priceKey: 'lens_brand_own'
       },
       {
-        title: 'Känt märke (t.ex. Rodenstock)',
-        description: 'Premium-glas från etablerade märken som Rodenstock.',
+        title: 'Rodenstock Standard',
+        description: 'Standard glas från Rodenstock.',
         imageSrc: '/images/KantMarke.png',
-        nextStep: 'lensRecommendation'
+        nextStep: 'lensRecommendation',
+        priceKey: 'lens_brand_rodenstock_standard'
+      },
+      {
+        title: 'Rodenstock Premium',
+        description: 'Premium glas från Rodenstock',
+        imageSrc: '/images/KantMarke.png',
+        nextStep: 'lensRecommendation',
+        priceKey: 'lens_brand_rodenstock_premium'
       }
     ]
   },
