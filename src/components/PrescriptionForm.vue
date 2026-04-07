@@ -254,6 +254,8 @@ const showStrengthLimitModal = ref(false);
 const formErrors = ref({
   axisRight: '',
   axisLeft: '',
+  addRight: '',
+  addLeft: '',
   pdRight: '',
   pdLeft: '',
   pd: '',
@@ -268,6 +270,8 @@ function validateManualForm() {
   const err = {
     axisRight: '',
     axisLeft: '',
+    addRight: '',
+    addLeft: '',
     pdRight: '',
     pdLeft: '',
     pd: '',
@@ -279,6 +283,7 @@ function validateManualForm() {
   };
 
   const hasReceipt = form.value.attachReceipt && !!form.value.receiptDataUrl;
+  const requiresAdd = props.isReadingDistance || props.requiresHeight;
 
   // If the user attaches a receipt, manual values are optional (optician can verify from the receipt).
   if (!hasReceipt) {
@@ -320,6 +325,11 @@ function validateManualForm() {
     if (props.requiresHeight && hasOpenedHeightGuide.value && !form.value.heightInstructionsConfirmed) {
       err.heightInstructionsConfirmed = 'Bekräfta att du har följt instruktionerna';
     }
+
+    if (requiresAdd && !props.isDistanceOrAllround) {
+      if (!form.value.right.add) err.addRight = 'Välj ADD för höger öga';
+      if (!form.value.left.add) err.addLeft = 'Välj ADD för vänster öga';
+    }
   }
 
   if (!form.value.receiptNotOlderThanOneYear) {
@@ -348,10 +358,12 @@ watch(
 const canSubmit = computed(() => {
   const r = form.value.right;
   const l = form.value.left;
+  const requiresAdd = props.isReadingDistance || props.requiresHeight;
   const hasSphere = r.sphere !== '' || l.sphere !== '';
   const axisOk =
     (!r.cylinder || r.cylinder === '0.00' || r.axis !== '') &&
     (!l.cylinder || l.cylinder === '0.00' || l.axis !== '');
+  const addOk = !requiresAdd || (r.add !== '' && l.add !== '');
   const pdBinocularOk =
     form.value.samePd &&
     validatePdMmString(form.value.pd, PD_BINOCULAR_MIN, PD_BINOCULAR_MAX).ok;
@@ -366,7 +378,7 @@ const canSubmit = computed(() => {
       form.value.heightMmLeft !== '' &&
       (!hasOpenedHeightGuide.value || form.value.heightInstructionsConfirmed));
   const hasReceipt = form.value.attachReceipt && !!form.value.receiptDataUrl;
-  const manualOk = hasSphere && axisOk && hasPd && heightOk;
+  const manualOk = hasSphere && axisOk && addOk && hasPd && heightOk;
   return (hasReceipt || manualOk) && form.value.receiptNotOlderThanOneYear;
 });
 
@@ -402,9 +414,9 @@ const readingPower = computed(() => {
   return { right: calc(r.sphere, r.add), left: calc(l.sphere, l.add) };
 });
 
-// Near PD preview for läsavstånd (same deduction as in getPdForManualPayload)
+// Near PD preview (same deduction as in getPdForManualPayload)
 const readingNearPdPreview = computed(() => {
-  if (!props.isReadingDistance) return null;
+  if (!props.isReadingDistance && !props.requiresHeight) return null;
   if (form.value.samePd) {
     const r = validatePdMmString(form.value.pd, PD_BINOCULAR_MIN, PD_BINOCULAR_MAX);
     if (!r.ok) {
@@ -427,7 +439,7 @@ const readingNearPdPreview = computed(() => {
 });
 
 function getPdForManualPayload() {
-  if (props.isReadingDistance) {
+  if (props.isReadingDistance || props.requiresHeight) {
     if (form.value.samePd) {
       const r = validatePdMmString(form.value.pd, PD_BINOCULAR_MIN, PD_BINOCULAR_MAX);
       if (!r.ok) {
@@ -638,9 +650,6 @@ function cancel() {
     <!-- Axel – Only when cylinder is selected for each eye -->
     <div class="mb-4">
       <label class="mb-2 block text-sm font-medium text-gray-700">Axel</label>
-      <p class="mb-2 text-xs text-gray-500">
-        Endast recept med värden i cylinderfälten har denna information. Välj cylinder först för att kunna fylla i axel.
-      </p>
       <div class="grid grid-cols-2 gap-4">
         <div>
           <input
@@ -679,23 +688,41 @@ function cancel() {
 
     <!-- Addition: only for near/reading use (hidden for Avstånd/Allround) -->
     <div v-if="!isDistanceOrAllround" class="mb-4">
-      <label class="mb-2 block text-sm font-medium text-gray-700">Addition (ADD)</label>
+      <label class="mb-2 block text-sm font-medium text-gray-700">
+        Addition (ADD)
+        <span v-if="isReadingDistance || requiresHeight" class="text-gray-900" aria-hidden="true">*</span>
+      </label>
       <div class="grid grid-cols-2 gap-4">
-        <select v-model="form.right.add" class="rounded border border-gray-300 px-3 py-2 text-gray-900">
+        <div>
+          <select
+            v-model="form.right.add"
+            class="w-full rounded border border-gray-300 px-3 py-2 text-gray-900"
+            :aria-invalid="formTouched && !!formErrors.addRight"
+            :aria-describedby="formTouched && formErrors.addRight ? 'err-addRight' : undefined"
+            :class="{ 'border-red-500': formTouched && formErrors.addRight }"
+          >
           <option v-for="opt in addOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
-        </select>
-        <select v-model="form.left.add" class="rounded border border-gray-300 px-3 py-2 text-gray-900">
+          </select>
+          <p v-if="formTouched && formErrors.addRight" id="err-addRight" class="mt-1 text-sm text-red-600">{{ formErrors.addRight }}</p>
+        </div>
+        <div>
+          <select
+            v-model="form.left.add"
+            class="w-full rounded border border-gray-300 px-3 py-2 text-gray-900"
+            :aria-invalid="formTouched && !!formErrors.addLeft"
+            :aria-describedby="formTouched && formErrors.addLeft ? 'err-addLeft' : undefined"
+            :class="{ 'border-red-500': formTouched && formErrors.addLeft }"
+          >
           <option v-for="opt in addOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
-        </select>
+          </select>
+          <p v-if="formTouched && formErrors.addLeft" id="err-addLeft" class="mt-1 text-sm text-red-600">{{ formErrors.addLeft }}</p>
+        </div>
       </div>
     </div>
 
     <!-- Reading power (Sphere + ADD): only relevant for near/reading; hidden for Avstånd/Allround -->
     <div v-if="!isDistanceOrAllround" class="mb-4 rounded-lg border border-gray-200 bg-gray-50 p-3">
       <p class="mb-2 text-sm font-medium text-gray-700">Lässtyrka (beräknad)</p>
-      <p class="mb-2 text-xs text-gray-500">
-        Sfär + Addition = styrka för närbild.
-      </p>
       <div class="grid grid-cols-2 gap-4 text-sm">
         <div>
           <div class="text-gray-500">Höger öga (OD)</div>
@@ -711,9 +738,7 @@ function cancel() {
     <!-- Segment/fitting height: required for progressive lenses only (per eye) -->
     <div v-if="requiresHeight" class="mb-6">
       <label class="mb-2 block text-sm font-medium text-gray-700">Monteringshöjd (mm) *</label>
-      <p class="mb-2 text-xs text-gray-500">
-        Monteringshöjd för progressiva glas – ange per öga om receptet skiljer sig.
-      </p>
+
       <div class="grid grid-cols-2 gap-4">
         <div>
           <label class="mb-1 block text-xs text-gray-500">Höger öga (OD)</label>
@@ -748,14 +773,17 @@ function cancel() {
       </div>
 
       <!-- "I don't have a height – how do I measure?" expandable guide -->
-      <button
-        type="button"
-        class="mt-3 flex w-full max-w-md items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-left text-sm text-gray-700 transition hover:bg-gray-100 hover:border-gray-300"
-        @click="openHeightGuide"
-      >
-        <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded border border-gray-300 bg-white text-gray-500">?</span>
-        <span>Jag har ingen höjd – hur mäter jag det?</span>
-      </button>
+      <div class="mt-3 grid grid-cols-2 gap-4">
+        <button
+          type="button"
+          class="flex w-full items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-left text-sm text-gray-700 transition hover:bg-gray-100 hover:border-gray-300"
+          @click="openHeightGuide"
+        >
+          <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded border border-gray-300 bg-white text-gray-500">?</span>
+          <span>Jag har ingen höjd – hur mäter jag det?</span>
+        </button>
+        <div aria-hidden="true"></div>
+      </div>
 
       <!-- Step-by-step height measuring guide -->
       <div
@@ -798,14 +826,6 @@ function cancel() {
     <!-- Pupillary distance (PD): default separate right/left; checkbox for same both eyes -->
     <div class="mb-6">
       <label class="mb-2 block text-sm font-medium text-gray-700">Pupillavstånd (PD) *</label>
-      <p v-if="!form.samePd" class="mb-2 text-xs text-gray-500">
-        Ange per öga i millimeter: <span class="font-medium text-gray-700">{{ PD_PER_EYE_MIN }}–{{ PD_PER_EYE_MAX }} mm</span>.
-        Halv millimeter går bra (t.ex. 25,5). Värdet anges i mm; du behöver inte skriva enheten i fältet.
-      </p>
-      <p v-else class="mb-2 text-xs text-gray-500">
-        Ange totalt pupillavstånd i millimeter: <span class="font-medium text-gray-700">{{ PD_BINOCULAR_MIN }}–{{ PD_BINOCULAR_MAX }} mm</span>.
-        Halv millimeter går bra (t.ex. 62,5). Värdet anges i mm; du behöver inte skriva enheten i fältet.
-      </p>
       <div v-if="!form.samePd" class="mb-3 grid grid-cols-2 gap-4">
         <div>
           <label class="mb-1 block text-xs text-gray-500">Höger öga (OD)</label>
@@ -815,7 +835,6 @@ function cancel() {
               type="text"
               inputmode="decimal"
               autocomplete="off"
-              placeholder="t.ex. 32 eller 31,5"
               class="min-w-0 flex-1 rounded border border-gray-300 px-3 py-2 text-gray-900"
               :aria-invalid="formTouched && !!formErrors.pdRight"
               :aria-describedby="formTouched && formErrors.pdRight ? 'err-pdRight' : undefined"
@@ -834,7 +853,6 @@ function cancel() {
               type="text"
               inputmode="decimal"
               autocomplete="off"
-              placeholder="t.ex. 32 eller 31,5"
               class="min-w-0 flex-1 rounded border border-gray-300 px-3 py-2 text-gray-900"
               :aria-invalid="formTouched && !!formErrors.pdLeft"
               :aria-describedby="formTouched && formErrors.pdLeft ? 'err-pdLeft' : undefined"
@@ -853,7 +871,6 @@ function cancel() {
             type="text"
             inputmode="decimal"
             autocomplete="off"
-            placeholder="t.ex. 64 eller 63,5"
             class="min-w-0 flex-1 rounded border border-gray-300 px-3 py-2 text-gray-900"
             :aria-invalid="formTouched && !!formErrors.pd"
             :aria-describedby="formTouched && formErrors.pd ? 'err-pd' : undefined"
@@ -871,23 +888,15 @@ function cancel() {
           type="checkbox"
           class="h-4 w-4 rounded border-gray-300"
         />
-        <label for="same-pd" class="text-sm text-gray-700">Jag har samma PD för höger och vänster</label>
+        <label for="same-pd" class="text-sm text-gray-700">Jag har ett sammanslaget PD</label>
       </div>
 
-      <!-- Near PD for läsavstånd: convergence correction (matches order payload) -->
+      <!-- Near PD: convergence correction (matches order payload) -->
       <div
-        v-if="isReadingDistance"
+        v-if="isReadingDistance || requiresHeight"
         class="mt-4 rounded-lg border border-gray-200 bg-gray-50 p-3"
       >
-        <p class="mb-2 text-sm font-medium text-gray-700">När-PD (används för läsglas)</p>
-        <p class="mb-2 text-xs text-gray-500">
-          När du läser är pupillerna något närmre varandra (konvergens) än på långt håll. För läsglas
-          räknar vi därför om ditt PD till när-PD som används i beställningen:
-          <span v-if="form.samePd">vi drar av {{ String(NEAR_PD_DEDUCTION_BINOCULAR_MM).replace('.', ',') }}&nbsp;mm från det totala värdet du angett.</span>
-          <span v-else
-            >vi drar av {{ String(NEAR_PD_DEDUCTION_PER_EYE_MM).replace('.', ',') }}&nbsp;mm per öga.</span
-          >
-        </p>
+        <p class="mb-2 text-sm font-medium text-gray-700">När-PD (beräknad)</p>
         <template v-if="readingNearPdPreview?.samePd">
           <div class="text-sm">
             <span class="text-gray-500">Totalt när-PD:</span>
@@ -916,17 +925,17 @@ function cancel() {
     </div>
 
     <!-- Attestation: correct strengths entered -->
-    <div class="mb-6 flex items-start gap-3">
+    <div class="mb-6 flex items-center gap-2">
       <input
         id="receipt-age"
         v-model="form.receiptNotOlderThanOneYear"
         type="checkbox"
-        class="mt-1 h-4 w-4 rounded border-gray-300"
+        class="h-4 w-4 rounded border-gray-300"
         :aria-invalid="formTouched && !!formErrors.receiptNotOlderThanOneYear"
         :aria-describedby="formTouched && formErrors.receiptNotOlderThanOneYear ? 'err-receiptNotOlderThanOneYear' : undefined"
       />
       <label for="receipt-age" class="text-sm text-gray-700">
-        jag intygar att jag skrivit in rätt styrkor
+        Jag intygar att jag skrivit in rätt styrkor <span class="text-gray-900" aria-hidden="true">*</span>
       </label>
     </div>
     <p
