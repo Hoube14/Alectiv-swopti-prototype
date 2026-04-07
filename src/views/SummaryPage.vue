@@ -193,12 +193,6 @@ function buildInternalTrackingData() {
     };
   }
 
-  if (coloredGlassType === 'Heltoning' && sel?.colorSelection?.internalColorId) {
-    return {
-      heltoningId: sel.colorSelection.internalColorId
-    };
-  }
-
   if (coloredGlassType === 'Polariserad' && sel?.colorSelection?.internalColorId) {
     return {
       polariseradId: sel.colorSelection.internalColorId

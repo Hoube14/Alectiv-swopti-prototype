@@ -320,7 +320,6 @@ function changeLensToEnablePolarized() {
   // Clear downstream selections so the user can re-pick lens index cleanly
   updateOrder('coloredGlassType', null);
   updateOrder('gradientTintSelection', null);
-  updateOrder('solidTintSelection', null);
   updateOrder('colorSelection', null);
   updateOrder('darknessSelection', null);
   updateOrder('photochromicColorSelection', null);
@@ -344,18 +343,6 @@ function handleSelection(option, index) {
       const selectedGradient = order.value.selections?.gradientTintSelection;
       const internalColorId = option.title
         ? selectedGradient?.internalIdByColor?.[option.title]
-        : undefined;
-      if (internalColorId) {
-        selectionToSave = {
-          ...option,
-          internalColorId
-        };
-      }
-    }
-    if (coloredTypeTitle === 'Heltoning') {
-      const selectedSolidTint = order.value.selections?.solidTintSelection;
-      const internalColorId = option.title
-        ? selectedSolidTint?.internalIdByColor?.[option.title]
         : undefined;
       if (internalColorId) {
         selectionToSave = {

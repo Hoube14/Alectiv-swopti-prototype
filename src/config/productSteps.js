@@ -152,12 +152,6 @@ export default [
         nextStep: 'gradientColorCategory'
       },
       {
-        title: "Heltoning",
-        description: "Enhetlig toning. Välj 12%, 20% eller 65% i nästa steg.",
-        imageSrc: "/images/Heltonade.png",
-        nextStep: 'solidTintSelection'
-      },
-      {
         title: "Polariserad",
         description: "Reducerar reflexer och bländning. Välj färg i nästa steg.",
         imageSrc: "/images/lens-solid-brown-85.png",
@@ -273,53 +267,6 @@ export default [
       { title: 'Peach 30%', imageSrc: '/images/lens-fashion-peach-30.png', nextStep: 'summary', internalColorId: 'F81' },
       { title: 'Sky 25%', imageSrc: '/images/lens-fashion-sky-25.png', nextStep: 'summary', internalColorId: 'F80' },
       { title: 'Lime 37%', imageSrc: '/images/lens-fashion-lime-37.png', nextStep: 'summary', internalColorId: 'F97' }
-    ]
-  },
-  {
-    id: 'solidTintSelection',
-    title: 'Välj heltoning',
-    showBackButton: true,
-    backStep: null,
-    options: [
-      {
-        title: "12% toning",
-        description: "Lätt toning, passar för ljusare miljöer.",
-        imageSrc: "/images/Heltonade.png",
-        nextStep: 'colorSelection',
-        priceKey: 'tint_12percent',
-        internalIdByColor: {
-          Brun: 'HT1BR',
-          Grå: 'HT1GR',
-          Grön: 'HT1GN',
-          Blå: 'HT1BL'
-        }
-      },
-      {
-        title: "20% toning",
-        description: "Mellanmörk toning, balanserad för de flesta miljöer.",
-        imageSrc: "/images/Heltonade.png",
-        nextStep: 'colorSelection',
-        priceKey: 'tint_20percent',
-        internalIdByColor: {
-          Brun: 'HT2BR',
-          Grå: 'HT2GR',
-          Grön: 'HT2GN',
-          Blå: 'HT2BL'
-        }
-      },
-      {
-        title: "65% toning",
-        description: "Kraftig toning, för ljusstarka miljöer.",
-        imageSrc: "/images/Heltonade.png",
-        nextStep: 'colorSelection',
-        priceKey: 'tint_65percent',
-        internalIdByColor: {
-          Brun: 'HT6BR',
-          Grå: 'HT6GR',
-          Grön: 'HT6GN',
-          Blå: 'HT6BL'
-        }
-      }
     ]
   },
   {
