@@ -78,15 +78,15 @@ export default [
     backStep: null,
     options: [
       {
-        title: 'Tunnare glas',
-        description: 'Upp till 25% tunnare glas för dig med lägre styrkor.',
+        title: 'Tunna och lätta glas',
+        description: 'Upp till 25% tunnare glas.',
         priceKey: 'lens_1_6',
         nextStep: 'treatment',
         recommendMinSphere: 0,
         recommendMaxSphere: 4
       },
       {
-        title: 'Mycket tunnare glas',
+        title: 'Tunnare och lättare glas',
         description: 'Upp till 30% tunnare glas för dig med högre styrkor.',
         priceKey: 'lens_1_67',
         nextStep: 'treatment',

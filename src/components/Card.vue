@@ -39,8 +39,8 @@ const cardSurfaceStyle = computed(() => {
   }
   if (isRecommendedLook.value) {
     return {
-      backgroundColor: 'var(--color-primary)',
-      borderColor: 'rgba(255,255,255,0.35)',
+      backgroundColor: 'var(--color-primary-soft)',
+      borderColor: 'var(--color-primary)',
     };
   }
   return {
@@ -49,24 +49,16 @@ const cardSurfaceStyle = computed(() => {
   };
 });
 
-const headingColor = computed(() =>
-  isRecommendedLook.value ? '#ffffff' : 'var(--color-heading)'
-);
-const bodyTextColor = computed(() =>
-  isRecommendedLook.value ? 'rgba(255,255,255,0.92)' : 'var(--color-text)'
-);
+const headingColor = computed(() => 'var(--color-heading)');
+const bodyTextColor = computed(() => 'var(--color-text)');
 const recommendedLineColor = computed(() =>
-  isRecommendedLook.value ? '#ffffff' : 'var(--color-recommended)'
+  isRecommendedLook.value ? 'var(--color-primary)' : 'var(--color-recommended)'
 );
-const priceBlockColor = computed(() =>
-  isRecommendedLook.value ? '#ffffff' : 'var(--color-heading)'
-);
-const learnMoreColor = computed(() =>
-  isRecommendedLook.value ? '#ffffff' : 'var(--color-primary)'
-);
+const priceBlockColor = computed(() => 'var(--color-heading)');
+const learnMoreColor = computed(() => 'var(--color-primary)');
 const badgeStyle = computed(() =>
   isRecommendedLook.value
-    ? { background: 'rgba(255,255,255,0.22)', color: '#ffffff' }
+    ? { background: 'rgba(93,123,108,0.18)', color: 'var(--color-heading)' }
     : { background: 'rgba(0,0,0,0.06)', color: 'var(--color-heading)' }
 );
 
@@ -78,7 +70,7 @@ const badgeStyle = computed(() =>
     class="relative h-full rounded-2xl border p-6 flex flex-col items-center shadow-sm transition-all duration-200 ease-out"
     :class="[
       disabled ? 'cursor-not-allowed opacity-60 grayscale' : 'cursor-pointer hover:scale-[1.03] hover:shadow-md',
-      isRecommendedLook && 'hover:brightness-[1.04] ring-2 ring-white/25',
+      isRecommendedLook && 'hover:brightness-[1.02] ring-2 ring-[color:var(--color-primary)]/20',
     ]"
     :style="cardSurfaceStyle"
   >
@@ -107,7 +99,7 @@ const badgeStyle = computed(() =>
     </div>
     <h3 class="font-semibold text-lg mb-2 text-center flex-shrink-0" :style="{ color: headingColor }">{{ title }}</h3>
     <p v-if="recommended" class="text-xs font-bold mb-1 flex-shrink-0 text-center" :style="{ color: recommendedLineColor }">
-      {{ recommendedLabel || 'Optikern rekommenderar för dina styrkor' }}
+      {{ recommendedLabel || 'Optikern rekommenderar detta glas för dina styrkor' }}
     </p>
     <p class="text-sm text-center flex-1 min-h-0 leading-relaxed" :style="{ color: bodyTextColor }">{{ description }}</p>
     <button
