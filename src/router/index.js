@@ -1,7 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  // In WordPress, the app is mounted on a page route (e.g. /productselector/).
+  // Using Vite's BASE_URL would cause the router to prefer the theme asset path.
+  history: createWebHistory('/'),
   routes: [],
 })
 
