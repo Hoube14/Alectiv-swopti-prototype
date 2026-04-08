@@ -30,14 +30,14 @@ export default [
       {
         title: 'Lägg till manuellt / bifoga recept',
         description: 'Fyll i dina styrkor från receptet nedan, eller bifoga ett recept.',
-        imageSrc: '/images/Manuellt.png',
+        imageSrc: '/images/clipboard.svg',
         nextStep: null,
         opensManualForm: true
       },
       {
         title: 'Maila in senare',
         description: 'Skicka in ditt recept via e-post när du är redo.',
-        imageSrc: '/images/MailaSenare.png',
+        imageSrc: '/images/mail.svg',
         nextStep: null
       }
     ]
