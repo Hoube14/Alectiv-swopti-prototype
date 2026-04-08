@@ -10,7 +10,7 @@
     "dev": "vite",
     "dev:client": "vite",
     "build": "vite build",
-    "build:wp": "npm run build && cp dist/product-selector*.js dist/product-selector*.css ../GlasOnline/web/app/themes/glasonline/public/product-selector/ && cp -r dist/images ../GlasOnline/web/app/themes/glasonline/public/product-selector/",
+    "build:wp": "npm run build && cp dist/product-selector*.js dist/product-selector*.css ../GlasOnline/web/app/themes/glasonline/resources/product-selector/ && cp -r dist/images ../GlasOnline/web/app/themes/glasonline/resources/product-selector/",
     "preview": "vite preview",
     "format": "prettier --write src/"
   },

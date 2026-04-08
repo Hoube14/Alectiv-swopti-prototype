@@ -50,10 +50,10 @@ src/
 The Vue app can run both locally (standalone) and as an embedded widget on an external site (e.g. GlasOnline/WordPress).
 
 **Build and deploy:**  
-Vite is configured with a `base` path that matches the theme's public folder. Run `npm run build` and copy the `dist/` output to the host site's static asset directory (e.g. `public/product-selector/` in the GlasOnline theme). The build produces `product-selector.js`, `product-selector.css`, and chunk files. Use `npm run build:wp` to build and copy into the GlasOnline theme in one step.
+Run `npm run build` and copy the `dist/` output to the host site's static asset directory (e.g. `resources/product-selector/` in the GlasOnline theme). The build produces `product-selector.js`, `product-selector.css`, and chunk files. Use `npm run build:wp` to build and copy into the GlasOnline theme in one step.
 
 **On the host site:**  
-The host page includes a mount point `<div id="app" class="product-selector-root"></div>`. When the product-selector script and stylesheet are loaded, the Vue app mounts on `#app` and runs as usual. The host injects the payment API URL via a global such as `glasonlineProductSelector.createCheckoutUrl` (e.g. the WordPress REST endpoint for Mollie create-payment) so the app knows where to send the checkout request.
+The host page includes a mount point `<div id="product-selector-app" class="product-selector-root"></div>`. When the product-selector script and stylesheet are loaded, the Vue app mounts on `#product-selector-app` and runs as usual. The host injects the payment API URL via a global such as `glasonlineProductSelector.createCheckoutUrl` (e.g. the WordPress REST endpoint for Mollie create-payment) so the app knows where to send the checkout request.
 
 **Conditional loading:**  
 Assets are only enqueued when the widget or shortcode is actually used (e.g. shortcode in post content or widget in a sidebar), so the script does not load on every page.
