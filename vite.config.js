@@ -6,7 +6,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/app/themes/glasonline/public/product-selector/',
+  base: '/app/themes/glasonline/resources/product-selector/',
   define: {
     // Cache-bust image URLs on each build so browsers and proxies fetch fresh assets
     __BUILD_TIME__: JSON.stringify(Date.now()),
