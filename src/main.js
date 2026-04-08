@@ -3,10 +3,16 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 
-const app = createApp(App)
-const pinia = createPinia()
+const mountEl = typeof document !== 'undefined'
+  ? document.querySelector('#product-selector-app')
+  : null
 
-app.use(pinia)
-app.use(router)
+if (mountEl) {
+  const app = createApp(App)
+  const pinia = createPinia()
 
-app.mount('#product-selector-app')
+  app.use(pinia)
+  app.use(router)
+
+  app.mount(mountEl)
+}
