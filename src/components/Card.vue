@@ -95,7 +95,12 @@ const badgeStyle = computed(() =>
           >
         </div>
       </template>
-      <img v-else :src="imageSrc" :alt="title" class="h-24 object-contain">
+      <img
+        v-else
+        :src="imageSrc"
+        :alt="title"
+        class="h-24 max-w-full object-contain rounded-xl"
+      >
     </div>
     <h3 class="font-semibold text-lg mb-2 text-center flex-shrink-0" :style="{ color: headingColor }">{{ title }}</h3>
     <p v-if="recommended" class="text-xs font-bold mb-1 flex-shrink-0 text-center" :style="{ color: recommendedLineColor }">
