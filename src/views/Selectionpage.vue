@@ -5,7 +5,11 @@ import Card from '@/components/Card.vue';
 import ProgressBar from '@/components/ProgressBar.vue';
 import ShoppingCart from '@/components/ShoppingCart.vue';
 import PrescriptionForm from '@/components/PrescriptionForm.vue';
+import PrescriptionPerEye from '@/components/PrescriptionPerEye.vue';
 import { useOrderStore } from '@/stores/orderStore';
+
+// Flip this to quickly switch between the new and old prescription UI.
+const USE_NEW_PRESCRIPTION_UI = false;
 
 // Props to make page dynamic
 const props = defineProps({
@@ -445,6 +449,17 @@ function onPrescriptionFormCancel() {
   showPrescriptionManualForm.value = false;
 }
 
+function onPrescriptionPerEyeSubmit(payload) {
+  updateOrder('prescription', payload);
+  navigateTo(getNextStepAfterPrescription());
+}
+
+function onPrescriptionMailLater() {
+  // Keep same behavior as the old "Maila in senare" option
+  updateOrder('prescription', { title: 'Maila in senare' });
+  navigateTo(getNextStepAfterPrescription());
+}
+
 function goBack() {
   // When manual prescription form is open, back should close it and show prescription options
   if (props.step?.id === 'prescription' && showPrescriptionManualForm.value) {
@@ -529,14 +544,57 @@ function goBack() {
       </div>
 
       <!-- Prescription step: show manual form, upload, or card options -->
-      <template v-if="step && step.id === 'prescription' && showPrescriptionManualForm">
-        <PrescriptionForm
-          :is-distance-or-allround="isDistanceOrAllround"
-          :is-reading-distance="isReadingDistance"
-          :requires-height="requiresHeight"
-          @submit="onPrescriptionFormSubmit"
-          @cancel="onPrescriptionFormCancel"
-        />
+      <template v-if="step && step.id === 'prescription'">
+        <template v-if="USE_NEW_PRESCRIPTION_UI">
+          <PrescriptionPerEye
+            :is-distance-or-allround="isDistanceOrAllround"
+            :is-reading-distance="isReadingDistance"
+            :requires-height="requiresHeight"
+            @submit="onPrescriptionPerEyeSubmit"
+            @cancel="onPrescriptionFormCancel"
+            @mailLater="onPrescriptionMailLater"
+          />
+        </template>
+        <template v-else>
+          <template v-if="showPrescriptionManualForm">
+            <PrescriptionForm
+              :is-distance-or-allround="isDistanceOrAllround"
+              :is-reading-distance="isReadingDistance"
+              :requires-height="requiresHeight"
+              @submit="onPrescriptionFormSubmit"
+              @cancel="onPrescriptionFormCancel"
+            />
+          </template>
+          <template v-else>
+            <div class="grid gap-4 justify-center" style="grid-template-columns: repeat(auto-fit, minmax(280px, 280px));">
+              <div
+                v-for="(option, index) in displayOptions"
+                :key="option.title"
+                class="h-full"
+              >
+                <Card
+                  :title="getProperTitle(option)"
+                  :description="option.description"
+                  :imageSrc="getImageSrc(getOptionImageSrc(option))"
+                  :imageSrcDark="option.imageSrcDark ? getImageSrc(option.imageSrcDark) : undefined"
+                  :badgeText="option.badgeText"
+                  :price="getOptionPrice(option)"
+                  :pricePrefix="getOptionPricePrefix(option)"
+                  :priceLabel="getOptionPriceLabel(option)"
+                  :currency="currency"
+                  :recommended="step?.id === 'lensRecommendation' && recommendedLensIndex === index"
+                  :recommendedLabel="getRecommendedLabel(option)"
+                  :disabled="isOptionDisabled(option)"
+                  :disabledReason="getOptionDisabledReason(option)"
+                  :infoTitle="option.infoTitle || step?.infoTitle"
+                  :infoText="option.infoText || step?.infoText"
+                  @click="handleSelection(option, index)"
+                  @info="openInfoModal(option.infoTitle || step?.infoTitle, option.infoText || step?.infoText)"
+                />
+              </div>
+            </div>
+          </template>
+        </template>
       </template>
       <template v-else>
         <div
