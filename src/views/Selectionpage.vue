@@ -9,7 +9,7 @@ import PrescriptionPerEye from '@/components/PrescriptionPerEye.vue';
 import { useOrderStore } from '@/stores/orderStore';
 
 // Flip this to quickly switch between the new and old prescription UI.
-const USE_NEW_PRESCRIPTION_UI = false;
+const USE_NEW_PRESCRIPTION_UI = true;
 
 // Props to make page dynamic
 const props = defineProps({
