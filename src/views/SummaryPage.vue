@@ -24,6 +24,18 @@ const customerAddress1 = ref('');
 const customerPostcode = ref('');
 const customerCity = ref('');
 
+function maybeAutofillTestCustomer() {
+  if (!isTestMode.value) return;
+  if (!customerName.value) customerName.value = 'Testkund Testsson';
+  if (!customerEmail.value) customerEmail.value = 'test@example.com';
+  if (!customerPhone.value) customerPhone.value = '0701234567';
+  if (!customerAddress1.value) customerAddress1.value = 'Testgatan 1';
+  if (!customerPostcode.value) customerPostcode.value = '111 22';
+  if (!customerCity.value) customerCity.value = 'Stockholm';
+}
+
+maybeAutofillTestCustomer();
+
 // Per-field validation errors (key = field name, value = error message or empty)
 const formErrors = ref({
   customerName: '',
@@ -143,6 +155,17 @@ function getCheckoutEndpoint() {
   return ''; // When not embedded, set glasonlineProductSelector.createCheckoutUrl to your Mollie create-payment URL.
 }
 
+function getTestOrderEndpoint() {
+  if (typeof window !== 'undefined' && window.glasonlineProductSelector?.createTestOrderUrl) {
+    return window.glasonlineProductSelector.createTestOrderUrl;
+  }
+  return '';
+}
+
+const isTestMode = computed(() => {
+  return typeof window !== 'undefined' && !!window.glasonlineProductSelector?.testMode;
+});
+
 // Build order line items for draft.order_payload_json (used by backend to create WC order in webhook).
 function buildOrderPayloadFromSelections() {
   const sel = order.value?.selections ?? {};
@@ -232,9 +255,11 @@ async function proceedToCheckout() {
         shipping_postcode: customerPostcode.value.trim(),
         shipping_city: customerCity.value.trim(),
         shipping_country: 'SE'
-      }
+      },
+      selections: order.value?.selections ?? {}
     };
-    const response = await fetch(getCheckoutEndpoint(), {
+    const endpoint = isTestMode.value ? getTestOrderEndpoint() : getCheckoutEndpoint();
+    const response = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
@@ -246,17 +271,19 @@ async function proceedToCheckout() {
     }
     
     const data = await response.json();
-    const redirectUrl = data?.checkoutUrl ?? data?.url;
-    if (redirectUrl) {
-      sessionStorage.setItem('glasonline_checkout_order', JSON.stringify({
-        selections: order.value?.selections ?? {},
-        totalPrice: order.value?.totalPrice ?? 0,
-        shipping: storeData?.defaults?.shipping ?? 0
-      }));
-      window.location.href = redirectUrl;
-    } else {
-      throw new Error("No checkout URL in server response");
+    if (isTestMode.value) {
+      alert(`Testorder skapad i WooCommerce (#${data?.order_id ?? 'okänd'})`);
+      return;
     }
+
+    const redirectUrl = data?.checkoutUrl ?? data?.url;
+    if (!redirectUrl) throw new Error("No checkout URL in server response");
+    sessionStorage.setItem('glasonline_checkout_order', JSON.stringify({
+      selections: order.value?.selections ?? {},
+      totalPrice: order.value?.totalPrice ?? 0,
+      shipping: storeData?.defaults?.shipping ?? 0
+    }));
+    window.location.href = redirectUrl;
   } catch (error) {
     alert('Det uppstod ett fel vid betalning: ' + error.message);
   }
