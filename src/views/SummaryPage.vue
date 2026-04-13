@@ -225,6 +225,59 @@ function buildInternalTrackingData() {
   return undefined;
 }
 
+/** Collect priceKey from each top-level selection object (shop lookup / pricing modifiers). */
+function collectPriceKeysFromSelections(sel) {
+  const out = {};
+  if (!sel || typeof sel !== 'object') return out;
+  for (const [stepId, val] of Object.entries(sel)) {
+    if (val && typeof val === 'object' && !Array.isArray(val) && val.priceKey) {
+      out[stepId] = val.priceKey;
+    }
+  }
+  return out;
+}
+
+/** Collect every internalColorId in the tree with dotted paths (for shop decoding). */
+function collectInternalColorIdsByPath(obj, path = '') {
+  const out = {};
+  if (obj === null || obj === undefined) return out;
+  if (Array.isArray(obj)) {
+    obj.forEach((item, i) => {
+      Object.assign(out, collectInternalColorIdsByPath(item, path ? `${path}[${i}]` : `[${i}]`));
+    });
+    return out;
+  }
+  if (typeof obj !== 'object') return out;
+  for (const [k, v] of Object.entries(obj)) {
+    const p = path ? `${path}.${k}` : k;
+    if (k === 'internalColorId' && typeof v === 'string') {
+      out[p] = v;
+    } else if (v && typeof v === 'object') {
+      Object.assign(out, collectInternalColorIdsByPath(v, p));
+    }
+  }
+  return out;
+}
+
+/**
+ * Single object for the physical store: price modifiers, color IDs, preferences, prescription snapshot.
+ * Persists with the order (draft + WC meta) so the shop can map codes to products.
+ */
+function buildOrderTrackingPayload() {
+  const sel = order.value?.selections ?? {};
+  const semantic = buildInternalTrackingData();
+  const prefs = sel.internalPreferences;
+  return {
+    version: 1,
+    priceKeys: collectPriceKeysFromSelections(sel),
+    internalColorIdsByPath: collectInternalColorIdsByPath(sel),
+    semanticColorIds: semantic ?? null,
+    internalPreferences:
+      prefs && typeof prefs === 'object' && !Array.isArray(prefs) ? { ...prefs } : null,
+    prescription: sel.prescription ?? null
+  };
+}
+
 // Checkout payload: amount, currency, redirect/cancel URLs, and draft (customer + order_payload_json) so backend can create WC order in webhook.
 async function proceedToCheckout() {
   if (!validateCustomerForm()) {
@@ -242,7 +295,10 @@ async function proceedToCheckout() {
       redirectUrl: redirectUrlParam,
       cancelUrl: cancelUrlParam,
       draft: {
-        order_payload_json: buildOrderPayloadFromSelections(),
+        order_payload_json: {
+          lines: buildOrderPayloadFromSelections(),
+          tracking: buildOrderTrackingPayload()
+        },
         internal_tracking: buildInternalTrackingData(),
         customer_name: customerName.value.trim(),
         customer_email: customerEmail.value.trim(),
