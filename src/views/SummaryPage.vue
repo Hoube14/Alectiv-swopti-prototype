@@ -24,18 +24,6 @@ const customerAddress1 = ref('');
 const customerPostcode = ref('');
 const customerCity = ref('');
 
-function maybeAutofillTestCustomer() {
-  if (!isTestMode.value) return;
-  if (!customerName.value) customerName.value = 'Testkund Testsson';
-  if (!customerEmail.value) customerEmail.value = 'test@example.com';
-  if (!customerPhone.value) customerPhone.value = '0701234567';
-  if (!customerAddress1.value) customerAddress1.value = 'Testgatan 1';
-  if (!customerPostcode.value) customerPostcode.value = '111 22';
-  if (!customerCity.value) customerCity.value = 'Stockholm';
-}
-
-maybeAutofillTestCustomer();
-
 // Per-field validation errors (key = field name, value = error message or empty)
 const formErrors = ref({
   customerName: '',
@@ -165,6 +153,18 @@ function getTestOrderEndpoint() {
 const isTestMode = computed(() => {
   return typeof window !== 'undefined' && !!window.glasonlineProductSelector?.testMode;
 });
+
+function maybeAutofillTestCustomer() {
+  if (!isTestMode.value) return;
+  if (!customerName.value) customerName.value = 'Testkund Testsson';
+  if (!customerEmail.value) customerEmail.value = 'test@example.com';
+  if (!customerPhone.value) customerPhone.value = '0701234567';
+  if (!customerAddress1.value) customerAddress1.value = 'Testgatan 1';
+  if (!customerPostcode.value) customerPostcode.value = '111 22';
+  if (!customerCity.value) customerCity.value = 'Stockholm';
+}
+
+maybeAutofillTestCustomer();
 
 // Build order line items for draft.order_payload_json (used by backend to create WC order in webhook).
 function buildOrderPayloadFromSelections() {
