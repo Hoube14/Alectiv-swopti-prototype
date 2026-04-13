@@ -250,7 +250,7 @@ function validateAll() {
     }
   }
   let heightConfirmErr = '';
-  if (props.requiresHeight && hasOpenedHeightGuide.value && !form.value.heightInstructionsConfirmed) {
+  if (props.requiresHeight && !form.value.heightInstructionsConfirmed) {
     heightConfirmErr = 'Bekräfta att du har följt instruktionerna';
   }
   let att = '';
@@ -304,13 +304,20 @@ const isEyeComplete = computed(() => {
   const axisOk = (eye) => !eye.cylinder || eye.cylinder === '0.00' || !!eye.axis;
   const addOk = (eye) => props.isDistanceOrAllround || !requiresAdd || !!eye.add;
   const heightOk = (eye) => !props.requiresHeight || !!eye.heightMm;
+  const heightGuideOk = () => !props.requiresHeight || !!form.value.heightInstructionsConfirmed;
   const pdOk = (eye) =>
     form.value.samePd || validatePdMmString(eye.pd, PD_PER_EYE_MIN, PD_PER_EYE_MAX).ok;
 
   return {
-    right: axisOk(right) && addOk(right) && heightOk(right) && pdOk(right),
-    left: axisOk(left) && addOk(left) && heightOk(left) && pdOk(left)
+    right: axisOk(right) && addOk(right) && heightOk(right) && heightGuideOk() && pdOk(right),
+    left: axisOk(left) && addOk(left) && heightOk(left) && heightGuideOk() && pdOk(left)
   };
+});
+
+const showHeightConfirmError = computed(() => {
+  if (!props.requiresHeight) return false;
+  const anyHeightSelected = !!form.value.right.heightMm || !!form.value.left.heightMm;
+  return !!errors.value.heightInstructionsConfirmed || (anyHeightSelected && !form.value.heightInstructionsConfirmed);
 });
 
 function openEye(which) {
@@ -595,12 +602,27 @@ function onUploadSubmit(payload) {
             <p v-if="touched.right && errors.right.heightMm" class="mt-1 text-sm text-red-600">{{ errors.right.heightMm }}</p>
             <button
               type="button"
-              class="mt-3 inline-flex w-full items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-left text-sm text-gray-700 transition hover:bg-gray-100 hover:border-gray-300"
+              class="mt-3 inline-flex w-full items-center gap-2 rounded-lg border px-3 py-2.5 text-left text-sm transition hover:bg-gray-100"
+              :class="showHeightConfirmError ? 'border-red-300 bg-red-50 text-red-800' : 'border-gray-200 bg-gray-50 text-gray-700 hover:border-gray-300'"
               @click="openHeightGuide"
             >
               <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded border border-gray-300 bg-white text-gray-500">?</span>
-              <span>Jag har ingen höjd – hur mäter jag det?</span>
+              <span>Hur mäter jag höjd?</span>
             </button>
+            <div class="mt-3 flex items-start gap-3 rounded border bg-white p-3" :class="showHeightConfirmError ? 'border-red-300' : 'border-gray-200'">
+              <input
+                id="height-instructions-confirmed-right"
+                v-model="form.heightInstructionsConfirmed"
+                type="checkbox"
+                class="mt-1 h-4 w-4 rounded border-gray-300"
+              />
+              <label for="height-instructions-confirmed-right" class="text-sm text-gray-700">
+                Jag har följt instruktionerna och mätt höjden.
+              </label>
+            </div>
+            <p v-if="showHeightConfirmError" class="mt-2 text-sm text-red-600">
+              {{ errors.heightInstructionsConfirmed || 'Bekräfta att du har följt instruktionerna' }}
+            </p>
           </div>
 
           <div>
@@ -739,12 +761,27 @@ function onUploadSubmit(payload) {
             <p v-if="touched.left && errors.left.heightMm" class="mt-1 text-sm text-red-600">{{ errors.left.heightMm }}</p>
             <button
               type="button"
-              class="mt-3 inline-flex w-full items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-left text-sm text-gray-700 transition hover:bg-gray-100 hover:border-gray-300"
+              class="mt-3 inline-flex w-full items-center gap-2 rounded-lg border px-3 py-2.5 text-left text-sm transition hover:bg-gray-100"
+              :class="showHeightConfirmError ? 'border-red-300 bg-red-50 text-red-800' : 'border-gray-200 bg-gray-50 text-gray-700 hover:border-gray-300'"
               @click="openHeightGuide"
             >
               <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded border border-gray-300 bg-white text-gray-500">?</span>
-              <span>Jag har ingen höjd – hur mäter jag det?</span>
+              <span>Hur mäter jag höjd?</span>
             </button>
+            <div class="mt-3 flex items-start gap-3 rounded border bg-white p-3" :class="showHeightConfirmError ? 'border-red-300' : 'border-gray-200'">
+              <input
+                id="height-instructions-confirmed-left"
+                v-model="form.heightInstructionsConfirmed"
+                type="checkbox"
+                class="mt-1 h-4 w-4 rounded border-gray-300"
+              />
+              <label for="height-instructions-confirmed-left" class="text-sm text-gray-700">
+                Jag har följt instruktionerna och mätt höjden.
+              </label>
+            </div>
+            <p v-if="showHeightConfirmError" class="mt-2 text-sm text-red-600">
+              {{ errors.heightInstructionsConfirmed || 'Bekräfta att du har följt instruktionerna' }}
+            </p>
           </div>
 
           <div>
@@ -886,15 +923,19 @@ function onUploadSubmit(payload) {
       aria-modal="true"
     >
       <div class="absolute inset-0 bg-black/50" @click="showHeightGuide = false"></div>
-      <div class="relative w-full max-w-lg rounded-2xl border p-5 shadow-xl" style="background: var(--color-card); border-color: var(--color-border)">
+      <div
+        class="relative max-h-[85vh] w-full max-w-2xl overflow-y-auto rounded-2xl border p-5 shadow-xl"
+        style="background: var(--color-card); border-color: var(--color-border)"
+      >
         <div class="flex items-start justify-between gap-4">
           <div>
-            <div class="text-lg font-semibold" style="color: var(--color-heading)">Så mäter du monteringshöjden</div>
-            <div class="mt-1 text-sm" style="color: var(--color-text)">Följ stegen nedan och fyll sedan i höjden i mm.</div>
+            <div class="text-lg font-semibold" style="color: var(--color-heading)">
+              Mätning av ögonens ”höjd” i glasögonbågen
+            </div>
           </div>
           <button
             type="button"
-            class="text-sm font-semibold transition hover:opacity-80"
+            class="shrink-0 text-sm font-semibold transition hover:opacity-80"
             style="color: var(--color-primary)"
             @click="showHeightGuide = false"
           >
@@ -902,31 +943,73 @@ function onUploadSubmit(payload) {
           </button>
         </div>
 
-        <ol class="mt-4 list-decimal space-y-2 pl-5 text-sm text-gray-700">
-          <li>Ta på dig bågen (utan glas) och sätt dig framför en spegel.</li>
-          <li>Titta rakt fram med huvudet i naturlig ställning.</li>
-          <li>Mät med en linjal från nederkanten av linsöppningen (eller bågens inre kant) upp till mitt av pupillen – i millimeter.</li>
-          <li>Upprepa för andra ögat och notera värdet (ofta samma för båda). Avrunda till närmaste heltal.</li>
+        <div class="mt-4 space-y-3 text-sm text-gray-700">
+          <p>
+            För att glasen skall centreras rätt i bågen och glasögonen därmed skall fungera så bra som
+            möjligt, måste måtten från glasets underkant till pupillens mitt anges, separat för höger respektive vänster
+            öga om de skiljer sig åt.
+          </p>
+          <p>
+            Dessa mått används sedan när glasögonen tillverkas för att glasen skall centreras optimalt för dig.
+          </p>
+          <p>
+            Det är därför viktigt att bågen sitter bekvämt och som du vill ha den samt att du står med normal
+            kropps- och huvudhållning när mätningen av höjden görs.
+          </p>
+          <p class="font-medium">Följande beskrivning är ett bra sätt att mäta höjden på:</p>
+        </div>
+
+        <ol class="mt-3 list-decimal space-y-2 pl-5 text-sm text-gray-700">
+          <li>Sätt på dig bågen så att den sitter bra</li>
+          <li>Ställ dig upp och titta på någon punkt minst 10 meter bort (gärna längre bort).</li>
+          <li>
+            Be någon att hjälpa dig att sätta ut markeringar i höjd med mitten av pupillen på glasen som sitter i bågen
+            (se bild) genom att stå på samma höjd som dina ögon.
+            <img
+              src="/images/Markerapupill.png"
+              alt="Illustration: markera pupillens mitt på glaset i bågen"
+              class="mt-3 w-full rounded-lg border border-gray-200 bg-white object-contain"
+              loading="lazy"
+            />
+          </li>
+          <li>
+            Ta av och på glasögonen några gånger för att personen skall kunna kontrollera att markeringarna har hamnat i
+            höjd med mitten av pupillen, annars justera markeringarna.
+          </li>
+          <li>
+            När det är klart, ta en linjal och mät avståndet från glasets underkant till markeringarna (se bild) för pupillens mitt
+            för höger och vänster öga sen ange måtten i beställningen.
+            <img
+              src="/images/Underkanthojd.png"
+              alt="Illustration: mät från glasets underkant till markeringen"
+              class="mt-3 w-full rounded-lg border border-gray-200 bg-white object-contain"
+              loading="lazy"
+            />
+          </li>
         </ol>
 
-        <p class="mt-3 text-xs text-gray-500">
-          Har du redan ett recept med monteringshöjd angiven, använd det värdet.
-        </p>
-
-        <div class="mt-4 flex items-start gap-3 rounded border border-gray-200 bg-white p-3">
-          <input
-            id="height-instructions-confirmed"
-            v-model="form.heightInstructionsConfirmed"
-            type="checkbox"
-            class="mt-1 h-4 w-4 rounded border-gray-300"
-          />
-          <label for="height-instructions-confirmed" class="text-sm text-gray-700">
-            Jag har följt instruktionerna och mätt höjden (eller använt värdet från receptet).
-          </label>
+        <div class="mt-4">
+          <div
+            class="flex items-start gap-3 rounded border bg-white p-3"
+            :class="showHeightConfirmError ? 'border-red-300' : 'border-gray-200'"
+          >
+            <input
+              id="height-instructions-confirmed"
+              v-model="form.heightInstructionsConfirmed"
+              type="checkbox"
+              class="mt-1 h-4 w-4 rounded border-gray-300"
+              @change="(e) => (e.target.checked ? (showHeightGuide = false) : null)"
+            />
+            <div class="min-w-0">
+              <label for="height-instructions-confirmed" class="text-sm text-gray-700">
+                Jag har följt instruktionerna och mätt höjden.
+              </label>
+              <p v-if="showHeightConfirmError" class="mt-1 text-sm text-red-600">
+                {{ errors.heightInstructionsConfirmed || 'Bekräfta att du har följt instruktionerna' }}
+              </p>
+            </div>
+          </div>
         </div>
-        <p v-if="errors.heightInstructionsConfirmed" class="mt-2 text-sm text-red-600">
-          {{ errors.heightInstructionsConfirmed }}
-        </p>
 
         <div class="mt-5 flex justify-end">
           <button
