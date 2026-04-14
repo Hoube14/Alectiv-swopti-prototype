@@ -237,6 +237,11 @@ const hasBlueLightFilterSelected = computed(
   () => order.value.selections?.treatment?.priceKey === 'treatment_blue_light'
 );
 
+const isLensIndex167Selected = computed(() => {
+  const rec = order.value.selections?.lensRecommendation;
+  return rec?.priceKey === 'lens_1_67' || rec?.title === 'Glas 1.67';
+});
+
 const isStrengthAbove4 = computed(() => {
   const maxSphere = maxSphereFromPrescription.value;
   if (maxSphere === null) return false;
@@ -280,6 +285,14 @@ function isOptionDisabled(option) {
   ) {
     return true;
   }
+  // Photochromic (färgskiftande): green/blue only available for 1.6, not 1.67
+  if (
+    props.step?.id === 'photochromicColorSelection' &&
+    isLensIndex167Selected.value &&
+    (option.title?.startsWith('Grön') || option.title?.startsWith('Blå'))
+  ) {
+    return true;
+  }
   // Polarised lenses cannot be combined with blue tint
   if (props.step?.id === 'colorSelection' && option.title === 'Blå') {
     const coloredType = order.value.selections?.coloredGlassType;
@@ -295,6 +308,13 @@ function getOptionDisabledReason(option) {
     isOwnBrand167PolarizedBlocked.value
   ) {
     return 'Polariserat finns inte för Glas 1.67 i våra egna glasmärken (välj 1.6 istället)';
+  }
+  if (
+    props.step?.id === 'photochromicColorSelection' &&
+    isLensIndex167Selected.value &&
+    (option.title?.startsWith('Grön') || option.title?.startsWith('Blå'))
+  ) {
+    return 'Grön och blå färgskiftning är inte tillgänglig för ditt valda glas.';
   }
   if (props.step?.id === 'colorSelection' && option.title === 'Blå') {
     const coloredType = order.value.selections?.coloredGlassType;

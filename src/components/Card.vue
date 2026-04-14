@@ -69,7 +69,7 @@ const badgeStyle = computed(() =>
     @click="disabled ? undefined : $emit('click')"
     class="relative h-full rounded-2xl border p-6 flex flex-col items-center shadow-sm transition-all duration-200 ease-out"
     :class="[
-      disabled ? 'cursor-not-allowed opacity-60 grayscale' : 'cursor-pointer hover:scale-[1.03] hover:shadow-md',
+      disabled ? 'cursor-not-allowed grayscale' : 'cursor-pointer hover:scale-[1.03] hover:shadow-md',
       isRecommendedLook && 'hover:brightness-[1.02] ring-2 ring-[color:var(--color-primary)]/20',
     ]"
     :style="cardSurfaceStyle"
@@ -130,7 +130,11 @@ const badgeStyle = computed(() =>
     <div v-else-if="price !== undefined" class="mt-2 font-semibold flex-shrink-0" :style="{ color: priceBlockColor }">
       {{ pricePrefix ? pricePrefix + ' ' : '' }}{{ price }} {{ currency }}
     </div>
-    <p v-if="disabled && disabledReason" class="mt-2 text-xs text-center flex-shrink-0 opacity-80" style="color: var(--color-text)">
+    <p
+      v-if="disabled && disabledReason"
+      class="mt-3 text-sm font-medium text-center flex-shrink-0 leading-snug whitespace-pre-line"
+      style="color: var(--color-heading)"
+    >
       {{ disabledReason }}
     </p>
   </div>
