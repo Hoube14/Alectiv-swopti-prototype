@@ -52,6 +52,44 @@ const selections = computed(() => {
 
 const currency = 'SEK';
 
+const coloredGlassTypeTitle = computed(() => order.value?.selections?.coloredGlassType?.title || null);
+
+const helfargSummaryText = computed(() => {
+  const sel = order.value?.selections ?? {};
+  if (coloredGlassTypeTitle.value !== 'Helfärg') return null;
+
+  // Standardfärger: user picks a darkness first, then a color.
+  if (sel.darknessSelection?.title && sel.colorSelection?.title) {
+    const pct = sel.darknessSelection.title.match(/\d+%/)?.[0];
+    if (pct) return `${pct} ${sel.colorSelection.title}`;
+    return `${sel.darknessSelection.title} ${sel.colorSelection.title}`;
+  }
+
+  // Modefärger: the option title already encodes the percent.
+  if (sel.fashionColorSelection?.title) {
+    return sel.fashionColorSelection.title;
+  }
+
+  return null;
+});
+
+const gradalSummaryText = computed(() => {
+  const sel = order.value?.selections ?? {};
+  if (coloredGlassTypeTitle.value !== 'Gradal') return null;
+
+  // Standardfärger: user picks a gradient intensity first, then a color.
+  if (sel.gradientTintSelection?.title && sel.colorSelection?.title) {
+    return `${sel.gradientTintSelection.title} i ${sel.colorSelection.title}`;
+  }
+
+  // Modefärger: the option title already encodes both style and intensity.
+  if (sel.gradientFashionSelection?.title) {
+    return sel.gradientFashionSelection.title;
+  }
+
+  return null;
+});
+
 // Get product details for each selection for better display
 const productDetails = computed(() => {
   const details = {};
@@ -393,7 +431,13 @@ async function proceedToCheckout() {
                   <div>Färgskiftande glas: {{ selections.photochromicColorSelection.title }}</div>
                 </div>
 
-                <div v-if="selections.colorSelection">
+                <div v-if="helfargSummaryText">
+                  <div>Helfärg: {{ helfargSummaryText }}</div>
+                </div>
+                <div v-else-if="gradalSummaryText">
+                  <div>Gradal: {{ gradalSummaryText }}</div>
+                </div>
+                <div v-else-if="selections.colorSelection">
                   <div>Färg: {{ selections.colorSelection.title }}</div>
                 </div>
                 <div v-else-if="selections.fashionColorSelection">
