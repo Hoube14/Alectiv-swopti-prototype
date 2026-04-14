@@ -275,14 +275,29 @@ function getSphereCylinderCombinedStrength(eye) {
   return s + c;
 }
 
+function clearSphereCylinderIfExceeded() {
+  const eyes = [
+    { key: 'right', eye: form.value.right },
+    { key: 'left', eye: form.value.left }
+  ];
+  for (const { key, eye } of eyes) {
+    if (getSphereCylinderCombinedStrength(eye) > 6) {
+      form.value[key].sphere = '';
+      form.value[key].cylinder = '';
+      form.value[key].axis = '';
+    }
+  }
+}
+
 const exceedsSphereCylinderLimit = computed(() => {
   return [form.value.right, form.value.left].some((eye) => getSphereCylinderCombinedStrength(eye) > 6);
 });
 
 const showStrengthLimitModal = ref(false);
-watch(exceedsSphereCylinderLimit, (shouldShow) => {
-  showStrengthLimitModal.value = !!shouldShow;
-  if (shouldShow) {
+watch(exceedsSphereCylinderLimit, (shouldShow, wasShow) => {
+  if (shouldShow && !wasShow) {
+    clearSphereCylinderIfExceeded();
+    showStrengthLimitModal.value = true;
     // Ensure the user actually sees the limit modal even if an eye modal is open.
     rightModalOpen.value = false;
     leftModalOpen.value = false;

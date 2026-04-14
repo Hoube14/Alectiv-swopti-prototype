@@ -391,6 +391,20 @@ function getSphereCylinderTotal(eye) {
   return parsePrescriptionNumber(eye?.sphere) + parsePrescriptionNumber(eye?.cylinder);
 }
 
+function clearSphereCylinderIfExceeded() {
+  const eyes = [
+    { key: 'right', eye: form.value.right },
+    { key: 'left', eye: form.value.left }
+  ];
+  for (const { key, eye } of eyes) {
+    if (Math.abs(getSphereCylinderTotal(eye)) > 6) {
+      form.value[key].sphere = '';
+      form.value[key].cylinder = '';
+      form.value[key].axis = '';
+    }
+  }
+}
+
 const exceedsSphereCylinderLimit = computed(() => {
   return [form.value.right, form.value.left].some((eye) => Math.abs(getSphereCylinderTotal(eye)) > 6);
 });
@@ -480,12 +494,9 @@ watch(
 
 watch(shouldBlockPrescriptionFlow, (shouldBlock, wasBlocked) => {
   if (shouldBlock && !wasBlocked) {
+    clearSphereCylinderIfExceeded();
     showStrengthLimitModal.value = true;
     return;
-  }
-
-  if (!shouldBlock) {
-    showStrengthLimitModal.value = false;
   }
 });
 
