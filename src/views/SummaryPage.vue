@@ -447,12 +447,8 @@ async function proceedToCheckout() {
                   <div>Färg: {{ selections.gradientFashionSelection.title }}</div>
                 </div>
 
-                <div v-if="selections.usage">
-                  <div>Hur ska du använda dina glasögon?: {{ selections.usage.title }}</div>
-                </div>
-
-                <div v-if="selections.glassType">
-                  <div>Typ av glas: {{ selections.glassType.title }}</div>
+                <div v-if="selections.usage || selections.glassType">
+                  <div>Typ av glas: {{ selections.usage?.title || selections.glassType?.title }}</div>
                 </div>
 
                 <div v-if="selections.prescription">
