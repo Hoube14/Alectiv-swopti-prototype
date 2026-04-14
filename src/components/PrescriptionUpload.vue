@@ -131,7 +131,8 @@ const canSubmit = computed(() => !!selectedFile.value);
       <button
         type="button"
         :disabled="!canSubmit"
-        class="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+        class="rounded-lg px-4 py-2 font-medium text-white transition hover:opacity-90 disabled:opacity-50"
+        style="background: var(--color-primary);"
         @click="submit"
       >
         Fortsätt

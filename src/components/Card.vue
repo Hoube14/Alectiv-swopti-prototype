@@ -27,7 +27,7 @@ const props = defineProps({
 
 defineEmits(['click', 'info']);
 
-/** Full primary-green treatment when this option is recommended (e.g. lens index step). */
+/** Full primary treatment when this option is recommended (e.g. lens index step). */
 const isRecommendedLook = computed(() => props.recommended && !props.disabled);
 
 const cardSurfaceStyle = computed(() => {
@@ -58,7 +58,7 @@ const priceBlockColor = computed(() => 'var(--color-heading)');
 const learnMoreColor = computed(() => 'var(--color-primary)');
 const badgeStyle = computed(() =>
   isRecommendedLook.value
-    ? { background: 'rgba(93,123,108,0.18)', color: 'var(--color-heading)' }
+    ? { background: 'rgba(17,17,17,0.08)', color: 'var(--color-heading)' }
     : { background: 'rgba(0,0,0,0.06)', color: 'var(--color-heading)' }
 );
 
@@ -70,7 +70,9 @@ const badgeStyle = computed(() =>
     class="relative h-full rounded-2xl border p-6 flex flex-col items-center shadow-sm transition-all duration-200 ease-out"
     :class="[
       disabled ? 'cursor-not-allowed grayscale' : 'cursor-pointer hover:scale-[1.03] hover:shadow-md',
-      isRecommendedLook && 'hover:brightness-[1.02] ring-2 ring-[color:var(--color-primary)]/20',
+      // Recommended: make it obvious even before hover
+      isRecommendedLook && 'ring-2 ring-[color:var(--color-primary)]/25 shadow-md',
+      isRecommendedLook && !disabled && 'hover:brightness-[1.02]',
     ]"
     :style="cardSurfaceStyle"
   >
@@ -103,7 +105,16 @@ const badgeStyle = computed(() =>
       >
     </div>
     <h3 class="font-semibold text-lg mb-2 text-center flex-shrink-0" :style="{ color: headingColor }">{{ title }}</h3>
-    <p v-if="recommended" class="text-xs font-bold mb-1 flex-shrink-0 text-center" :style="{ color: recommendedLineColor }">
+    <p
+      v-if="recommended"
+      class="mb-2 flex-shrink-0 text-center text-xs font-semibold leading-snug"
+      :class="isRecommendedLook ? 'rounded-full px-3 py-1' : ''"
+      :style="
+        isRecommendedLook
+          ? { background: 'rgba(17,17,17,0.08)', color: 'var(--color-heading)' }
+          : { color: recommendedLineColor }
+      "
+    >
       {{ recommendedLabel || 'Optikern rekommenderar detta glas för dina styrkor' }}
     </p>
     <p

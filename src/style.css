@@ -1,16 +1,27 @@
 @import "tailwindcss";
 
 :root {
-  --color-primary: #5d7b6c;
-  --color-primary-soft: #e8efe9;
-  /* Sharper green for "Rekommenderas för dina styrkor" so it stands out more */
-  --color-recommended: #1e7a52;
-  --color-surface: #ede8df;
+  /* Seklart: black/white with warm beige surface */
+  --color-primary: #111111;
+  --color-primary-soft: #f2eee6;
+  --color-recommended: #111111;
+
+  /* Page surface (outside cards) */
+  --color-surface: #e3d6c5;
+
+  /* Neutral background used inside cards/forms (inputs, disabled surfaces) */
+  --color-background: #f7f2ea;
+
+  /* Card surface */
   --color-card: #ffffff;
-  --color-heading: #2a2a2a;
-  --color-text: #4a4a4a;
-  --color-muted: #a0a0a0;
-  --color-border: #e0e0e0;
+
+  /* Typography */
+  --color-heading: #111111;
+  --color-text: #3f3b36;
+  --color-muted: #8b857d;
+
+  /* Borders */
+  --color-border: #d7cdbf;
 }
 
 body {
@@ -18,4 +29,15 @@ body {
   background-color: var(--color-surface);
   color: var(--color-heading);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: geometricPrecision;
+}
+
+/* Typography tweaks for the Seklart look */
+h1, h2, h3 {
+  letter-spacing: 0.02em;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
 }

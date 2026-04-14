@@ -1061,8 +1061,9 @@ function cancel() {
       <button
         type="button"
         :aria-disabled="!canSubmit"
-        class="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700"
-        :class="!canSubmit ? 'opacity-50 cursor-not-allowed hover:bg-blue-600' : ''"
+        class="rounded-lg px-4 py-2 font-medium text-white transition hover:opacity-90"
+        :class="!canSubmit ? 'opacity-50 cursor-not-allowed hover:opacity-50' : ''"
+        style="background: var(--color-primary);"
         @click="submit"
       >
         Fortsätt
@@ -1095,7 +1096,8 @@ function cancel() {
         <div class="mt-5 flex justify-end">
           <button
             type="button"
-            class="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700"
+            class="rounded-lg px-4 py-2 font-medium text-white transition hover:opacity-90"
+            style="background: var(--color-primary);"
             @click="showStrengthLimitModal = false"
           >
             Okej
