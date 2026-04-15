@@ -11,6 +11,15 @@ const selections = computed(() => order.value?.selections ?? {});
 const shipping = computed(() => order.value?.shipping ?? storeData?.defaults?.shipping ?? 0);
 const currency = 'SEK';
 
+const treatmentSummaryText = computed(() => {
+  const treatment = selections.value?.treatment;
+  if (!treatment?.title) return null;
+  if (treatment.priceKey === 'treatment_blue_light') {
+    return 'Fullständig behandling + Blåljusfilter';
+  }
+  return treatment.title;
+});
+
 function startOver() {
   orderStore.setShowCheckoutSuccess(false);
   orderStore.resetOrder();
@@ -60,7 +69,7 @@ function startOver() {
                 <div v-if="selections.prescription">Recept: {{ selections.prescription.title }}</div>
                 <div v-if="selections.lensBrand">Glasmärke: {{ selections.lensBrand.title }}</div>
                 <div v-if="selections.lensRecommendation">Glas: {{ selections.lensRecommendation.title }}</div>
-                <div v-if="selections.treatment">Behandling: {{ selections.treatment.title }}</div>
+                <div v-if="selections.treatment">Behandling: {{ treatmentSummaryText }}</div>
               </div>
             </div>
           </div>

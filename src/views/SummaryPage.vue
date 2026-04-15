@@ -90,6 +90,15 @@ const gradalSummaryText = computed(() => {
   return null;
 });
 
+const treatmentSummaryText = computed(() => {
+  const treatment = order.value?.selections?.treatment;
+  if (!treatment?.title) return null;
+  if (treatment.priceKey === 'treatment_blue_light') {
+    return 'Fullständig behandling + Blåljusfilter';
+  }
+  return treatment.title;
+});
+
 // Get product details for each selection for better display
 const productDetails = computed(() => {
   const details = {};
@@ -464,7 +473,7 @@ async function proceedToCheckout() {
                 </div>
 
                 <div v-if="selections.treatment">
-                  <div>Behandling: {{ selections.treatment.title }}</div>
+                  <div>Behandling: {{ treatmentSummaryText }}</div>
                 </div>
               </div>
             </div>
