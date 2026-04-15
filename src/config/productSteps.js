@@ -51,7 +51,7 @@ export default [
       {
         title: 'Vårt egna glas',
         description: 'Välj våra egna förstklassiga glas.',
-        imageSrc: '/images/VaraEgnaGlasmarken.jpg',
+        imageSrc: '/images/logga.png',
         nextStep: 'lensRecommendation',
         priceKey: 'lens_brand_own'
       },
