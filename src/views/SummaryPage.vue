@@ -90,6 +90,13 @@ const gradalSummaryText = computed(() => {
   return null;
 });
 
+const polariseradSummaryText = computed(() => {
+  const sel = order.value?.selections ?? {};
+  if (coloredGlassTypeTitle.value !== 'Polariserad') return null;
+  if (sel.colorSelection?.title) return sel.colorSelection.title;
+  return null;
+});
+
 const treatmentSummaryText = computed(() => {
   const treatment = order.value?.selections?.treatment;
   if (!treatment?.title) return null;
@@ -479,21 +486,6 @@ async function proceedToCheckout() {
                     <div class="mt-1 font-semibold truncate" style="color: var(--color-heading)">
                       {{ selections.glassType.title }}
                     </div>
-                    <div class="mt-2 flex flex-wrap gap-2">
-                      <span
-                        class="inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold"
-                        style="border-color: var(--color-border); color: var(--color-text); background-color: var(--color-background)"
-                      >
-                        {{ selections.tintSelection?.title || 'Ofärgade glas' }}
-                      </span>
-                      <span
-                        v-if="selections.photochromicColorSelection"
-                        class="inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold"
-                        style="border-color: var(--color-border); color: var(--color-text); background-color: var(--color-background)"
-                      >
-                        Färgskiftande: {{ selections.photochromicColorSelection.title }}
-                      </span>
-                    </div>
                   </div>
                   <div class="shrink-0 text-right">
                     <div class="text-xs" style="color: var(--color-muted)">Pris</div>
@@ -522,6 +514,10 @@ async function proceedToCheckout() {
                   <div class="text-xs font-medium" style="color: var(--color-muted)">Gradal</div>
                   <div class="text-sm font-semibold break-words" style="color: var(--color-heading); overflow-wrap: anywhere;">{{ gradalSummaryText }}</div>
                 </div>
+                <div v-else-if="polariseradSummaryText" class="rounded-xl border px-3 py-2" style="border-color: var(--color-border); background-color: var(--color-background)">
+                  <div class="text-xs font-medium" style="color: var(--color-muted)">Polariserat</div>
+                  <div class="text-sm font-semibold break-words" style="color: var(--color-heading); overflow-wrap: anywhere;">{{ polariseradSummaryText }}</div>
+                </div>
                 <div v-else-if="selections.colorSelection" class="rounded-xl border px-3 py-2" style="border-color: var(--color-border); background-color: var(--color-background)">
                   <div class="text-xs font-medium" style="color: var(--color-muted)">Färg</div>
                   <div class="text-sm font-semibold break-words" style="color: var(--color-heading); overflow-wrap: anywhere;">{{ selections.colorSelection.title }}</div>
@@ -533,6 +529,14 @@ async function proceedToCheckout() {
                 <div v-else-if="selections.gradientFashionSelection" class="rounded-xl border px-3 py-2" style="border-color: var(--color-border); background-color: var(--color-background)">
                   <div class="text-xs font-medium" style="color: var(--color-muted)">Färg</div>
                   <div class="text-sm font-semibold break-words" style="color: var(--color-heading); overflow-wrap: anywhere;">{{ selections.gradientFashionSelection.title }}</div>
+                </div>
+                <div
+                  v-else-if="selections.tintSelection?.priceKey === 'tint_none'"
+                  class="rounded-xl border px-3 py-2"
+                  style="border-color: var(--color-border); background-color: var(--color-background)"
+                >
+                  <div class="text-xs font-medium" style="color: var(--color-muted)">Färg</div>
+                  <div class="text-sm font-semibold" style="color: var(--color-heading)">Ofärgat</div>
                 </div>
 
                 <div v-if="selections.usage || selections.glassType" class="rounded-xl border px-3 py-2 min-w-0" style="border-color: var(--color-border); background-color: var(--color-background)">
