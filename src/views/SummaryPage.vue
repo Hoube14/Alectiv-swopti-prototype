@@ -99,6 +99,14 @@ const treatmentSummaryText = computed(() => {
   return treatment.title;
 });
 
+const shouldShowPrescriptionSummary = computed(() => {
+  const prescription = order.value?.selections?.prescription;
+  if (!prescription?.title) return false;
+  if (prescription.skipsPrescription) return false;
+  if (prescription.title.trim().toLowerCase() === 'utan styrkor') return false;
+  return true;
+});
+
 // Get product details for each selection for better display
 const productDetails = computed(() => {
   const details = {};
@@ -460,12 +468,12 @@ async function proceedToCheckout() {
                   <div>Typ av glas: {{ selections.usage?.title || selections.glassType?.title }}</div>
                 </div>
 
-                <div v-if="selections.prescription">
+                <div v-if="shouldShowPrescriptionSummary">
                   <div>Recept: {{ selections.prescription.title }}{{ selections.prescription.fileName ? ` (${selections.prescription.fileName})` : '' }}</div>
                 </div>
 
                 <div v-if="selections.lensBrand">
-                  <div>Glasmärke: {{ selections.lensBrand.title }}</div>
+                  <div>Märke: {{ selections.lensBrand.title }}</div>
                 </div>
 
                 <div v-if="selections.lensRecommendation">
