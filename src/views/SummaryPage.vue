@@ -403,212 +403,293 @@ async function proceedToCheckout() {
 
 <template>
   <div class="min-h-screen p-6 md:p-8">
-    <div class="max-w-4xl mx-auto">
+    <div class="max-w-6xl mx-auto">
       <ProgressBar :current-step="currentStepIndex" :total-steps="totalSteps" />
 
-      <div class="flex items-center mb-8">
+      <div class="grid grid-cols-[auto_1fr_auto] items-center mb-8">
         <button
           @click="goBack"
-          class="mr-4 text-sm font-medium transition hover:opacity-80"
+          class="justify-self-start text-sm font-medium transition hover:opacity-80"
           style="color: var(--color-primary)"
         >
           <span>← Tillbaka</span>
         </button>
-        <h1 class="text-center text-2xl md:text-3xl font-semibold flex-1" style="color: var(--color-heading)">Din beställning</h1>
+        <h1 class="justify-self-center text-center text-2xl md:text-3xl font-semibold" style="color: var(--color-heading)">Din beställning</h1>
+        <span aria-hidden="true" class="w-[72px] justify-self-end"></span>
       </div>
 
-      <div class="rounded-2xl border shadow-md p-6 md:p-8" style="background-color: var(--color-card); border-color: var(--color-border)">
-        <h2 class="text-xl font-semibold mb-4" style="color: var(--color-heading)">Sammanfattning</h2>
-
-        <div class="mb-6">
-          <!-- Header row -->
-          <div class="flex justify-between py-2 border-b" style="border-color: var(--color-border)">
-            <span class="font-medium" style="color: var(--color-text)">Produkt</span>
-            <span class="font-medium" style="color: var(--color-text)">Pris</span>
-          </div>
-
-          <!-- Product selection section -->
-          <div class="py-4 border-b" style="border-color: var(--color-border)">
-            <div class="mb-2">
-              <span class="font-medium" style="color: var(--color-heading)">Dina val:</span>
-            </div>
-
-            <!-- Product details section -->
-            <div class="mt-4 space-y-4">
-              <!-- Main product title -->
-              <div v-if="selections.glassType">
-                <div class="font-medium" style="color: var(--color-heading)">{{ selections.glassType.title }} - {{ selections.tintSelection?.title || 'ofärgade' }}</div>
-                <div style="color: var(--color-text)">{{ totalPrice - storeData?.defaults?.shipping || 0 }} {{ currency }}</div>
+      <div class="grid items-start gap-6 md:gap-8 lg:grid-cols-12">
+        <!-- Summary -->
+        <details
+          class="group min-w-0 self-start rounded-2xl border shadow-md overflow-hidden lg:col-span-6 lg:order-1 [&_summary::-webkit-details-marker]:hidden"
+          style="background-color: var(--color-card); border-color: var(--color-border)"
+          open
+        >
+          <summary
+            class="cursor-pointer select-none border-b px-6 py-5 md:px-7 md:py-6"
+            style="border-color: var(--color-border); background-color: var(--color-card); list-style: none;"
+          >
+            <div class="flex items-center justify-between gap-6">
+              <div class="min-w-0 flex items-center gap-3" style="list-style: none;">
+                <span
+                  class="inline-flex h-5 w-5 items-center justify-center transition-transform group-open:rotate-180"
+                  style="color: var(--color-heading)"
+                  aria-hidden="true"
+                >
+                  <svg viewBox="0 0 20 20" fill="none" class="h-5 w-5">
+                    <path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
+                <div class="min-w-0">
+                  <div class="truncate text-base font-semibold" style="color: var(--color-heading)">
+                    Sammanfattning
+                  </div>
+                </div>
               </div>
 
-              <!-- Product attributes -->
-              <div class="space-y-2 text-sm" style="color: var(--color-text)">
-
-                <div v-if="selections.photochromicColorSelection">
-                  <div>Färgskiftande glas: {{ selections.photochromicColorSelection.title }}</div>
+              <div class="shrink-0 text-right">
+                <div class="text-xs font-semibold uppercase tracking-wide" style="color: var(--color-muted)">
+                  Totalt att betala
                 </div>
-
-                <div v-if="helfargSummaryText">
-                  <div>Helfärg: {{ helfargSummaryText }}</div>
-                </div>
-                <div v-else-if="gradalSummaryText">
-                  <div>Gradal: {{ gradalSummaryText }}</div>
-                </div>
-                <div v-else-if="selections.colorSelection">
-                  <div>Färg: {{ selections.colorSelection.title }}</div>
-                </div>
-                <div v-else-if="selections.fashionColorSelection">
-                  <div>Färg: {{ selections.fashionColorSelection.title }}</div>
-                </div>
-                <div v-else-if="selections.gradientFashionSelection">
-                  <div>Färg: {{ selections.gradientFashionSelection.title }}</div>
-                </div>
-
-                <div v-if="selections.usage || selections.glassType">
-                  <div>Typ av glas: {{ selections.usage?.title || selections.glassType?.title }}</div>
-                </div>
-
-                <div v-if="shouldShowPrescriptionSummary">
-                  <div>Recept: {{ selections.prescription.title }}{{ selections.prescription.fileName ? ` (${selections.prescription.fileName})` : '' }}</div>
-                </div>
-
-                <div v-if="selections.lensBrand">
-                  <div>Märke: {{ selections.lensBrand.title }}</div>
-                </div>
-
-                <div v-if="selections.lensRecommendation">
-                  <div>Glas: {{ selections.lensRecommendation.title }}</div>
-                </div>
-
-                <div v-if="selections.treatment">
-                  <div>Behandling: {{ treatmentSummaryText }}</div>
+                <div class="mt-1 text-lg font-semibold" style="color: var(--color-heading)">
+                  {{ totalPrice.toFixed(2) }} {{ currency }}
                 </div>
               </div>
             </div>
-          </div>
+          </summary>
 
-          <div class="mt-8">
-            <h2 class="text-xl font-semibold mb-4" style="color: var(--color-heading)">Dina uppgifter</h2>
-            <p v-if="formTouched && Object.values(formErrors).some(Boolean)" class="mb-4 text-sm rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-red-700" role="alert">
-              Kontrollera uppgifterna nedan. Fälten med fel måste rättas innan du kan gå vidare till betalning.
-            </p>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="md:col-span-2">
-                <label class="block text-sm font-medium mb-1" style="color: var(--color-text)">Namn *</label>
-                <input
-                  v-model="customerName"
-                  type="text"
-                  :aria-invalid="!!formErrors.customerName"
-                  :aria-describedby="formErrors.customerName ? 'err-customerName' : undefined"
-                  class="w-full rounded-lg border px-3 py-2 text-sm"
-                  :class="{ 'border-red-500': formErrors.customerName }"
-                  style="color: var(--color-text); background-color: var(--color-background);"
-                  :style="formErrors.customerName ? {} : { borderColor: 'var(--color-border)' }"
-                  placeholder="För- och efternamn"
-                >
-                <p v-if="formErrors.customerName" id="err-customerName" class="mt-1 text-sm text-red-600">{{ formErrors.customerName }}</p>
+          <div class="min-w-0">
+            <div class="p-6 md:p-7">
+              <div class="flex items-start justify-between gap-4">
+                <div class="min-w-0">
+                  <h2 class="text-xl font-semibold" style="color: var(--color-heading)">Sammanfattning</h2>
+                  <p class="mt-1 text-sm" style="color: var(--color-muted)">
+                    Dina val och totalpris – redo att gå vidare.
+                  </p>
+                </div>
               </div>
-              <div>
-                <label class="block text-sm font-medium mb-1" style="color: var(--color-text)">E-post *</label>
-                <input
-                  v-model="customerEmail"
-                  type="email"
-                  :aria-invalid="!!formErrors.customerEmail"
-                  :aria-describedby="formErrors.customerEmail ? 'err-customerEmail' : undefined"
-                  class="w-full rounded-lg border px-3 py-2 text-sm"
-                  :class="{ 'border-red-500': formErrors.customerEmail }"
-                  style="color: var(--color-text); background-color: var(--color-background);"
-                  :style="formErrors.customerEmail ? {} : { borderColor: 'var(--color-border)' }"
-                  placeholder="namn@exempel.se"
-                >
-                <p v-if="formErrors.customerEmail" id="err-customerEmail" class="mt-1 text-sm text-red-600">{{ formErrors.customerEmail }}</p>
+
+          <div class="mt-6 grid gap-4">
+            <!-- Product -->
+            <div>
+              <div class="rounded-xl border p-4" style="border-color: var(--color-border); background-color: var(--color-card)">
+                <div v-if="selections.glassType" class="flex items-start justify-between gap-4">
+                  <div class="min-w-0">
+                    <div class="text-xs font-semibold uppercase tracking-wide" style="color: var(--color-muted)">Produkt</div>
+                    <div class="mt-1 font-semibold truncate" style="color: var(--color-heading)">
+                      {{ selections.glassType.title }}
+                    </div>
+                    <div class="mt-2 flex flex-wrap gap-2">
+                      <span
+                        class="inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold"
+                        style="border-color: var(--color-border); color: var(--color-text); background-color: var(--color-background)"
+                      >
+                        {{ selections.tintSelection?.title || 'Ofärgade glas' }}
+                      </span>
+                      <span
+                        v-if="selections.photochromicColorSelection"
+                        class="inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold"
+                        style="border-color: var(--color-border); color: var(--color-text); background-color: var(--color-background)"
+                      >
+                        Färgskiftande: {{ selections.photochromicColorSelection.title }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="shrink-0 text-right">
+                    <div class="text-xs" style="color: var(--color-muted)">Pris</div>
+                    <div class="mt-1 text-sm font-semibold" style="color: var(--color-heading)">
+                      {{ ((totalPrice - (storeData?.defaults?.shipping || 0)) || 0).toFixed(2) }} {{ currency }}
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div>
-                <label class="block text-sm font-medium mb-1" style="color: var(--color-text)">Telefon</label>
-                <input
-                  v-model="customerPhone"
-                  type="tel"
-                  :aria-invalid="!!formErrors.customerPhone"
-                  :aria-describedby="formErrors.customerPhone ? 'err-customerPhone' : undefined"
-                  class="w-full rounded-lg border px-3 py-2 text-sm"
-                  :class="{ 'border-red-500': formErrors.customerPhone }"
-                  style="color: var(--color-text); background-color: var(--color-background);"
-                  :style="formErrors.customerPhone ? {} : { borderColor: 'var(--color-border)' }"
-                  placeholder="Mobilnummer"
-                >
-                <p v-if="formErrors.customerPhone" id="err-customerPhone" class="mt-1 text-sm text-red-600">{{ formErrors.customerPhone }}</p>
-              </div>
-              <div class="md:col-span-2">
-                <label class="block text-sm font-medium mb-1" style="color: var(--color-text)">Adress *</label>
-                <input
-                  v-model="customerAddress1"
-                  type="text"
-                  :aria-invalid="!!formErrors.customerAddress1"
-                  :aria-describedby="formErrors.customerAddress1 ? 'err-customerAddress1' : undefined"
-                  class="w-full rounded-lg border px-3 py-2 text-sm"
-                  :class="{ 'border-red-500': formErrors.customerAddress1 }"
-                  style="color: var(--color-text); background-color: var(--color-background);"
-                  :style="formErrors.customerAddress1 ? {} : { borderColor: 'var(--color-border)' }"
-                  placeholder="Gatuadress och nummer"
-                >
-                <p v-if="formErrors.customerAddress1" id="err-customerAddress1" class="mt-1 text-sm text-red-600">{{ formErrors.customerAddress1 }}</p>
-              </div>
-              <div>
-                <label class="block text-sm font-medium mb-1" style="color: var(--color-text)">Postnummer *</label>
-                <input
-                  v-model="customerPostcode"
-                  type="text"
-                  inputmode="numeric"
-                  :aria-invalid="!!formErrors.customerPostcode"
-                  :aria-describedby="formErrors.customerPostcode ? 'err-customerPostcode' : undefined"
-                  class="w-full rounded-lg border px-3 py-2 text-sm"
-                  :class="{ 'border-red-500': formErrors.customerPostcode }"
-                  style="color: var(--color-text); background-color: var(--color-background);"
-                  :style="formErrors.customerPostcode ? {} : { borderColor: 'var(--color-border)' }"
-                  placeholder="t.ex. 123 45"
-                >
-                <p v-if="formErrors.customerPostcode" id="err-customerPostcode" class="mt-1 text-sm text-red-600">{{ formErrors.customerPostcode }}</p>
-              </div>
-              <div>
-                <label class="block text-sm font-medium mb-1" style="color: var(--color-text)">Ort *</label>
-                <input
-                  v-model="customerCity"
-                  type="text"
-                  :aria-invalid="!!formErrors.customerCity"
-                  :aria-describedby="formErrors.customerCity ? 'err-customerCity' : undefined"
-                  class="w-full rounded-lg border px-3 py-2 text-sm"
-                  :class="{ 'border-red-500': formErrors.customerCity }"
-                  style="color: var(--color-text); background-color: var(--color-background);"
-                  :style="formErrors.customerCity ? {} : { borderColor: 'var(--color-border)' }"
-                  placeholder="Stad/ort"
-                >
-                <p v-if="formErrors.customerCity" id="err-customerCity" class="mt-1 text-sm text-red-600">{{ formErrors.customerCity }}</p>
+            </div>
+
+            <!-- Choices as chips grid -->
+            <div>
+              <div class="text-xs font-semibold uppercase tracking-wide" style="color: var(--color-muted)">Dina val</div>
+              <div
+                :class="[
+                  'mt-3 grid gap-2',
+                  'grid-cols-1 lg:grid-cols-2'
+                ]"
+              >
+                <div v-if="helfargSummaryText" class="rounded-xl border px-3 py-2" style="border-color: var(--color-border); background-color: var(--color-background)">
+                  <div class="text-xs font-medium" style="color: var(--color-muted)">Helfärg</div>
+                  <div class="text-sm font-semibold break-words" style="color: var(--color-heading); overflow-wrap: anywhere;">{{ helfargSummaryText }}</div>
+                </div>
+                <div v-else-if="gradalSummaryText" class="rounded-xl border px-3 py-2" style="border-color: var(--color-border); background-color: var(--color-background)">
+                  <div class="text-xs font-medium" style="color: var(--color-muted)">Gradal</div>
+                  <div class="text-sm font-semibold break-words" style="color: var(--color-heading); overflow-wrap: anywhere;">{{ gradalSummaryText }}</div>
+                </div>
+                <div v-else-if="selections.colorSelection" class="rounded-xl border px-3 py-2" style="border-color: var(--color-border); background-color: var(--color-background)">
+                  <div class="text-xs font-medium" style="color: var(--color-muted)">Färg</div>
+                  <div class="text-sm font-semibold break-words" style="color: var(--color-heading); overflow-wrap: anywhere;">{{ selections.colorSelection.title }}</div>
+                </div>
+                <div v-else-if="selections.fashionColorSelection" class="rounded-xl border px-3 py-2" style="border-color: var(--color-border); background-color: var(--color-background)">
+                  <div class="text-xs font-medium" style="color: var(--color-muted)">Färg</div>
+                  <div class="text-sm font-semibold break-words" style="color: var(--color-heading); overflow-wrap: anywhere;">{{ selections.fashionColorSelection.title }}</div>
+                </div>
+                <div v-else-if="selections.gradientFashionSelection" class="rounded-xl border px-3 py-2" style="border-color: var(--color-border); background-color: var(--color-background)">
+                  <div class="text-xs font-medium" style="color: var(--color-muted)">Färg</div>
+                  <div class="text-sm font-semibold break-words" style="color: var(--color-heading); overflow-wrap: anywhere;">{{ selections.gradientFashionSelection.title }}</div>
+                </div>
+
+                <div v-if="selections.usage || selections.glassType" class="rounded-xl border px-3 py-2 min-w-0" style="border-color: var(--color-border); background-color: var(--color-background)">
+                  <div class="text-xs font-medium" style="color: var(--color-muted)">Typ av glas</div>
+                  <div class="text-sm font-semibold break-words" style="color: var(--color-heading); overflow-wrap: anywhere;">{{ selections.usage?.title || selections.glassType?.title }}</div>
+                </div>
+
+                <div v-if="shouldShowPrescriptionSummary" class="rounded-xl border px-3 py-2" style="border-color: var(--color-border); background-color: var(--color-background)">
+                  <div class="text-xs font-medium" style="color: var(--color-muted)">Recept</div>
+                  <div class="text-sm font-semibold" style="color: var(--color-heading)">
+                    {{ selections.prescription.title }}{{ selections.prescription.fileName ? ` (${selections.prescription.fileName})` : '' }}
+                  </div>
+                </div>
+
+                <div v-if="selections.lensBrand" class="rounded-xl border px-3 py-2 min-w-0" style="border-color: var(--color-border); background-color: var(--color-background)">
+                  <div class="text-xs font-medium" style="color: var(--color-muted)">Märke</div>
+                  <div class="text-sm font-semibold break-words" style="color: var(--color-heading); overflow-wrap: anywhere;">{{ selections.lensBrand.title }}</div>
+                </div>
+
+                <div v-if="selections.lensRecommendation" class="rounded-xl border px-3 py-2 min-w-0" style="border-color: var(--color-border); background-color: var(--color-background)">
+                  <div class="text-xs font-medium" style="color: var(--color-muted)">Glas</div>
+                  <div class="text-sm font-semibold break-words" style="color: var(--color-heading); overflow-wrap: anywhere;">{{ selections.lensRecommendation.title }}</div>
+                </div>
+
+                <div v-if="selections.treatment" class="rounded-xl border px-3 py-2 sm:col-span-2" style="border-color: var(--color-border); background-color: var(--color-background)">
+                  <div class="text-xs font-medium" style="color: var(--color-muted)">Behandling</div>
+                  <div class="text-sm font-semibold" style="color: var(--color-heading)">{{ treatmentSummaryText }}</div>
+                </div>
               </div>
             </div>
           </div>
+        </div>
 
-          <div class="flex justify-between py-2" style="color: var(--color-text)">
-            <span>Frakt</span>
-            <span>{{ storeData?.defaults?.shipping || 0 }} {{ currency }}</span>
+            <div class="border-t p-6 md:p-7" style="border-color: var(--color-border)">
+              <div class="flex items-center justify-between text-sm" style="color: var(--color-text)">
+                <span>Frakt</span>
+                <span class="font-medium">{{ (storeData?.defaults?.shipping || 0).toFixed(2) }} {{ currency }}</span>
+              </div>
+            </div>
           </div>
+        </details>
 
-          <div class="flex justify-between py-2 mt-4 border-t-2 font-semibold" style="border-color: var(--color-border); color: var(--color-heading)">
-            <span>Totalt att betala</span>
-            <span>{{ totalPrice.toFixed(2) }} {{ currency }}</span>
+      <!-- Customer details -->
+      <section
+        class="min-w-0 self-start rounded-2xl border shadow-md p-6 md:p-7 lg:col-span-6 lg:order-2"
+        style="background-color: var(--color-card); border-color: var(--color-border)"
+      >
+        <h2 class="text-xl font-semibold mb-4" style="color: var(--color-heading)">Dina uppgifter</h2>
+        <p v-if="formTouched && Object.values(formErrors).some(Boolean)" class="mb-4 text-sm rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-red-700" role="alert">
+          Kontrollera uppgifterna nedan. Fälten med fel måste rättas innan du kan gå vidare till betalning.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="md:col-span-2">
+            <label class="block text-sm font-medium mb-1" style="color: var(--color-text)">Namn *</label>
+            <input
+              v-model="customerName"
+              type="text"
+              :aria-invalid="!!formErrors.customerName"
+              :aria-describedby="formErrors.customerName ? 'err-customerName' : undefined"
+              class="w-full rounded-lg border px-3 py-2 text-sm"
+              :class="{ 'border-red-500': formErrors.customerName }"
+              style="color: var(--color-text); background-color: var(--color-background);"
+              :style="formErrors.customerName ? {} : { borderColor: 'var(--color-border)' }"
+              placeholder="För- och efternamn"
+            >
+            <p v-if="formErrors.customerName" id="err-customerName" class="mt-1 text-sm text-red-600">{{ formErrors.customerName }}</p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1" style="color: var(--color-text)">E-post *</label>
+            <input
+              v-model="customerEmail"
+              type="email"
+              :aria-invalid="!!formErrors.customerEmail"
+              :aria-describedby="formErrors.customerEmail ? 'err-customerEmail' : undefined"
+              class="w-full rounded-lg border px-3 py-2 text-sm"
+              :class="{ 'border-red-500': formErrors.customerEmail }"
+              style="color: var(--color-text); background-color: var(--color-background);"
+              :style="formErrors.customerEmail ? {} : { borderColor: 'var(--color-border)' }"
+              placeholder="namn@exempel.se"
+            >
+            <p v-if="formErrors.customerEmail" id="err-customerEmail" class="mt-1 text-sm text-red-600">{{ formErrors.customerEmail }}</p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1" style="color: var(--color-text)">Telefon</label>
+            <input
+              v-model="customerPhone"
+              type="tel"
+              :aria-invalid="!!formErrors.customerPhone"
+              :aria-describedby="formErrors.customerPhone ? 'err-customerPhone' : undefined"
+              class="w-full rounded-lg border px-3 py-2 text-sm"
+              :class="{ 'border-red-500': formErrors.customerPhone }"
+              style="color: var(--color-text); background-color: var(--color-background);"
+              :style="formErrors.customerPhone ? {} : { borderColor: 'var(--color-border)' }"
+              placeholder="Mobilnummer"
+            >
+            <p v-if="formErrors.customerPhone" id="err-customerPhone" class="mt-1 text-sm text-red-600">{{ formErrors.customerPhone }}</p>
+          </div>
+          <div class="md:col-span-2">
+            <label class="block text-sm font-medium mb-1" style="color: var(--color-text)">Adress *</label>
+            <input
+              v-model="customerAddress1"
+              type="text"
+              :aria-invalid="!!formErrors.customerAddress1"
+              :aria-describedby="formErrors.customerAddress1 ? 'err-customerAddress1' : undefined"
+              class="w-full rounded-lg border px-3 py-2 text-sm"
+              :class="{ 'border-red-500': formErrors.customerAddress1 }"
+              style="color: var(--color-text); background-color: var(--color-background);"
+              :style="formErrors.customerAddress1 ? {} : { borderColor: 'var(--color-border)' }"
+              placeholder="Gatuadress och nummer"
+            >
+            <p v-if="formErrors.customerAddress1" id="err-customerAddress1" class="mt-1 text-sm text-red-600">{{ formErrors.customerAddress1 }}</p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1" style="color: var(--color-text)">Postnummer *</label>
+            <input
+              v-model="customerPostcode"
+              type="text"
+              inputmode="numeric"
+              :aria-invalid="!!formErrors.customerPostcode"
+              :aria-describedby="formErrors.customerPostcode ? 'err-customerPostcode' : undefined"
+              class="w-full rounded-lg border px-3 py-2 text-sm"
+              :class="{ 'border-red-500': formErrors.customerPostcode }"
+              style="color: var(--color-text); background-color: var(--color-background);"
+              :style="formErrors.customerPostcode ? {} : { borderColor: 'var(--color-border)' }"
+              placeholder="t.ex. 123 45"
+            >
+            <p v-if="formErrors.customerPostcode" id="err-customerPostcode" class="mt-1 text-sm text-red-600">{{ formErrors.customerPostcode }}</p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1" style="color: var(--color-text)">Ort *</label>
+            <input
+              v-model="customerCity"
+              type="text"
+              :aria-invalid="!!formErrors.customerCity"
+              :aria-describedby="formErrors.customerCity ? 'err-customerCity' : undefined"
+              class="w-full rounded-lg border px-3 py-2 text-sm"
+              :class="{ 'border-red-500': formErrors.customerCity }"
+              style="color: var(--color-text); background-color: var(--color-background);"
+              :style="formErrors.customerCity ? {} : { borderColor: 'var(--color-border)' }"
+              placeholder="Stad/ort"
+            >
+            <p v-if="formErrors.customerCity" id="err-customerCity" class="mt-1 text-sm text-red-600">{{ formErrors.customerCity }}</p>
           </div>
         </div>
 
         <button
           @click="proceedToCheckout"
-          class="w-full py-3.5 text-white rounded-xl font-semibold shadow-sm transition hover:opacity-95"
+          class="mt-6 w-full py-3.5 text-white rounded-xl font-semibold shadow-sm transition hover:opacity-95"
           style="background-color: var(--color-primary);"
         >
           Gå till betalning
         </button>
-      </div>
 
-      <div class="mt-4 text-center text-sm" style="color: var(--color-muted)">
-        Skatt ingår. Leverans och rabatter beräknas i kassan.
+        <div class="mt-3 text-center text-xs" style="color: var(--color-muted)">
+          Skatt ingår. Leverans och rabatter beräknas i kassan.
+        </div>
+      </section>
       </div>
     </div>
   </div>
